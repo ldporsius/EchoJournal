@@ -4,21 +4,29 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.rememberNavController
+import nl.codingwithlinda.echojournal.navigation.MainNav
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen(
+        installSplashScreen().setKeepOnScreenCondition(
+            condition = {
+                false
+            }
         )
         enableEdgeToEdge()
 
         setContent {
+            val navController = rememberNavController()
+
             EchoJournalTheme {
-                Text("Hello world")
+                MainNav(navController = navController)
             }
+
         }
     }
 }

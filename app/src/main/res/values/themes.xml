@@ -3,7 +3,7 @@
 
     <style name="Theme.Starting" parent="Theme.SplashScreen" >
         <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/mood_smile</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.EchoJournal</item>
     </style>
 
