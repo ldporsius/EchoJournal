@@ -3,6 +3,8 @@
 
     <style name="Theme.Starting" parent="Theme.SplashScreen" >
         <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/mood_smile</item>
+        <item name="postSplashScreenTheme">@style/Theme.EchoJournal</item>
     </style>
 
     <style name="Theme.EchoJournal" parent="android:Theme.Material.Light.NoActionBar" />
