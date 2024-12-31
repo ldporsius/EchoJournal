@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_entries.previews
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
@@ -47,6 +48,7 @@ private fun SelectMoodItemPreview() {
                 Icon(
                     imageVector =  ImageVector.vectorResource(id = R.drawable.mood_sad),
                     contentDescription = null,
+                    tint = Color.Unspecified
                 )
             },
             text = {
@@ -64,7 +66,7 @@ private fun SelectMoodItemPreview2() {
         SelectMoodItem(
             modifier = Modifier,
             icon = {
-                Icon(
+                Image(
                     painter =  painterResource(id = R.drawable.mood_sad),
                     contentDescription = null,
                 )
