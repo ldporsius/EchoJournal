@@ -11,7 +11,6 @@ fun MainNav(navController: NavHostController) {
 
   NavHost(navController = navController, startDestination = EntriesRoute) {
     composable<EntriesRoute> {
-
       EntriesRoot()
     }
   }
