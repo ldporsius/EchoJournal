@@ -7,6 +7,6 @@ import nl.codingwithlinda.echojournal.feature_entries.components.EntriesScreen
 fun EntriesRoot() {
 
    EntriesScreen(
-      entries = listOf()
+      entries = listOf("Entry 1", "Entry 2", "Entry 3")
    )
 }
