@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,12 +8,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
 @Composable
 fun EchoListComponent(
-    entries: List<String>,
+    entries: List<UiEcho>,
     topics: List<UiTopic>,
     selectedMoods: String,
     selectedTopics: String
@@ -27,13 +31,23 @@ fun EchoListComponent(
 
         )
         LazyColumn {
-            items(entries) {
+            items(entries) {uiEcho ->
                 EchoListItem(
+                    modifier = Modifier,
                     icon = {
-                        Text(it)
+                        Image(painter = painterResource(id = uiEcho.mood.icon), contentDescription = null)
                     },
                     content = {
-                        Text(it)
+                        EchoListItemContent(
+                            modifier = Modifier.padding(start = 16.dp),
+                            iconTint = Color(uiEcho.mood.color),
+                            title = uiEcho.name,
+                            timeStamp = uiEcho.timeStamp,
+                            amplitudes = uiEcho.amplitudes,
+                            duration = uiEcho.duration,
+                            tags = uiEcho.topics,
+                        )
+
                     }
                 )
             }

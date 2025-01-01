@@ -13,11 +13,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
 @Composable
 fun EchosScreen(
-    entries: List<String>,
+    entries: List<UiEcho>,
     topics: List<UiTopic>
 ) {
 
@@ -50,7 +51,7 @@ fun EchosScreen(
                     entries = entries,
                     topics = topics,
                     selectedMoods = "All Moods",
-                    selectedTopics = "All Topics"
+                    selectedTopics = topics.filter { it.isSelected }.map { it.name }.joinToString()
                 )
             }
         }

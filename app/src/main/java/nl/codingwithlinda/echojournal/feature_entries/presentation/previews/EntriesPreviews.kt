@@ -130,9 +130,7 @@ private fun EchoListItemPreview() {
                   ),
                   duration = "10:00",
                   tags = listOf(
-                      "Tag1",
-                      "Tag2",
-                      "Tag3",
+
                   ),
               )
            }
@@ -161,11 +159,7 @@ private fun EchoListItemContentPreview() {
             ),
             duration = "10:00",
             tags = listOf(
-                "Tag1",
-                "Tag2",
-                "Tag3",
-                "Tag4",
-                "Tag5",
+
             )
 
         )
