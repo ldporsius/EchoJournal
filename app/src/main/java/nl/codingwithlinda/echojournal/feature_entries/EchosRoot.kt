@@ -1,12 +1,12 @@
 package nl.codingwithlinda.echojournal.feature_entries
 
 import androidx.compose.runtime.Composable
-import nl.codingwithlinda.echojournal.feature_entries.components.EntriesScreen
+import nl.codingwithlinda.echojournal.feature_entries.components.EchosScreen
 
 @Composable
-fun EntriesRoot() {
+fun EchosRoot() {
 
-   EntriesScreen(
+   EchosScreen(
       entries = listOf("Entry 1", "Entry 2", "Entry 3")
    )
 }

@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_entries.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,35 +24,35 @@ fun SelectMoodComponent(
     ) {
         SelectMoodItem(
             icon = {
-                Icon(painter = painterResource(id = R.drawable.mood_exited), contentDescription = null)
+                Image(painter = painterResource(id = R.drawable.mood_exited), contentDescription = null)
             },
             text = { Text("Exited")},
             onClick = { }
         )
         SelectMoodItem(
             icon = {
-                Icon(painter = painterResource(id = R.drawable.mood_peaceful), contentDescription = null)
+                Image(painter = painterResource(id = R.drawable.mood_peaceful), contentDescription = null)
             },
             text = { Text("Peaceful")},
             onClick = { }
         )
         SelectMoodItem(
             icon = {
-                Icon(painter = painterResource(id = R.drawable.mood_neutral), contentDescription = null)
+                Image(painter = painterResource(id = R.drawable.mood_neutral), contentDescription = null)
             },
             text = { Text("Neutral")},
             onClick = { }
         )
         SelectMoodItem(
             icon = {
-                Icon(painter = painterResource(id = R.drawable.mood_sad), contentDescription = null)
+                Image(painter = painterResource(id = R.drawable.mood_sad), contentDescription = null)
             },
             text = { Text("Sad")},
             onClick = { }
         )
         SelectMoodItem(
             icon = {
-                Icon(painter = painterResource(id = R.drawable.mood_stressed), contentDescription = null)
+                Image(painter = painterResource(id = R.drawable.mood_stressed), contentDescription = null)
             },
             text = { Text("Stressed")},
             onClick = { }

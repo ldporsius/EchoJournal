@@ -23,7 +23,14 @@ fun EchoListComponent(
         )
         LazyColumn {
             items(entries) {
-                Text(text = it)
+                EchoListItem(
+                    icon = {
+                        Text(it)
+                    },
+                    content = {
+                        Text(it)
+                    }
+                )
             }
         }
     }

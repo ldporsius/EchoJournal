@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EntriesScreen(
+fun EchosScreen(
     entries: List<String>
 ) {
 
     Scaffold(
         modifier = Modifier.safeContentPadding(),
-        topBar = { EntriesTopBar(
+        topBar = { EchosTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)

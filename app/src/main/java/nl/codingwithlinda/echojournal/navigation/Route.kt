@@ -5,4 +5,4 @@ import kotlinx.serialization.Serializable
 interface Route
 
 @Serializable
-data object EntriesRoute : Route
+data object EchosRoute : Route
