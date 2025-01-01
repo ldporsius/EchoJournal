@@ -5,9 +5,11 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import kotlin.random.Random
 
-fun fakeUiEcho(): UiEcho {
+fun fakeUiEcho(index: Int): UiEcho {
     return UiEcho(
-        mood = moodToColorMap[0],
+        mood = moodToColorMap.getOrElse(index){
+            moodToColorMap[0]
+        },
         name = "Entry 1",
         timeStamp = "12:00",
         duration = "0:00/12:00",

@@ -14,10 +14,11 @@ fun EchosRoot() {
 
    EchosScreen(
       entries = listOf(
-         fakeUiEcho(),
-         fakeUiEcho(),
-         fakeUiEcho(),
-         fakeUiEcho(),
+         fakeUiEcho(0),
+         fakeUiEcho(1),
+         fakeUiEcho(2),
+         fakeUiEcho(3),
+         fakeUiEcho(4),
       ),
    topics = fakeUiTopics()
    )
