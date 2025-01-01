@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_entries.previews
+package nl.codingwithlinda.echojournal.feature_entries.presentation.previews
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,12 +18,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
-import nl.codingwithlinda.echojournal.feature_entries.components.EchoListItem
-import nl.codingwithlinda.echojournal.feature_entries.components.EchoListItemContent
-import nl.codingwithlinda.echojournal.feature_entries.components.EmptyListComponent
-import nl.codingwithlinda.echojournal.feature_entries.components.EchosTopBar
-import nl.codingwithlinda.echojournal.feature_entries.components.SelectMoodComponent
-import nl.codingwithlinda.echojournal.feature_entries.components.SelectMoodItem
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItem
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItemContent
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EmptyListComponent
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosTopBar
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodComponent
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodItem
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
 
 @Preview(showBackground = true)

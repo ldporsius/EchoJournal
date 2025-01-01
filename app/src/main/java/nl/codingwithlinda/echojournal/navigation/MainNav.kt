@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import nl.codingwithlinda.echojournal.feature_entries.EchosRoot
+import nl.codingwithlinda.echojournal.feature_entries.presentation.EchosRoot
 
 @Composable
 fun MainNav(navController: NavHostController) {

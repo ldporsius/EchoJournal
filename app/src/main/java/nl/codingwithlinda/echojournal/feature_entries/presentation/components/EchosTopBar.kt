@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_entries.components
+package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

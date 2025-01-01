@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_entries.components
+package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -27,14 +27,18 @@ fun SelectMoodComponent(
                 Image(painter = painterResource(id = R.drawable.mood_exited), contentDescription = null)
             },
             text = { Text("Exited")},
-            onClick = { }
+            onClick = {
+                onMoodSelected()
+            }
         )
         SelectMoodItem(
             icon = {
                 Image(painter = painterResource(id = R.drawable.mood_peaceful), contentDescription = null)
             },
             text = { Text("Peaceful")},
-            onClick = { }
+            onClick = {
+                onMoodSelected()
+            }
         )
         SelectMoodItem(
             icon = {
