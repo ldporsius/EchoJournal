@@ -218,7 +218,11 @@ val surfaceContainerHighDarkHighContrast = Color(0xFF282A2F)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF33343A)
 
 
-
+val stressed80 = Color(0xFFDE3A3A)
+val sad80 = Color(0xFF3A8EDE)
+val neutal80 = Color(0xFF41B278)
+val peaceful80 = Color(0xFFBE3294)
+val exited80 = Color(0xFFDB6C0B)
 
 
 

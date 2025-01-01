@@ -1,18 +1,13 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.previews
 
-import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
+import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import kotlin.random.Random
 
 fun fakeUiEcho(): UiEcho {
     return UiEcho(
-        mood = UiMood(
-            icon = R.drawable.mood_exited,
-            color = R.color.splash_screen_background
-
-        ),
+        mood = moodToColorMap[0],
         name = "Entry 1",
         timeStamp = "12:00",
         duration = "0:00/12:00",
