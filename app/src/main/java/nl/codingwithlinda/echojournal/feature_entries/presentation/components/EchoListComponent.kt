@@ -11,12 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
+
 
 @Composable
 fun EchoListComponent(
-    entries: List<UiEcho>,
+    entries: List<UiEchoGroup>,
     topics: List<UiTopic>,
     selectedMoods: String,
     selectedTopics: String
@@ -33,25 +34,33 @@ fun EchoListComponent(
         LazyColumn(
             modifier = Modifier.padding(end = 16.dp)
         ) {
-            items(entries) {uiEcho ->
-                EchoListItem(
-                    modifier = Modifier,
-                    icon = {
-                        Image(painter = painterResource(id = uiEcho.mood.icon), contentDescription = null)
-                    },
-                    content = {
-                        EchoListItemContent(
-                            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-                            iconTint = Color(uiEcho.mood.color),
-                            title = uiEcho.name,
-                            timeStamp = uiEcho.timeStamp,
-                            amplitudes = uiEcho.amplitudes,
-                            duration = uiEcho.duration,
-                            tags = uiEcho.topics,
-                        )
 
-                    }
-                )
+            items(entries) { uiEchoGroup ->
+                Text(uiEchoGroup.header)
+                val uiEchos = uiEchoGroup.entries
+                for (uiEcho in uiEchos) {
+                    EchoListItem(
+                        modifier = Modifier,
+                        icon = {
+                            Image(
+                                painter = painterResource(id = uiEcho.mood.icon),
+                                contentDescription = null
+                            )
+                        },
+                        content = {
+                            EchoListItemContent(
+                                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                                iconTint = Color(uiEcho.mood.color),
+                                title = uiEcho.name,
+                                timeStamp = uiEcho.timeStamp,
+                                amplitudes = uiEcho.amplitudes,
+                                duration = uiEcho.duration,
+                                tags = uiEcho.topics,
+                            )
+
+                        }
+                    )
+                }
             }
         }
     }

@@ -13,12 +13,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
+
 
 @Composable
 fun EchosScreen(
-    entries: List<UiEcho>,
+    entries: List<UiEchoGroup>,
     topics: List<UiTopic>
 ) {
 

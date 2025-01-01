@@ -12,7 +12,6 @@ object GroupByTimestamp {
 
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
 
-
     fun groupByTimestamp(entries: List<Echo>): Map<String, List<Echo>> {
 
         val entriesByTimestamp = entries.groupBy {
