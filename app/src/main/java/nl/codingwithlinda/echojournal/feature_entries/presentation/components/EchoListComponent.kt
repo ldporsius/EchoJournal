@@ -30,7 +30,9 @@ fun EchoListComponent(
             selectedTopics = selectedTopics,
 
         )
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.padding(end = 16.dp)
+        ) {
             items(entries) {uiEcho ->
                 EchoListItem(
                     modifier = Modifier,
@@ -39,7 +41,7 @@ fun EchoListComponent(
                     },
                     content = {
                         EchoListItemContent(
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                             iconTint = Color(uiEcho.mood.color),
                             title = uiEcho.name,
                             timeStamp = uiEcho.timeStamp,

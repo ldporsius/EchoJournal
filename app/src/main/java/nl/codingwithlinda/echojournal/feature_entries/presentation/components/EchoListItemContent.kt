@@ -103,7 +103,7 @@ fun EchoListItemContent(
                         val offsetEnd = Offset(x = x , y = y + amplitudeHeight / 2)
 
                         drawLine(
-                            color = androidx.compose.ui.graphics.Color.Red,
+                            color = iconTint,
                             start = offsetStart,
                             end = offsetEnd,
                             strokeWidth = amplitudeWidth.toPx()
@@ -117,7 +117,7 @@ fun EchoListItemContent(
             Text(
                 text = duration,
                 modifier = Modifier
-                    .padding(start = 16.dp)
+                    .padding(start = 8.dp)
                 ,
             style = androidx.compose.material3.MaterialTheme.typography.labelSmall
             )

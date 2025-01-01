@@ -15,7 +15,7 @@ fun fakeUiEcho(): UiEcho {
         ),
         name = "Entry 1",
         timeStamp = "12:00",
-        duration = "12:00",
+        duration = "0:00/12:00",
         amplitudes = fakeAmplitudes(),
         topics = listOf(
             "family"
