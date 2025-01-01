@@ -31,6 +31,7 @@ fun FilterEchoComponent(
         mutableStateOf(false)
     }
 
+    Column {
         Row(
             modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -74,5 +75,5 @@ fun FilterEchoComponent(
                 }
             )
         }
-
+    }
 }
