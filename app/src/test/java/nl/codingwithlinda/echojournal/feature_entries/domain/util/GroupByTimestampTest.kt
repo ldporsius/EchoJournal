@@ -2,6 +2,7 @@ package nl.codingwithlinda.echojournal.feature_entries.domain.util
 
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Echo
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
+import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.time.Duration.Companion.days

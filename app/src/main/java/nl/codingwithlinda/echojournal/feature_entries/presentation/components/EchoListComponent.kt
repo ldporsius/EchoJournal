@@ -32,11 +32,12 @@ fun EchoListComponent(
 
         )
         LazyColumn(
-            modifier = Modifier.padding(end = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
         ) {
 
             items(entries) { uiEchoGroup ->
-                Text(uiEchoGroup.header)
+                Text(uiEchoGroup.header.asString().uppercase(),
+                    modifier = Modifier.padding(bottom = 16.dp))
                 val uiEchos = uiEchoGroup.entries
                 for (uiEcho in uiEchos) {
                     EchoListItem(
