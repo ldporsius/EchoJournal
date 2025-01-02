@@ -54,6 +54,7 @@ fun EchoListComponent(
                         content = {
                             EchoListItemContent(
                                 modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                                uiEcho = uiEcho,
                                 iconTint = Color(uiEcho.mood.color),
                                 title = uiEcho.name,
                                 timeStamp = uiEcho.timeStamp,

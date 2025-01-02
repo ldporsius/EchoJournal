@@ -1,6 +1,9 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 
+import android.text.style.TtsSpan
+import android.text.style.TtsSpan.TextBuilder
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,14 +33,20 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.substring
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EchoListItemContent(
     modifier: Modifier = Modifier,
+    uiEcho: UiEcho,
     iconTint: Color,
     title: String,
     timeStamp: String,
@@ -65,9 +77,10 @@ fun EchoListItemContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
-                .background(color = iconTint.copy(.25f),
+                .background(
+                    color = iconTint.copy(.25f),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
-                    )
+                )
                 .padding(start = 6.dp, end = 16.dp),
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
 
@@ -85,31 +98,32 @@ fun EchoListItemContent(
                 Icon(imageVector = androidx.compose.material.icons.Icons.Default.PlayArrow, contentDescription = null)
             }
 
-            Box(Modifier
-                .weight(1f)
-                .height(48.dp)
-                .clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
-                .drawBehind {
-                    val width = size.width
-                    val height = size.height
+            Box(
+                Modifier
+                    .weight(1f)
+                    .height(48.dp)
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
+                    .drawBehind {
+                        val width = size.width
+                        val height = size.height
 
-                    (0 until amplitudes.size).forEach {index ->
-                        val x = index  * (amplitudeWidth.toPx() + amplitudeSpacing.toPx())
-                        val y = height / 2
+                        (0 until amplitudes.size).forEach { index ->
+                            val x = index * (amplitudeWidth.toPx() + amplitudeSpacing.toPx())
+                            val y = height / 2
 
-                        val amplitudeHeight = height * amplitudes[index]
+                            val amplitudeHeight = height * amplitudes[index]
 
-                        val offsetStart = Offset(x = x , y = y - amplitudeHeight / 2)
-                        val offsetEnd = Offset(x = x , y = y + amplitudeHeight / 2)
+                            val offsetStart = Offset(x = x, y = y - amplitudeHeight / 2)
+                            val offsetEnd = Offset(x = x, y = y + amplitudeHeight / 2)
 
-                        drawLine(
-                            color = iconTint,
-                            start = offsetStart,
-                            end = offsetEnd,
-                            strokeWidth = amplitudeWidth.toPx()
-                        )
+                            drawLine(
+                                color = iconTint,
+                                start = offsetStart,
+                                end = offsetEnd,
+                                strokeWidth = amplitudeWidth.toPx()
+                            )
+                        }
                     }
-                }
             )
             Spacer(modifier = Modifier
                 .padding(start = 1.dp)
@@ -122,6 +136,18 @@ fun EchoListItemContent(
             style = androidx.compose.material3.MaterialTheme.typography.labelSmall
             )
         }
+
+        var isDescriptionExpanded by remember {
+            mutableStateOf(false)
+        }
+        EchoDescriptionComponent(
+            modifier = Modifier.clickable {
+                isDescriptionExpanded = !isDescriptionExpanded
+            },
+            description = uiEcho.description,
+            isExpanded = isDescriptionExpanded
+
+        )
 
         FlowRow(
             modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
@@ -139,5 +165,54 @@ fun EchoListItemContent(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun EchoDescriptionComponent(
+    modifier: Modifier = Modifier,
+    description: String,
+    isExpanded: Boolean,
+) {
+
+    var lineCount by remember {
+        mutableIntStateOf(0)
+    }
+    var ellipsizedIndex by remember {
+        mutableStateOf<Int?>(null)
+    }
+    val showMoreText = "...Show more"
+    val remainingText = ellipsizedIndex?.let { description.substring(it, description.length) } ?: description
+    val textLength = ellipsizedIndex?.let {
+        description.length - it } ?: (description.length)
+    val txt = description
+
+    val maxLines = if (isExpanded) Int.MAX_VALUE else 3
+
+
+    Column(modifier = Modifier) {
+        Text("line count: ${lineCount}")
+        Text("ellipsIndex ${ellipsizedIndex?.toString() ?: ""}")
+        Text("remaining text: $remainingText")
+        Text("Original text: ${description}")
+        Text("Original text lenght: ${description.length}")
+        Text("text lenght: $textLength")
+        HorizontalDivider()
+        Text(
+            text = txt,
+            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+            maxLines = maxLines,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            modifier = modifier,
+            onTextLayout = {
+                lineCount = it.lineCount
+                if (it.didOverflowHeight){
+                    ellipsizedIndex = it.layoutInput.text.lastIndex
+                }
+                else{
+                    ellipsizedIndex = null
+                }
+            }
+        )
     }
 }

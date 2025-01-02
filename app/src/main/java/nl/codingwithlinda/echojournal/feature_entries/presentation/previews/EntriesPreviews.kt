@@ -18,6 +18,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
+import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItemContent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EmptyListComponent
@@ -126,6 +127,7 @@ private fun EchoListItemPreview() {
                       .wrapContentHeight()
                       .padding(16.dp)
                   ,
+                  uiEcho = fakeUiEcho(mood = Mood.SAD, timestamp = "17:59"),
                   iconTint = Color.Red,
                   title = "Title",
                   timeStamp = "17:59",
@@ -153,6 +155,7 @@ private fun EchoListItemContentPreview() {
                 .background(color = Color.White)
                 .fillMaxWidth()
                 .wrapContentHeight(),
+            uiEcho = fakeUiEcho(mood = Mood.SAD, timestamp = "17:59"),
             iconTint = Color.Red,
             title = "Title",
             timeStamp = "17:59",

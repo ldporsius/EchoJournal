@@ -25,6 +25,15 @@ val defaultUiMood = UiMood(
     color = neutal80.toArgb(),
     name = UiText.DynamicString("Neutral")
 )
+val defaultDescription =
+            "Mens sana in corpore sano." +
+            "Homo homini lupus est." +
+            "Io vivat, Io vivat, nunc est bibendum." +
+            "Et ceterum autem censeo Carthaginem delendam esse." +
+            "Alea iacta est." +
+            "Veni, Vidi, Vici." +
+            "Natura artis magistra est."
+
 fun fakeEcho(mood: Mood, timestamp: Long): Echo {
     return Echo(
         mood = mood,
@@ -36,10 +45,10 @@ fun fakeEcho(mood: Mood, timestamp: Long): Echo {
 fun fakeUiEcho(mood: Mood,timestamp: String): UiEcho {
     return UiEcho(
         mood = moodToColorMap.getOrElse(mood){
-           defaultUiMood
+            defaultUiMood
         },
         name = "Entry 1",
-        description = "description",
+        description = defaultDescription.take(Random.nextInt(0, defaultDescription.length)),
         timeStamp = timestamp,
         duration = "0:00/12:00",
         amplitudes = fakeAmplitudes(),
