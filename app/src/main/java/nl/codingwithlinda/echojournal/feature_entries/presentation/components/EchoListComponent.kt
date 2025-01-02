@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
 
 @Composable
