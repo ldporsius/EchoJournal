@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
@@ -18,18 +20,17 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 @Composable
 fun EchoListComponent(
     entries: List<UiEchoGroup>,
-    topics: List<UiTopic>,
     selectedMoods: String,
-    selectedTopics: String
+    topicsUiState: TopicsUiState,
+    onFilterAction: (FilterEchoAction) -> Unit
 ) {
     Column {
 
         FilterEchoComponent(
             modifier = Modifier.padding(start = 16.dp),
-            topics = topics,
             selectedMoods = selectedMoods,
-            selectedTopics = selectedTopics,
-
+            topicsUiState = topicsUiState,
+            onAction = onFilterAction
         )
         LazyColumn(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp)

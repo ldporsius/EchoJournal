@@ -4,6 +4,7 @@ data class UiEcho(
     val mood: UiMood,
     val name: String,
     val timeStamp: String,
+    val description: String,
     val amplitudes: List<Float>,
     val duration: String,
     val topics: List<String>

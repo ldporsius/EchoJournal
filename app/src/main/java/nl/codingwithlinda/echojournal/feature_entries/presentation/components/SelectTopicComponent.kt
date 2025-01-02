@@ -31,8 +31,6 @@ fun SelectTopicComponent(
     val paddingMargin = 4.dp
     DropdownMenu(
         modifier = Modifier
-
-            .background(color = Color.Green)
             .fillMaxWidth(.98f)
             .background(
                 color = MaterialTheme.colorScheme.surfaceBright,

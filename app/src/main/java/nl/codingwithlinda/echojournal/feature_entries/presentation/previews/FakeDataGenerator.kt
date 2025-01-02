@@ -37,31 +37,30 @@ fun fakeUiEcho(mood: Mood,timestamp: String): UiEcho {
            defaultUiMood
         },
         name = "Entry 1",
+        description = "description",
         timeStamp = timestamp,
         duration = "0:00/12:00",
         amplitudes = fakeAmplitudes(),
-        topics = listOf(
-            "family"
-        )
+        topics = fakeUiTopics(false).take(Random.nextInt(0, 4)).map { it.name }
     )
 }
-fun fakeUiTopics(): List<UiTopic>{
+fun fakeUiTopics(isSelected: Boolean): List<UiTopic>{
     return listOf(
         UiTopic(
             name = "Topic 0",
-            isSelected = true
+            isSelected = isSelected
         ),
         UiTopic(
             name = "Topic 1",
-            isSelected = true
+            isSelected = isSelected
         ),
         UiTopic(
             name = "Topic 2",
-            isSelected = false
+            isSelected = isSelected
         ),
         UiTopic(
             name = "Topic 3",
-            isSelected = true
+            isSelected = isSelected
         ),
     )
 }

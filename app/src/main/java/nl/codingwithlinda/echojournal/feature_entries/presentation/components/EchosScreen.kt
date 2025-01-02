@@ -13,6 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
@@ -20,7 +22,8 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 @Composable
 fun EchosScreen(
     entries: List<UiEchoGroup>,
-    topics: List<UiTopic>
+    topicsUiState: TopicsUiState,
+    onFilterAction: (FilterEchoAction) -> Unit
 ) {
 
     Scaffold(
@@ -50,9 +53,9 @@ fun EchosScreen(
             else{
                 EchoListComponent(
                     entries = entries,
-                    topics = topics,
                     selectedMoods = "All Moods",
-                    selectedTopics = topics.filter { it.isSelected }.map { it.name }.joinToString()
+                    topicsUiState = topicsUiState,
+                    onFilterAction = onFilterAction
                 )
             }
         }

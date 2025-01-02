@@ -16,14 +16,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 
 @Composable
 fun FilterEchoComponent(
     modifier: Modifier = Modifier,
     selectedMoods: String,
-    topics: List<UiTopic>,
-    selectedTopics: String,
+    topicsUiState: TopicsUiState,
+    onAction: (FilterEchoAction) -> Unit
 ) {
 
     var showSelectMoods by remember {
@@ -55,12 +56,14 @@ fun FilterEchoComponent(
                     showSelectTopics = true
                 },
                 label = {
-                    Text(selectedTopics)
+                    Text(topicsUiState.selectedTopics.asString())
                 },
                 trailingIcon = {
-                    if (selectedTopics.isNotEmpty()) {
+                    if (topicsUiState.shouldShowClearSelection) {
                         IconButton(
-                            onClick = { }
+                            onClick = {
+                                onAction(FilterEchoAction.ClearTopicSelection)
+                            }
                         ) {
                             Icon(imageVector = Icons.Default.Close, contentDescription = null)
                         }
@@ -72,16 +75,16 @@ fun FilterEchoComponent(
         if (showSelectMoods) {
             SelectMoodComponent(
                 onMoodSelected = {
-                    showSelectMoods = false
+
                 }
             )
         }
 
         if (showSelectTopics) {
             SelectTopicComponent(
-                topics = topics,
+                topics = topicsUiState.topics,
                 onTopicSelected = {
-                    showSelectTopics = false
+                    onAction(FilterEchoAction.ToggleSelectTopic(it))
                 },
                 onDismiss = {
                     showSelectTopics = false
