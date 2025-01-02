@@ -5,4 +5,9 @@
     <string name="older">Older</string>
     <string name="future">Future</string>
     <string name="all_topics">All topics</string>
+    <string name="stressed">Stressed</string>
+    <string name="sad">Sad</string>
+    <string name="neutral">Neutral</string>
+    <string name="peaceful">Peaceful</string>
+    <string name="excited">Excited</string>
 </resources>

@@ -24,6 +24,8 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.components.Em
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosTopBar
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodItem
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
 
 @Preview(showBackground = true)
@@ -93,6 +95,10 @@ private fun SelectMoodPreview() {
     EchoJournalTheme {
         SelectMoodComponent(
             modifier = Modifier.background(color = Color.White),
+            moodsUiState = MoodsUiState(
+                moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },
+                selectedMoods = emptyList()
+            ),
             onMoodSelected = {}
         )
     }

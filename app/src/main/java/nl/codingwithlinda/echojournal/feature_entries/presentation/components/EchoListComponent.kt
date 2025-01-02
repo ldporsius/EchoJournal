@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 
@@ -20,6 +21,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEc
 fun EchoListComponent(
     entries: List<UiEchoGroup>,
     selectedMoods: String,
+    moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     onFilterAction: (FilterEchoAction) -> Unit
 ) {
@@ -28,6 +30,7 @@ fun EchoListComponent(
         FilterEchoComponent(
             modifier = Modifier.padding(start = 16.dp),
             selectedMoods = selectedMoods,
+            moodsUiState = moodsUiState ,
             topicsUiState = topicsUiState,
             onAction = onFilterAction
         )

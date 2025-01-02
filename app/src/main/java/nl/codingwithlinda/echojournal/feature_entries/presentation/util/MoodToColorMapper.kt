@@ -2,6 +2,7 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.util
 
 import androidx.compose.ui.graphics.toArgb
 import nl.codingwithlinda.echojournal.R
+import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.ui.theme.exited80
@@ -13,23 +14,28 @@ import nl.codingwithlinda.echojournal.ui.theme.stressed80
 val moodToColorMap = mapOf(
     Mood.STRESSED to UiMood(
         icon = R.drawable.mood_stressed,
-        color = stressed80.toArgb()
+        color = stressed80.toArgb(),
+        name = UiText.StringResource(R.string.stressed)
     ),
     Mood.SAD to UiMood(
         icon = R.drawable.mood_sad,
-        color = sad80.toArgb()
+        color = sad80.toArgb(),
+        name = UiText.StringResource(R.string.sad)
     ),
     Mood.NEUTRAL to UiMood(
         icon = R.drawable.mood_neutral,
-        color = neutal80.toArgb()
+        color = neutal80.toArgb(),
+        name = UiText.StringResource(R.string.neutral)
     ),
     Mood.PEACEFUL to UiMood(
         icon = R.drawable.mood_peaceful,
-        color = peaceful80.toArgb()
+        color = peaceful80.toArgb(),
+        name = UiText.StringResource(R.string.peaceful)
     ),
     Mood.EXITED to UiMood(
         icon = R.drawable.mood_exited,
-        color = exited80.toArgb()
+        color = exited80.toArgb(),
+        name = UiText.StringResource(R.string.excited)
     ),
 
 )

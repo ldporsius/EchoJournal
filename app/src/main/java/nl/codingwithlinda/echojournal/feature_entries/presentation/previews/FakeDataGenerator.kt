@@ -5,6 +5,7 @@ import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterShort
+import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Echo
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
@@ -21,7 +22,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 val defaultUiMood = UiMood(
     icon = R.drawable.mood_neutral,
-    color = neutal80.toArgb()
+    color = neutal80.toArgb(),
+    name = UiText.DynamicString("Neutral")
 )
 fun fakeEcho(mood: Mood, timestamp: Long): Echo {
     return Echo(

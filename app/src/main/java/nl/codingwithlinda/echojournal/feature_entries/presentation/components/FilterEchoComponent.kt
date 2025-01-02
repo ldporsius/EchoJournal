@@ -1,13 +1,19 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,12 +23,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterEchoComponent(
     modifier: Modifier = Modifier,
     selectedMoods: String,
+    moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     onAction: (FilterEchoAction) -> Unit
 ) {
@@ -39,6 +48,7 @@ fun FilterEchoComponent(
             modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
             FilterChip(
                 selected = true,
                 onClick = {
@@ -72,13 +82,23 @@ fun FilterEchoComponent(
             )
         }
 
-        if (showSelectMoods) {
+        DropdownMenu(
+            expanded = showSelectMoods,
+            onDismissRequest = {
+                showSelectMoods = false
+            },
+            modifier = Modifier.fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.surfaceBright)
+        ) {
             SelectMoodComponent(
+                modifier = Modifier.fillMaxWidth(),
+                moodsUiState = moodsUiState,
                 onMoodSelected = {
-
+                    onAction(FilterEchoAction.ToggleSelectMood(it))
                 }
             )
         }
+
 
         if (showSelectTopics) {
             SelectTopicComponent(

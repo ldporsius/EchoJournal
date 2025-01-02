@@ -9,9 +9,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
+import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
 class EchosViewModel(
 
@@ -24,7 +27,6 @@ class EchosViewModel(
         topics = fakeTopics
     ))
     val topicsUiState = combine(_topics, _topicsUiState){topics, topicsUiState ->
-
         val selectedTopics = topics.filter { it.isSelected }
         topicsUiState.copy(
             topics = topics,
@@ -33,10 +35,23 @@ class EchosViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _topicsUiState.value)
 
+
+    private val _selectedMoods = MutableStateFlow<List<UiMood>>(emptyList())
+    private val _moodsUiState = MutableStateFlow(
+        MoodsUiState(
+            moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },
+            selectedMoods = emptyList()
+        )
+    )
+    val moodsUiState = combine(_selectedMoods, _moodsUiState){selectedMoods, moodsUiState ->
+        moodsUiState.copy(
+            selectedMoods = selectedMoods,
+        )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
+
     fun onFilterAction(action: FilterEchoAction){
         when(action){
             is FilterEchoAction.ToggleSelectTopic -> {
-                println("ECHOS VIEW MODEL TOGGLE TOPIC: ${action.topic.name} is selected: ${action.topic.isSelected}")
                 _topics.update {
                     it.map { topic ->
                         if (topic.name == action.topic.name) {
@@ -52,6 +67,22 @@ class EchosViewModel(
                         it.copy(isSelected = false)
                     }
                 }
+            }
+
+            FilterEchoAction.ClearMoodSelection -> {
+                _selectedMoods.update {
+                    emptyList()
+                }
+            }
+            is FilterEchoAction.ToggleSelectMood -> {
+                if (action.mood in _selectedMoods.value){
+                    _selectedMoods.update {
+                        it.minus(action.mood)
+                    }
+                }else
+                    _selectedMoods.update {
+                        it.plus(action.mood)
+                    }
             }
         }
     }

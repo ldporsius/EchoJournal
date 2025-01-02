@@ -14,14 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
 
 @Composable
 fun EchosScreen(
     entries: List<UiEchoGroup>,
+    moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     onFilterAction: (FilterEchoAction) -> Unit
 ) {
@@ -54,6 +55,7 @@ fun EchosScreen(
                 EchoListComponent(
                     entries = entries,
                     selectedMoods = "All Moods",
+                    moodsUiState = moodsUiState,
                     topicsUiState = topicsUiState,
                     onFilterAction = onFilterAction
                 )
