@@ -3,4 +3,5 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="older">Older</string>
+    <string name="future">Future</string>
 </resources>

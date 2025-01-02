@@ -2,6 +2,9 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.previews
 
 import androidx.compose.ui.graphics.toArgb
 import nl.codingwithlinda.echojournal.R
+import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterShort
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Echo
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
@@ -11,6 +14,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.neutal80
+import java.util.Locale
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
@@ -79,12 +83,19 @@ val entries =  listOf(
     fakeEcho(Mood.PEACEFUL, timestamp = yesterday),
     fakeEcho(Mood.EXITED, timestamp = older ),
 )
-val fakeGroups = GroupByTimestamp.groupByTimestamp(entries).map {
+val fakeGroups = GroupByTimestamp.groupByTimestamp(entries).map { listEntry ->
+
+    val headerUI = GroupByTimestamp.timeDiffAsUiText(listEntry.key)
+
+    val formatter : DateTimeFormatter = if(listEntry.key > 1L)
+        DateTimeFormatterMedium()
+    else
+        DateTimeFormatterShort()
 
     UiEchoGroup(
-        header = it.key,
-        entries = it.value.map {
-            val timeString = GroupByTimestamp.formatTimeStamp(it.timeStamp)
+        header = headerUI,
+        entries = listEntry.value.map {
+            val timeString = formatter.formatDateTime(it.timeStamp, Locale.getDefault())
             fakeUiEcho(it.mood, timeString)
         }
     )

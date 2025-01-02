@@ -24,16 +24,18 @@ class GroupByTimestampTest{
             Echo(
                 mood = Mood.NEUTRAL,
                 name = "Entry 2",
-                timeStamp = timestamp.plus(1.days.inWholeMilliseconds),
+                timeStamp = timestamp.minus(1.days.inWholeMilliseconds),
                 amplitudes = listOf(0.1f, 0.2f, 0.3f)
             ),
 
             )
 
-        val groupedEntries = GroupByTimestamp.groupByTimestamp(entries)
+        val groupedEntries = GroupByTimestamp.groupByTimestamp(entries, timestamp)
 
         assertEquals(2, groupedEntries.size)
-        assertEquals(1, groupedEntries["2022-01-01"]?.size)
-        assertEquals(1, groupedEntries["2022-01-02"]?.size)
+
+        println(groupedEntries)
+        assertEquals(1, groupedEntries[0L]?.size)
+        assertEquals(1, groupedEntries[1L]?.size)
     }
 }
