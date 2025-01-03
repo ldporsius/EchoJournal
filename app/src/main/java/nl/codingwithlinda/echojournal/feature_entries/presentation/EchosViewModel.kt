@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeGroups
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound2
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
@@ -54,18 +54,24 @@ class EchosViewModel(
         moodsUiState.copy(
             selectedMoods = selectedMoods,
         )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
 
     private val _echoes = MutableStateFlow(entries)
-    val echoes = combine(_echoes, _topics, _selectedMoods) { echoes, topics, moods ->
+    val echoesUiState
+            = combine(_echoes, _topics, _selectedMoods) { echoes, topics, moods ->
 
         val moodNames = moods.map { it.mood }
-       val selectedEchoes =  echoes.filter{
-                it.mood in moodNames
+        val selectedEchoes =  echoes.filter{
+            it.mood in moodNames
 
         }
-        GroupByTimestamp.createGroups(selectedEchoes)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        val res = GroupByTimestamp.createGroups(selectedEchoes)
+
+        EchoesUiState(
+            echoesTotal = echoes.size,
+            selectedEchoes = res
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), EchoesUiState(0, emptyList()))
 
 
 

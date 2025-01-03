@@ -13,16 +13,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 
 
 @Composable
 fun EchosScreen(
-    entries: List<UiEchoGroup>,
+    echoesUiState: EchoesUiState,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
@@ -48,14 +48,14 @@ fun EchosScreen(
                 .padding(padding)
         ) {
 
-            if (entries.isEmpty()) {
+            if (echoesUiState.echoesTotal == 0) {
                EmptyListComponent(
                    Modifier.fillMaxSize()
                )
             }
             else{
                 EchoListComponent(
-                    entries = entries,
+                    entries = echoesUiState.selectedEchoes,
                     selectedMoods = "All Moods",
                     moodsUiState = moodsUiState,
                     topicsUiState = topicsUiState,

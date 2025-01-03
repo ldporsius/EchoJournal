@@ -8,7 +8,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeGroups
 
 @Composable
 fun EchosRoot(
@@ -17,7 +16,6 @@ fun EchosRoot(
 
    val factory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
-
          EchosViewModel(
            echoPlayer = echoPlayer
          )
@@ -31,11 +29,10 @@ fun EchosRoot(
       .collectAsStateWithLifecycle()
 
    EchosScreen(
-      entries = echosViewModel.echoes.collectAsStateWithLifecycle().value,
+      echoesUiState = echosViewModel.echoesUiState.collectAsStateWithLifecycle().value,
       topicsUiState = topicsUiState.value,
       moodsUiState = echosViewModel.moodsUiState.collectAsStateWithLifecycle().value,
       onFilterAction = echosViewModel::onFilterAction,
       onReplayAction = echosViewModel::onReplayAction
-
    )
 }
