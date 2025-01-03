@@ -1,8 +1,16 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.util
 
 import nl.codingwithlinda.echojournal.R
+import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterShort
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Echo
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiEcho
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object GroupByTimestamp {
@@ -30,6 +38,25 @@ object GroupByTimestamp {
            timeDiff == 1L -> UiText.StringResource(R.string.yesterday)
            else -> UiText.StringResource(R.string.older)
         }
+    }
+
+    fun createGroups(entries: List<Echo>): List<UiEchoGroup>  = groupByTimestamp(entries).map { listEntry ->
+
+        val headerUI = GroupByTimestamp.timeDiffAsUiText(listEntry.key)
+
+        val formatter : DateTimeFormatter = if(listEntry.key > 1L)
+            DateTimeFormatterMedium()
+        else
+            DateTimeFormatterShort()
+
+        UiEchoGroup(
+            header = headerUI,
+            entries = listEntry.value.mapIndexed { index, echo ->
+                val timeString = formatter.formatDateTime(echo.timeStamp, Locale.getDefault())
+
+                fakeUiEcho(index.toString(), echo.mood, timeString)
+            }
+        )
     }
 
 }

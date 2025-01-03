@@ -22,6 +22,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 
 val defaultUiMood = UiMood(
+    mood = Mood.NEUTRAL,
     icon = R.drawable.mood_neutral,
     color = neutal80.toArgb(),
     name = UiText.DynamicString("Neutral")

@@ -31,7 +31,7 @@ fun EchosRoot(
       .collectAsStateWithLifecycle()
 
    EchosScreen(
-      entries = fakeGroups,
+      entries = echosViewModel.echoes.collectAsStateWithLifecycle().value,
       topicsUiState = topicsUiState.value,
       moodsUiState = echosViewModel.moodsUiState.collectAsStateWithLifecycle().value,
       onFilterAction = echosViewModel::onFilterAction,

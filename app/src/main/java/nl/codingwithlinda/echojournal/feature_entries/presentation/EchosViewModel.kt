@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeGroups
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound2
@@ -17,6 +19,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayE
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
+import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
@@ -40,7 +43,7 @@ class EchosViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _topicsUiState.value)
 
 
-    private val _selectedMoods = MutableStateFlow<List<UiMood>>(emptyList())
+    private val _selectedMoods = MutableStateFlow<List<UiMood>>(moodToColorMap.values.toList())
     private val _moodsUiState = MutableStateFlow(
         MoodsUiState(
             moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },
@@ -52,6 +55,19 @@ class EchosViewModel(
             selectedMoods = selectedMoods,
         )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
+
+    private val _echoes = MutableStateFlow(entries)
+    val echoes = combine(_echoes, _topics, _selectedMoods) { echoes, topics, moods ->
+
+        val moodNames = moods.map { it.mood }
+       val selectedEchoes =  echoes.filter{
+                it.mood in moodNames
+
+        }
+        GroupByTimestamp.createGroups(selectedEchoes)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+
 
     fun onFilterAction(action: FilterEchoAction){
         when(action){
