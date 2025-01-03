@@ -15,6 +15,7 @@ class GroupByTimestampTest{
     fun testGroupByTimestamp(){
         val entries = listOf(
             Echo(
+                id = "1",
                 mood = Mood.NEUTRAL,
                 name = "Entry 1",
                 description = "test",
@@ -24,6 +25,7 @@ class GroupByTimestampTest{
             ),
 
             Echo(
+                id = "2",
                 mood = Mood.NEUTRAL,
                 name = "Entry 2",
                 description = "test",
