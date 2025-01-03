@@ -7,9 +7,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound2
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
@@ -17,7 +21,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTop
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
 class EchosViewModel(
-
+    private val echoPlayer: EchoPlayer
 ): ViewModel() {
 
     private val fakeTopics = fakeUiTopics(false)
@@ -83,6 +87,22 @@ class EchosViewModel(
                     _selectedMoods.update {
                         it.plus(action.mood)
                     }
+            }
+        }
+    }
+
+    fun onReplayAction(action: ReplayEchoAction){
+        when(action){
+            ReplayEchoAction.Pause -> {
+                echoPlayer.pause()
+            }
+            is ReplayEchoAction.Play -> {
+                val id = action.echoId.toInt()
+                val sound = if (id  % 2 == 0) testSound() else testSound2()
+                echoPlayer.play(sound)
+            }
+            ReplayEchoAction.Stop -> {
+                echoPlayer.stop()
             }
         }
     }

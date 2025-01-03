@@ -43,6 +43,7 @@ import androidx.compose.ui.text.substring
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
@@ -52,6 +53,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 fun EchoListItemContent(
     modifier: Modifier = Modifier,
     uiEcho: UiEcho,
+    onAction: (ReplayEchoAction) -> Unit
 ) {
     val iconTint = Color(uiEcho.mood.color)
     val title = uiEcho.name
@@ -92,7 +94,7 @@ fun EchoListItemContent(
 
         ){
             IconButton(onClick = {
-
+                onAction(ReplayEchoAction.Play(uiEcho.id))
             },
                 modifier = Modifier
                     .onSizeChanged {

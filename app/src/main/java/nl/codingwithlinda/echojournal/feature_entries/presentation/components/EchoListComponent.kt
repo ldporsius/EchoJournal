@@ -8,11 +8,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 
@@ -23,7 +23,8 @@ fun EchoListComponent(
     selectedMoods: String,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
-    onFilterAction: (FilterEchoAction) -> Unit
+    onFilterAction: (FilterEchoAction) -> Unit,
+    onReplayAction: (ReplayEchoAction) -> Unit
 ) {
     Column {
 
@@ -55,6 +56,7 @@ fun EchoListComponent(
                             EchoListItemContent(
                                 modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                                 uiEcho = uiEcho,
+                                onAction = onReplayAction
                             )
 
                         }

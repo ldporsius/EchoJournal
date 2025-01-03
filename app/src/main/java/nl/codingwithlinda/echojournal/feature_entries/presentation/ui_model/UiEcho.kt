@@ -1,6 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model
 
 data class UiEcho(
+    val id: String,
     val mood: UiMood,
     val name: String,
     val timeStamp: String,

@@ -127,7 +127,8 @@ private fun EchoListItemPreview() {
                       .wrapContentHeight()
                       .padding(16.dp)
                   ,
-                  uiEcho = fakeUiEcho(mood = Mood.SAD, timestamp = "17:59"),
+                  uiEcho = fakeUiEcho("0", mood = Mood.SAD, timestamp = "17:59"),
+                  onAction = {}
               )
            }
         )
@@ -143,7 +144,8 @@ private fun EchoListItemContentPreview() {
                 .background(color = Color.White)
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            uiEcho = fakeUiEcho(mood = Mood.SAD, timestamp = "17:59"),
+            uiEcho = fakeUiEcho("1", mood = Mood.SAD, timestamp = "17:59"),
+            onAction = {}
         )
     }
 }

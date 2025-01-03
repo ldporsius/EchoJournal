@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.previews
 
+import android.net.Uri
 import androidx.compose.ui.graphics.toArgb
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
@@ -42,8 +43,9 @@ fun fakeEcho(mood: Mood, timestamp: Long): Echo {
         amplitudes = listOf(0.1f, 0.2f, 0.3f)
     )
 }
-fun fakeUiEcho(mood: Mood,timestamp: String): UiEcho {
+fun fakeUiEcho(id: String, mood: Mood,timestamp: String): UiEcho {
     return UiEcho(
+        id = id,
         mood = moodToColorMap.getOrElse(mood){
             defaultUiMood
         },
@@ -104,9 +106,16 @@ val fakeGroups = GroupByTimestamp.groupByTimestamp(entries).map { listEntry ->
 
     UiEchoGroup(
         header = headerUI,
-        entries = listEntry.value.map {
-            val timeString = formatter.formatDateTime(it.timeStamp, Locale.getDefault())
-            fakeUiEcho(it.mood, timeString)
+        entries = listEntry.value.mapIndexed { index, echo ->
+            val timeString = formatter.formatDateTime(echo.timeStamp, Locale.getDefault())
+            fakeUiEcho(index.toString(), echo.mood, timeString)
         }
     )
+}
+
+fun testSound(): Uri{
+    return Uri.parse("android.resource://nl.codingwithlinda.echojournal/raw/harp_strum")
+}
+fun testSound2(): Uri{
+    return Uri.parse("android.resource://nl.codingwithlinda.echojournal/raw/newsreportmusic")
 }

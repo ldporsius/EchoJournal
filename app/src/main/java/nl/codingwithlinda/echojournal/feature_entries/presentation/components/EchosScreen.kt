@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 
@@ -24,7 +25,8 @@ fun EchosScreen(
     entries: List<UiEchoGroup>,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
-    onFilterAction: (FilterEchoAction) -> Unit
+    onFilterAction: (FilterEchoAction) -> Unit,
+    onReplayAction: (ReplayEchoAction) -> Unit
 ) {
 
     Scaffold(
@@ -57,7 +59,8 @@ fun EchosScreen(
                     selectedMoods = "All Moods",
                     moodsUiState = moodsUiState,
                     topicsUiState = topicsUiState,
-                    onFilterAction = onFilterAction
+                    onFilterAction = onFilterAction,
+                    onReplayAction = onReplayAction
                 )
             }
         }
