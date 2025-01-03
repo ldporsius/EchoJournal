@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,8 +35,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.substring
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
@@ -88,8 +93,8 @@ fun EchoListItemContent(
             IconButton(onClick = {},
                 modifier = Modifier
                     .onSizeChanged {
-                    playIconSize = it.toSize()
-                },
+                        playIconSize = it.toSize()
+                    },
                 colors = androidx.compose.material3.IconButtonDefaults.iconButtonColors(
                     containerColor = androidx.compose.ui.graphics.Color.White,
                     contentColor = iconTint
@@ -133,7 +138,7 @@ fun EchoListItemContent(
                 modifier = Modifier
                     .padding(start = 8.dp)
                 ,
-            style = androidx.compose.material3.MaterialTheme.typography.labelSmall
+                style = androidx.compose.material3.MaterialTheme.typography.labelSmall
             )
         }
 
@@ -175,44 +180,65 @@ fun EchoDescriptionComponent(
     isExpanded: Boolean,
 ) {
 
-    var lineCount by remember {
-        mutableIntStateOf(0)
+    val textLayoutResultState = remember {
+        mutableStateOf<TextLayoutResult?>(null)
     }
-    var ellipsizedIndex by remember {
-        mutableStateOf<Int?>(null)
+    val textLayoutResult = textLayoutResultState.value
+
+    var finalText: AnnotatedString by remember {
+        mutableStateOf(buildAnnotatedString {
+            append(description)
+        })
     }
-    val showMoreText = "...Show more"
-    val remainingText = ellipsizedIndex?.let { description.substring(it, description.length) } ?: description
-    val textLength = ellipsizedIndex?.let {
-        description.length - it } ?: (description.length)
-    val txt = description
+    val showMoreText = " ...Show more"
+    val showLessText = " ...Show less"
 
     val maxLines = if (isExpanded) Int.MAX_VALUE else 3
 
+    LaunchedEffect(textLayoutResult) {
+        if (textLayoutResult == null) return@LaunchedEffect
 
-    Column(modifier = Modifier) {
-        Text("line count: ${lineCount}")
-        Text("ellipsIndex ${ellipsizedIndex?.toString() ?: ""}")
-        Text("remaining text: $remainingText")
-        Text("Original text: ${description}")
-        Text("Original text lenght: ${description.length}")
-        Text("text lenght: $textLength")
-        HorizontalDivider()
-        Text(
-            text = txt,
-            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-            maxLines = maxLines,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            modifier = modifier,
-            onTextLayout = {
-                lineCount = it.lineCount
-                if (it.didOverflowHeight){
-                    ellipsizedIndex = it.layoutInput.text.lastIndex
-                }
-                else{
-                    ellipsizedIndex = null
+        if (isExpanded){
+            finalText = buildAnnotatedString {
+                append(description)
+                withStyle(SpanStyle(color = Color.Blue)){
+                    append(showLessText)
                 }
             }
-        )
+            return@LaunchedEffect
+        }
+        println("Text layout result changed:hasVisualOverflow =  ${textLayoutResult.hasVisualOverflow}")
+        if ( textLayoutResult.hasVisualOverflow) {
+
+            val lastCharIndex = (textLayoutResult.layoutInput.text.lastIndex).coerceAtMost(description.length)
+
+            println("Original text lenght: ${description.length}")
+            println("Last char index: $lastCharIndex")
+
+            val adjustedText =  description.substring(0, lastCharIndex)
+                .dropLast(showMoreText.length)
+                .dropLastWhile {
+                    it == ' ' || it == '.'
+                }
+            println("adjusted text: $adjustedText")
+            finalText = buildAnnotatedString {
+                append(adjustedText)
+                withStyle(SpanStyle(color = Color.Blue)){
+                    append(showMoreText)
+                }
+            }
+        }
     }
+
+    Text(
+        text = finalText,
+        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+        maxLines = maxLines,
+        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        modifier = modifier,
+        onTextLayout = {
+            textLayoutResultState.value = it
+        }
+    )
+
 }
