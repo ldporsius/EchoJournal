@@ -20,7 +20,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEc
 @Composable
 fun EchoListComponent(
     entries: List<UiEchoGroup>,
-    selectedMoods: String,
+    selectedMoods: @Composable () -> Unit,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     onFilterAction: (FilterEchoAction) -> Unit,

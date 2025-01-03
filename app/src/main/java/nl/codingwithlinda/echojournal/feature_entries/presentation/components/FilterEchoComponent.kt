@@ -27,7 +27,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsU
 @Composable
 fun FilterEchoComponent(
     modifier: Modifier = Modifier,
-    selectedMoods: String,
+    selectedMoods: @Composable () -> Unit,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     onAction: (FilterEchoAction) -> Unit
@@ -53,7 +53,7 @@ fun FilterEchoComponent(
                     showSelectMoods = true
                 },
                 label = {
-                    Text(selectedMoods)
+                   selectedMoods()
                 }
             )
             FilterChip(
