@@ -32,7 +32,7 @@ class EchosViewModel(
 
     private val fakeTopics = fakeUiTopics()
     private val _topics = MutableStateFlow<List<UiTopic>>(fakeTopics)
-    private val _selectedTopics = MutableStateFlow<List<UiTopic>>(fakeTopics)
+    private val _selectedTopics = MutableStateFlow<List<UiTopic>>(emptyList())
     private val _topicsUiState = MutableStateFlow(TopicsUiState(
         topics = fakeTopics
     ))
@@ -47,7 +47,7 @@ class EchosViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _topicsUiState.value)
 
 
-    private val _selectedMoods = MutableStateFlow<List<UiMood>>(moodToColorMap.values.toList())
+    private val _selectedMoods = MutableStateFlow<List<UiMood>>(emptyList())
     private val _moodsUiState = MutableStateFlow(
         MoodsUiState(
             moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },

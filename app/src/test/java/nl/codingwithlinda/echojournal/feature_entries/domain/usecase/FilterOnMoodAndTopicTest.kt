@@ -18,10 +18,26 @@ class FilterOnMoodAndTopicTest{
     @Test
     fun `test filter on mood and topic - result contains all moods and topics`(){
         val moods = listOf(Mood.SAD, Mood.NEUTRAL)
-        val topics = listOf("Topic 1", "Topic 2")
+        val topics = emptyList<String>()
 
         val res = filterOnMoodAndTopic.filter(echoes, moods, topics)
 
+
+        res.onEach {
+            println(it.topics)
+
+        }
+
+        assert(res.size == 5)
+    }
+
+
+    @Test
+    fun `test filter on mood and topic - result contains filtered moods and topics`(){
+        val moods = listOf(Mood.SAD, Mood.NEUTRAL)
+        val topics = listOf("Topic 1", "Topic 2")
+
+        val res = filterOnMoodAndTopic.filter(echoes, moods, topics)
 
         res.onEach {
             println(it.topics)
