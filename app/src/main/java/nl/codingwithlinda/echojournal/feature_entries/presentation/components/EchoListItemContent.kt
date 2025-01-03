@@ -52,13 +52,14 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 fun EchoListItemContent(
     modifier: Modifier = Modifier,
     uiEcho: UiEcho,
-    iconTint: Color,
-    title: String,
-    timeStamp: String,
-    amplitudes: List<Float>,
-    duration: String,
-    tags: List<String>
 ) {
+    val iconTint = Color(uiEcho.mood.color)
+    val title = uiEcho.name
+    val timeStamp = uiEcho.timeStamp
+    val amplitudes = uiEcho.amplitudes
+    val duration = uiEcho.duration
+    val tags = uiEcho.topics
+
     var playIconSize by remember {
         mutableStateOf(Size.Zero)
     }
@@ -90,7 +91,9 @@ fun EchoListItemContent(
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
 
         ){
-            IconButton(onClick = {},
+            IconButton(onClick = {
+
+            },
                 modifier = Modifier
                     .onSizeChanged {
                         playIconSize = it.toSize()

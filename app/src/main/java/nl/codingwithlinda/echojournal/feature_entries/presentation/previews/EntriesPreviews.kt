@@ -128,18 +128,6 @@ private fun EchoListItemPreview() {
                       .padding(16.dp)
                   ,
                   uiEcho = fakeUiEcho(mood = Mood.SAD, timestamp = "17:59"),
-                  iconTint = Color.Red,
-                  title = "Title",
-                  timeStamp = "17:59",
-                  amplitudes = listOf(
-                      0.1f,
-                      0.2f,
-                      0.3f,
-                  ),
-                  duration = "10:00",
-                  tags = listOf(
-
-                  ),
               )
            }
         )
@@ -156,22 +144,6 @@ private fun EchoListItemContentPreview() {
                 .fillMaxWidth()
                 .wrapContentHeight(),
             uiEcho = fakeUiEcho(mood = Mood.SAD, timestamp = "17:59"),
-            iconTint = Color.Red,
-            title = "Title",
-            timeStamp = "17:59",
-            amplitudes = listOf(
-                0.1f,
-                0.2f,
-                0.3f,
-                0.4f,
-                0.5f,
-            ),
-            duration = "10:00",
-            tags = listOf(
-
-            )
-
         )
-
     }
 }
