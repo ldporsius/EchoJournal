@@ -6,10 +6,8 @@ import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMe
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterShort
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.domain.model.Echo
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiEcho
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -52,9 +50,10 @@ object GroupByTimestamp {
         UiEchoGroup(
             header = headerUI,
             entries = listEntry.value.mapIndexed { index, echo ->
-                val timeString = formatter.formatDateTime(echo.timeStamp, Locale.getDefault())
-
-                fakeUiEcho(index.toString(), echo.mood, timeString)
+                echo.toUi(
+                    dateTimeFormatter = formatter,
+                    locale = Locale.getDefault()
+                )
             }
         )
     }

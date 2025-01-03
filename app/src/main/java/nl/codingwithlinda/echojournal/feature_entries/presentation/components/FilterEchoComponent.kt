@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,7 +24,6 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterE
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterEchoComponent(
     modifier: Modifier = Modifier,
@@ -66,7 +63,7 @@ fun FilterEchoComponent(
                     showSelectTopics = true
                 },
                 label = {
-                    Text(topicsUiState.selectedTopics.asString())
+                    Text(topicsUiState.selectedTopicsUiText.asString())
                 },
                 trailingIcon = {
                     if (topicsUiState.shouldShowClearSelection) {
@@ -105,6 +102,9 @@ fun FilterEchoComponent(
                 topics = topicsUiState.topics,
                 onTopicSelected = {
                     onAction(FilterEchoAction.ToggleSelectTopic(it))
+                },
+                isSelected = {
+                    it in topicsUiState.selectedTopics
                 },
                 onDismiss = {
                     showSelectTopics = false

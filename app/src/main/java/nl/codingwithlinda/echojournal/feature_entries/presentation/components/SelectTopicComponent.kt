@@ -23,11 +23,11 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 fun SelectTopicComponent(
     modifier: Modifier = Modifier,
     topics: List<UiTopic>,
+    isSelected: (UiTopic) -> Boolean,
     onTopicSelected: (UiTopic) -> Unit,
     onDismiss: () -> Unit
 ) {
-
-
+    
     val paddingMargin = 4.dp
     DropdownMenu(
         modifier = Modifier
@@ -48,7 +48,7 @@ fun SelectTopicComponent(
 
         topics.forEach {
 
-            val bgColor = if (it.isSelected) {
+            val bgColor = if (isSelected(it)) {
                 MaterialTheme.colorScheme.surfaceDim
             } else {
                 Color.Transparent
@@ -68,7 +68,7 @@ fun SelectTopicComponent(
                     Text("#")
                 },
                 trailingIcon = {
-                    if (it.isSelected) {
+                    if (isSelected(it)) {
                         Icon(imageVector = Icons.Default.Check, contentDescription = null)
                     }
                 },

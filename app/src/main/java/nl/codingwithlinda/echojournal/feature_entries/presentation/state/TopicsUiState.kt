@@ -6,6 +6,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTo
 
 data class TopicsUiState(
     val topics: List<UiTopic> = emptyList(),
+    val selectedTopics: List<UiTopic> = emptyList(),
     val shouldShowClearSelection: Boolean = false,
-    val selectedTopics: UiText = UiText.StringResource(R.string.all_topics),
+    val selectedTopicsUiText: UiText = UiText.StringResource(R.string.all_topics),
     )

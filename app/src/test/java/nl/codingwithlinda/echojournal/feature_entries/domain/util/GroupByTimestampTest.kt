@@ -17,15 +17,19 @@ class GroupByTimestampTest{
             Echo(
                 mood = Mood.NEUTRAL,
                 name = "Entry 1",
+                description = "test",
                 timeStamp = timestamp,
-                amplitudes = listOf(0.1f, 0.2f, 0.3f)
+                amplitudes = listOf(0.1f, 0.2f, 0.3f),
+                topics = listOf("Topic 1", "Topic 2")
             ),
 
             Echo(
                 mood = Mood.NEUTRAL,
                 name = "Entry 2",
+                description = "test",
                 timeStamp = timestamp.minus(1.days.inWholeMilliseconds),
-                amplitudes = listOf(0.1f, 0.2f, 0.3f)
+                amplitudes = listOf(0.1f, 0.2f, 0.3f),
+                topics = listOf("Topic 1", "Topic 2")
             ),
 
             )

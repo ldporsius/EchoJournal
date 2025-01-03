@@ -26,6 +26,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.components.Ec
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
 
