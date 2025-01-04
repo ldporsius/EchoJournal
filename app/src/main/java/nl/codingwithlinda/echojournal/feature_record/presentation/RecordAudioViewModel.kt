@@ -56,6 +56,7 @@ class RecordAudioViewModel(
                         shouldShowRecordAudioComponent = false
                     )
                 }
+                recorder.stop()
             }
 
             RecordAudioAction.PauseRecording -> {

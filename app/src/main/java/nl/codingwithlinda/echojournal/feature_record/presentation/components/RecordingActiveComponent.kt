@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
@@ -41,6 +42,9 @@ fun RecordingActiveComponent(
         1f,     1.5f,
         infiniteRepeatable(tween(600), RepeatMode. Reverse), label = ""
     )
+    LaunchedEffect(true) {
+        onAction(RecordAudioAction.StartRecording)
+    }
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(72.dp, androidx.compose.ui.Alignment.CenterHorizontally),

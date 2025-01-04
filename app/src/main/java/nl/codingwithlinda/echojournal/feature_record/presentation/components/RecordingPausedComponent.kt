@@ -57,34 +57,9 @@ import nl.codingwithlinda.echojournal.ui.theme.primary50
 fun RecordingPausedComponent(
     modifier: Modifier = Modifier,
     onAction: (RecordAudioAction) -> Unit,
-    showPermissionDeclinedDialog: Boolean
+
 ) {
 
-    val context = LocalContext.current
-    var hasRecordAudioPermission by remember {
-        mutableStateOf(true)
-    }
-    var isPermanentlyDeclined by remember {
-        mutableStateOf(false)
-    }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = {
-            hasRecordAudioPermission = it
-        }
-    )
-
-    LaunchedEffect(key1 = true) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            launcher.launch(android.Manifest.permission.RECORD_AUDIO)
-            hasRecordAudioPermission =
-                context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
-            val rationale = shouldShowRequestPermissionRationale(context as MainActivity, android.Manifest.permission.RECORD_AUDIO)
-            println("rationale $rationale")
-            println("hasRecordAudioPermission $hasRecordAudioPermission")
-            isPermanentlyDeclined =  !rationale
-        }
-    }
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(72.dp, androidx.compose.ui.Alignment.CenterHorizontally),
@@ -119,11 +94,13 @@ fun RecordingPausedComponent(
         ){
             IconButton(
                 onClick = {
-                    if (hasRecordAudioPermission) {
+                    onAction(RecordAudioAction.StartRecording)
+
+                  /*  if (hasRecordAudioPermission) {
                         onAction(RecordAudioAction.StartRecording)
                     }else{
                         onAction(RecordAudioAction.OpenDialog)
-                    }
+                    }*/
                 }
             ){
                 Icon(
@@ -151,24 +128,6 @@ fun RecordingPausedComponent(
                 contentScale = ContentScale.FillBounds
             )
         }
-    }
-
-    if (showPermissionDeclinedDialog){
-        PermissionDeclinedDialog(
-            isPermanentlyDeclined = isPermanentlyDeclined,
-            onConfirm = {
-                if (isPermanentlyDeclined) {
-                    context as MainActivity
-                    context.openAppSettings()
-                }
-                else{
-                    launcher.launch(android.Manifest.permission.RECORD_AUDIO)
-                }
-            },
-            onDismiss = {
-                onAction(RecordAudioAction.CloseDialog)
-            }
-        )
     }
 }
 
