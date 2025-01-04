@@ -13,10 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
@@ -24,6 +20,9 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterE
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.RecordAudioComponent
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,10 +33,10 @@ fun EchosScreen(
     topicsUiState: TopicsUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
     onReplayAction: (ReplayEchoAction) -> Unit,
-    recordAudioComponent: @Composable () -> Unit
-) {
+    recordAudioUiState: RecordAudioUiState,
+    onRecordAudioAction: (RecordAudioAction) -> Unit,
+    ) {
 
-    var showRecordAudioComponent by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.safeContentPadding(),
@@ -48,7 +47,7 @@ fun EchosScreen(
         ) },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                    showRecordAudioComponent = true
+                    onRecordAudioAction(RecordAudioAction.ToggleVisibility)
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
@@ -77,12 +76,16 @@ fun EchosScreen(
             }
         }
 
-        if (showRecordAudioComponent){
+        if (recordAudioUiState.shouldShowRecordAudioComponent){
             ModalBottomSheet(
-                onDismissRequest = { showRecordAudioComponent = false },
+                onDismissRequest = { onRecordAudioAction(RecordAudioAction.ToggleVisibility)},
                 modifier = Modifier.fillMaxWidth()
             ) {
-                recordAudioComponent()
+                RecordAudioComponent(
+                    modifier = Modifier,
+                    uiState = recordAudioUiState,
+                    onAction = onRecordAudioAction
+                )
             }
         }
     }

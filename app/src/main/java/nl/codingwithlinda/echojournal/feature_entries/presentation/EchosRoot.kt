@@ -9,27 +9,33 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
 import nl.codingwithlinda.echojournal.feature_record.presentation.RecordAudioViewModel
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.RecordAudioComponent
-import nl.codingwithlinda.echojournal.feature_record.presentation.preview.fakeRecordAudioUiState
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
+import nl.codingwithlinda.echojournal.feature_record.util.AndroidAudioRecorder
 
 @Composable
 fun EchosRoot(
-    echoPlayer: EchoPlayer
+   echoPlayer: EchoPlayer
 ) {
 
-   val factory: ViewModelProvider.Factory = viewModelFactory {
+   val echoesFactory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
          EchosViewModel(
-           echoPlayer = echoPlayer
+            echoPlayer = echoPlayer
+         )
+      }
+   }
+   val recordFactory: ViewModelProvider.Factory = viewModelFactory {
+      initializer {
+         RecordAudioViewModel(
+          recorder = AndroidAudioRecorder()
          )
       }
    }
 
    val echosViewModel = viewModel<EchosViewModel>(
-      factory = factory
+      factory = echoesFactory
    )
    val recordAudioViewModel = viewModel<RecordAudioViewModel>(
+      factory = recordFactory
    )
    val topicsUiState = echosViewModel.topicsUiState
       .collectAsStateWithLifecycle()
@@ -40,11 +46,7 @@ fun EchosRoot(
       moodsUiState = echosViewModel.moodsUiState.collectAsStateWithLifecycle().value,
       onFilterAction = echosViewModel::onFilterAction,
       onReplayAction = echosViewModel::onReplayAction,
-      recordAudioComponent = {
-         RecordAudioComponent(
-            uiState = recordAudioViewModel.uiState.collectAsStateWithLifecycle().value,
-            onAction = recordAudioViewModel::onAction
-         )
-      }
+      recordAudioUiState = recordAudioViewModel.uiState.collectAsStateWithLifecycle().value,
+      onRecordAudioAction = recordAudioViewModel::onAction
    )
 }
