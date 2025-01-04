@@ -6,6 +6,5 @@ fun fakeRecordAudioUiState(
     isRecording: Boolean
 ) = RecordAudioUiState(
     isRecording = isRecording,
-    title = if (isRecording) "Recording your memories..." else "Recording paused",
     duration = "00:00"
 )

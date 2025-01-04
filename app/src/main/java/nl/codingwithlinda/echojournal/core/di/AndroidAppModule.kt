@@ -7,6 +7,10 @@ import nl.codingwithlinda.echojournal.feature_record.util.AndroidAudioRecorder
 class AndroidAppModule(
     val context:Application
 ): AppModule {
+
+    val dispatcherProvider = AndroidDispatcherProvider()
     override val audioRecorder: AudioRecorder
-        get() = AndroidAudioRecorder(context)
+        get() = AndroidAudioRecorder(
+            context, dispatcherProvider
+        )
 }

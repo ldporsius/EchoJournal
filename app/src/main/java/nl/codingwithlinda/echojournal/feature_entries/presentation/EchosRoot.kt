@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.echojournal.core.di.AppModule
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
 import nl.codingwithlinda.echojournal.feature_record.presentation.RecordAudioViewModel
 
@@ -27,7 +28,8 @@ fun EchosRoot(
    val recordFactory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
          RecordAudioViewModel(
-          recorder = appModule.audioRecorder
+            recorder = appModule.audioRecorder,
+            dateTimeFormatter = DateTimeFormatterDuration()
          )
       }
    }
