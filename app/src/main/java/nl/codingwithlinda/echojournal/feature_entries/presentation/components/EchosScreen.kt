@@ -7,10 +7,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
@@ -20,14 +26,18 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayE
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EchosScreen(
     echoesUiState: EchoesUiState,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
-    onReplayAction: (ReplayEchoAction) -> Unit
+    onReplayAction: (ReplayEchoAction) -> Unit,
+    recordAudioComponent: @Composable () -> Unit
 ) {
+
+    var showRecordAudioComponent by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.safeContentPadding(),
@@ -37,7 +47,9 @@ fun EchosScreen(
                 .padding(16.dp)
         ) },
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = {
+                    showRecordAudioComponent = true
+            }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
         }
@@ -62,6 +74,15 @@ fun EchosScreen(
                     onFilterAction = onFilterAction,
                     onReplayAction = onReplayAction
                 )
+            }
+        }
+
+        if (showRecordAudioComponent){
+            ModalBottomSheet(
+                onDismissRequest = { showRecordAudioComponent = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                recordAudioComponent()
             }
         }
     }
