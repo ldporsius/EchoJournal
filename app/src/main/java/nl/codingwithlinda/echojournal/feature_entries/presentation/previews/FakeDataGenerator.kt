@@ -35,7 +35,7 @@ fun fakeEcho(mood: Mood, timestamp: Long): Echo {
         id = "1",
         mood = mood,
         name = "Entry 1",
-        description = defaultDescription.take(Random.nextInt(0, defaultDescription.length)),
+        description = defaultDescription.take(Random.nextInt(defaultDescription.length-1, defaultDescription.length)),
         timeStamp = timestamp,
         amplitudes = listOf(0.1f, 0.2f, 0.3f),
         topics = listOf("Topic 1", "Topic 2")

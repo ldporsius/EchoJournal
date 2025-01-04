@@ -35,11 +35,14 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.substring
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -147,15 +150,11 @@ fun EchoListItemContent(
             )
         }
 
-        var isDescriptionExpanded by remember {
-            mutableStateOf(false)
-        }
+
         EchoDescriptionComponent(
-            modifier = Modifier.clickable {
-                isDescriptionExpanded = !isDescriptionExpanded
-            },
+
             description = uiEcho.description,
-            isExpanded = isDescriptionExpanded
+
 
         )
 
@@ -180,39 +179,58 @@ fun EchoListItemContent(
 
 @Composable
 fun EchoDescriptionComponent(
-    modifier: Modifier = Modifier,
+    //modifier: Modifier = Modifier.fillMaxWidth(),
     description: String,
-    isExpanded: Boolean,
-) {
+    collapsedMaxLine: Int = 3
 
-    val textLayoutResultState = remember {
-        mutableStateOf<TextLayoutResult?>(null)
+) {
+    val showMoreStyle: SpanStyle = SpanStyle(color = Color.Blue, fontWeight = FontWeight.W500)
+    val showLessStyle: SpanStyle = SpanStyle(color = Color.Blue, fontWeight = FontWeight.W500)
+
+    var isExpanded by remember {
+        mutableStateOf(false)
     }
-    val textLayoutResult = textLayoutResultState.value
+    var isClickable by remember {
+        mutableStateOf(false)
+    }
+    /*val textLayoutResultState = remember {
+        mutableStateOf<TextLayoutResult?>(null)
+    }*/
+    //val textLayoutResult = textLayoutResultState.value
+    var lastCharacterIndex by remember { mutableStateOf(0) }
 
     var finalText: AnnotatedString by remember {
         mutableStateOf(buildAnnotatedString {
             append(description)
         })
     }
-    val showMoreText = " ...Show more"
-    val showLessText = " ...Show less"
+    val showMoreText = "Show more"
+    val showLessText = "Show less"
 
-    val maxLines = if (isExpanded) Int.MAX_VALUE else 3
+    //val maxLines = if (isExpanded) Int.MAX_VALUE else 3
 
-    LaunchedEffect(textLayoutResult) {
+   /* LaunchedEffect(textLayoutResult) {
         if (textLayoutResult == null) return@LaunchedEffect
 
         if (isExpanded){
             finalText = buildAnnotatedString {
                 append(description)
-                withStyle(SpanStyle(color = Color.Blue)){
-                    append(showLessText)
+                withLink(
+                    link = LinkAnnotation.Clickable(
+                        tag = "Show Less",
+                        linkInteractionListener = { isExpanded = !isExpanded }
+                    )
+                ){
+                    withStyle(SpanStyle(color = Color.Blue)){
+                        append(showLessText)
+                    }
                 }
+
             }
             return@LaunchedEffect
         }
         println("Text layout result changed:hasVisualOverflow =  ${textLayoutResult.hasVisualOverflow}")
+
         if ( textLayoutResult.hasVisualOverflow) {
 
             val lastCharIndex = (textLayoutResult.layoutInput.text.lastIndex).coerceAtMost(description.length)
@@ -226,23 +244,72 @@ fun EchoDescriptionComponent(
                     it == ' ' || it == '.'
                 }
             println("adjusted text: $adjustedText")
+
             finalText = buildAnnotatedString {
                 append(adjustedText)
-                withStyle(SpanStyle(color = Color.Blue)){
-                    append(showMoreText)
+                withLink(
+                    link = LinkAnnotation.Clickable(
+                        tag = "Show More",
+                        linkInteractionListener = { isExpanded = !isExpanded }
+                    )
+                ){
+                    withStyle(SpanStyle(color = Color.Blue)){
+                        append(showMoreText)
+                    }
                 }
             }
         }
+    }*/
+
+
+    val annotatedText = buildAnnotatedString {
+        if (isClickable) {
+            if (isExpanded) {
+                append(description)
+                withLink(
+                    link = LinkAnnotation.Clickable(
+                        tag = "Show Less",
+                        linkInteractionListener = { isExpanded = !isExpanded }
+                    )
+                ) {
+                    withStyle(style = showLessStyle) {
+                        append(showLessText)
+                    }
+                }
+            } else {
+                val adjustText = description.substring(startIndex = 0, endIndex = lastCharacterIndex)
+                    .dropLast(showMoreText.length)
+                    .dropLastWhile { it.isWhitespace() || it == '.' }
+                append(adjustText)
+                withLink(
+                    link = LinkAnnotation.Clickable(
+                        tag = "Tag",
+                        linkInteractionListener = { isExpanded = !isExpanded }
+                    )
+                ) {
+                    withStyle(style = showMoreStyle) {
+                        append(showMoreText)
+                    }
+                }
+            }
+        } else {
+            append(description)
+        }
     }
 
+
     Text(
-        text = finalText,
+        text = annotatedText,
         style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-        maxLines = maxLines,
-        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-        modifier = modifier,
-        onTextLayout = {
-            textLayoutResultState.value = it
+        maxLines = if (isExpanded) Int.MAX_VALUE else collapsedMaxLine,
+       // overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        modifier = Modifier.clickable { isExpanded = !isExpanded },
+        onTextLayout = {textLayoutResult ->
+            //textLayoutResultState.value = textLayoutResult
+            if (!isExpanded && textLayoutResult.hasVisualOverflow) {
+                isClickable = true
+                lastCharacterIndex = textLayoutResult.getLineEnd(collapsedMaxLine - 1)
+            }
         }
     )
 
