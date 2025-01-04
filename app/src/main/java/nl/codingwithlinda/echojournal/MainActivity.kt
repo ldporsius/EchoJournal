@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import nl.codingwithlinda.echojournal.core.application.EchoApplication.Companion.appModule
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.AndroidEchoPlayer
 import nl.codingwithlinda.echojournal.navigation.MainNav
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
             EchoJournalTheme {
                 MainNav(
                     navController = navController,
+                    appModule = appModule,
                     echoPlayer = AndroidEchoPlayer(this)
                 )
             }

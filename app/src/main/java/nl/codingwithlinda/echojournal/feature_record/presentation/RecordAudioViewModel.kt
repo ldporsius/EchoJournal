@@ -52,6 +52,20 @@ class RecordAudioViewModel(
 
             }
 
+            RecordAudioAction.CloseDialog -> {
+                _uiState.update {
+                    it.copy(
+                        showPermissionDeclinedDialog = false
+                    )
+                }
+            }
+            RecordAudioAction.OpenDialog -> {
+                _uiState.update {
+                    it.copy(
+                        showPermissionDeclinedDialog = true
+                    )
+                }
+            }
         }
     }
 }

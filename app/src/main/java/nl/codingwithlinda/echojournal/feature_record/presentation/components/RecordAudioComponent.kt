@@ -22,6 +22,8 @@ fun RecordAudioComponent(
         .fillMaxWidth()
         .padding(top = 48.dp, bottom = 72.dp)
 
+
+
     Surface(
         modifier = modifier,
         tonalElevation = 5.dp,
@@ -45,7 +47,8 @@ fun RecordAudioComponent(
                 )
                 false -> RecordingPausedComponent(
                     modifier = recorderModifier,
-                    onAction = onAction
+                    onAction = onAction,
+                    showPermissionDeclinedDialog = uiState.showPermissionDeclinedDialog
                 )
             }
 
