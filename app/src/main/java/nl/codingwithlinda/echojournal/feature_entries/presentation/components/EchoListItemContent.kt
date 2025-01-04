@@ -152,10 +152,7 @@ fun EchoListItemContent(
 
 
         EchoDescriptionComponent(
-
             description = uiEcho.description,
-
-
         )
 
         FlowRow(
@@ -204,8 +201,8 @@ fun EchoDescriptionComponent(
             append(description)
         })
     }
-    val showMoreText = "Show more"
-    val showLessText = "Show less"
+    val showMoreText = "...Show more"
+    val showLessText = "...Show less"
 
     //val maxLines = if (isExpanded) Int.MAX_VALUE else 3
 
@@ -268,7 +265,7 @@ fun EchoDescriptionComponent(
                 append(description)
                 withLink(
                     link = LinkAnnotation.Clickable(
-                        tag = "Show Less",
+                        tag = "",
                         linkInteractionListener = { isExpanded = !isExpanded }
                     )
                 ) {
@@ -300,7 +297,7 @@ fun EchoDescriptionComponent(
 
     Text(
         text = annotatedText,
-        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+        style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
         maxLines = if (isExpanded) Int.MAX_VALUE else collapsedMaxLine,
        // overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
         modifier = Modifier.clickable { isExpanded = !isExpanded },
