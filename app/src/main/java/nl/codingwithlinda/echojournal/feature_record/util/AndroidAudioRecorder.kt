@@ -26,10 +26,11 @@ class AndroidAudioRecorder(
     private val context: Application,
     private val dispatcherProvider: DispatcherProvider
 ): AudioRecorder, RecognitionListener {
+    private var fileName: String = File(context.filesDir,"audio.3gp").path
 
     private val _listener = MutableStateFlow(AudioRecorderData(
-        amplitude = 0f,
-        duration = 0L
+        duration = 0L,
+        uri = fileName
     ))
     override val listener: StateFlow<AudioRecorderData>
         get() = _listener.asStateFlow()
@@ -37,7 +38,6 @@ class AndroidAudioRecorder(
     private val recognizer: SpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
 
     private var recorder: MediaRecorder? = null
-    private var fileName: String = File(context.filesDir,"audio.3gp").path
 
     private var isRecording: Boolean = false
 
@@ -57,18 +57,6 @@ class AndroidAudioRecorder(
         }
 
         isRecording = true
-        CoroutineScope(dispatcherProvider.default).launch {
-            while (
-               isRecording
-            ){
-                _listener.update {
-                    it.copy(
-                        duration = it.duration + 100,
-                    )
-                }
-                delay(100)
-            }
-        }
 
     }
 
@@ -124,16 +112,16 @@ class AndroidAudioRecorder(
     }
 
     override fun onBeginningOfSpeech() {
-        println("BEGGINING OF SPEECH")
+        println("BEGINNING OF SPEECH")
     }
 
     override fun onRmsChanged(rmsDb: Float) {
        println("RMS CHANGED $rmsDb")
-        _listener.update {
+       /* _listener.update {
             it.copy(
                 amplitude = rmsDb * ( 1f / (12f - (-2f)))
             )
-        }
+        }*/
     }
 
     override fun onBufferReceived(p0: ByteArray?) {

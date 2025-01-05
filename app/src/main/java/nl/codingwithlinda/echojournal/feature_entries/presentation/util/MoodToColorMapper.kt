@@ -3,7 +3,7 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.util
 import androidx.compose.ui.graphics.toArgb
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
-import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.ui.theme.exited80
 import nl.codingwithlinda.echojournal.ui.theme.neutal80

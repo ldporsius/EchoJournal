@@ -2,19 +2,25 @@ package nl.codingwithlinda.echojournal.feature_record.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
+import nl.codingwithlinda.echojournal.feature_record.domain.EchoFactory
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import java.util.Locale
 
 class RecordAudioViewModel(
     val recorder: AudioRecorder,
-    val dateTimeFormatter: DateTimeFormatter
+    val dateTimeFormatter: DateTimeFormatter,
+    val echoFactory: EchoFactory,
+    val navToCreateEcho: (EchoDto) -> Unit
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(RecordAudioUiState())
@@ -23,12 +29,7 @@ class RecordAudioViewModel(
     init {
         viewModelScope.launch {
             recorder.listener.collect {audioRecorderData ->
-                println("amplitude: ${audioRecorderData.amplitude}")
-                _uiState.update {
-                    it.copy(
-                        duration = dateTimeFormatter.formatDateTime(audioRecorderData.duration, Locale.getDefault())
-                    )
-                }
+
             }
         }
     }
@@ -48,6 +49,21 @@ class RecordAudioViewModel(
                     )
                 }
                 recorder.start()
+
+                var duration = 0L
+                viewModelScope.launch {
+                    while (
+                        uiState.value.isRecording
+                    ){
+                        duration += 100
+                        _uiState.update {
+                            it.copy(
+                                duration = dateTimeFormatter.formatDateTime(duration, Locale.getDefault()),
+                            )
+                        }
+                        delay(100)
+                    }
+                }
             }
 
             RecordAudioAction.CancelRecording -> {
@@ -68,7 +84,7 @@ class RecordAudioViewModel(
                 recorder.stop()
             }
             RecordAudioAction.SaveRecording -> {
-
+                    navToCreateEcho(echoFactory.createEchoDto(recorder.listener.value))
             }
 
             RecordAudioAction.CloseDialog -> {

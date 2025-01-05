@@ -66,7 +66,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     //desugar
-    //implementation("com.android.tools:desugar_jdk_libs:1.1.8")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     testImplementation(libs.junit)

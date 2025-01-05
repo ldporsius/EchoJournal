@@ -1,7 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_entries.domain.usecase
 
-import nl.codingwithlinda.echojournal.feature_entries.domain.model.Echo
-import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.echojournal.core.domain.model.Mood
 
 class FilterOnMoodAndTopic {
 

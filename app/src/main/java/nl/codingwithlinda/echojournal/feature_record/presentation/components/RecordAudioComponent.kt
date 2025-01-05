@@ -34,7 +34,6 @@ fun RecordAudioComponent(
         .fillMaxWidth()
         .padding(top = 48.dp, bottom = 72.dp)
 
-
     val context = LocalContext.current
     var hasRecordAudioPermission by remember {
         mutableStateOf(true)

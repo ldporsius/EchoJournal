@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_entries.domain.model
+package nl.codingwithlinda.echojournal.core.domain.model
 
 data class Echo(
     val id: String,

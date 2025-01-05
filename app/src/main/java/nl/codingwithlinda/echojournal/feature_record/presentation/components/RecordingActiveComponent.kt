@@ -35,7 +35,7 @@ import nl.codingwithlinda.echojournal.ui.theme.primary50
 @Composable
 fun RecordingActiveComponent(
     modifier: Modifier = Modifier,
-    onAction: (RecordAudioAction) -> Unit
+    onAction: (RecordAudioAction) -> Unit,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val scale1 = infiniteTransition. animateFloat(
@@ -84,7 +84,7 @@ fun RecordingActiveComponent(
         ){
             IconButton(
                onClick = {
-
+                   onAction(RecordAudioAction.SaveRecording)
                }
             ){
                 Icon(

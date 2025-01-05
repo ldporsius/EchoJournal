@@ -18,7 +18,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
-import nl.codingwithlinda.echojournal.feature_entries.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItemContent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EmptyListComponent
