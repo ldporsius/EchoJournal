@@ -2,14 +2,13 @@ package nl.codingwithlinda.echojournal.feature_record.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.data.EchoDto
-import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.EchoFactory
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
@@ -18,7 +17,7 @@ import java.util.Locale
 
 class RecordAudioViewModel(
     val recorder: AudioRecorder,
-    val dateTimeFormatter: DateTimeFormatter,
+    val dateTimeFormatter: DateTimeFormatterDuration,
     val echoFactory: EchoFactory,
     val navToCreateEcho: (EchoDto) -> Unit
 ): ViewModel() {
@@ -26,13 +25,6 @@ class RecordAudioViewModel(
     private val _uiState = MutableStateFlow(RecordAudioUiState())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            recorder.listener.collect {audioRecorderData ->
-
-            }
-        }
-    }
     fun onAction(action: RecordAudioAction) {
         when (action) {
             RecordAudioAction.ToggleVisibility -> {
@@ -55,13 +47,14 @@ class RecordAudioViewModel(
                     while (
                         uiState.value.isRecording
                     ){
-                        duration += 100
+                        duration += DateTimeFormatterDuration.updateFrequency
+                        val durationText = dateTimeFormatter.formatDateTime(duration, Locale.getDefault())
                         _uiState.update {
                             it.copy(
-                                duration = dateTimeFormatter.formatDateTime(duration, Locale.getDefault()),
+                                duration = durationText ,
                             )
                         }
-                        delay(100)
+                        delay(DateTimeFormatterDuration.updateFrequency)
                     }
                 }
             }
