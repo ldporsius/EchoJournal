@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -83,46 +84,52 @@ fun CreateEchoScreen(
         //topic
         val isTopicsExpanded = uiState.isTopicsExpanded
         ExposedDropdownMenuBox(
-            expanded = true,
+            expanded = uiState.isTopicsExpanded,
             onExpandedChange = {
                 println("onExpandedChange")
+                onAction(CreateEchoAction.ShowHideTopics(it))
             }
         ) {
 
-            OutlinedTextField(
-                modifier = Modifier.menuAnchor(),
-                value = uiState.topic,
-                onValueChange = {
-                    onAction(CreateEchoAction.TopicChanged(it))
-                },
-                placeholder = {
-                    Text(
-                        "Topic",
-                        style = MaterialTheme.typography.titleSmall
+            Column {
+                OutlinedTextField(
+                    modifier = Modifier.menuAnchor(),
+                    value = uiState.topic,
+                    onValueChange = {
+                        onAction(CreateEchoAction.TopicChanged(it))
+                    },
+                    placeholder = {
+                        Text(
+                            "Topic",
+                            style = MaterialTheme.typography.titleSmall
 
+                        )
+                    },
+                    leadingIcon = {
+                        Text("#")
+                    },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = Color.Transparent,
+                        unfocusedTextColor = MaterialTheme.colorScheme.secondaryContainer,
                     )
-                },
-                leadingIcon = {
-                    Text("#")
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.Transparent,
-                    unfocusedTextColor = MaterialTheme.colorScheme.secondaryContainer,
                 )
-            )
-            ExposedDropdownMenu(
-                expanded = isTopicsExpanded,
-                onDismissRequest = {
 
-                }
-            ) {
-                uiState.topics.forEach{
-                    DropdownMenuItem(
-                        text = { Text(it) },
-                        onClick = {
 
-                        }
-                    )
+                ExposedDropdownMenu(
+                    expanded = isTopicsExpanded,
+                    onDismissRequest = {
+                        onAction(CreateEchoAction.ShowHideTopics(false))
+                    }
+                ) {
+                    uiState.topics.forEach {
+                        DropdownMenuItem(
+                            text = { Text(it) },
+                            onClick = {
+                                onAction(CreateEchoAction.SelectTopic(it))
+                            }
+                        )
+                    }
                 }
             }
         }

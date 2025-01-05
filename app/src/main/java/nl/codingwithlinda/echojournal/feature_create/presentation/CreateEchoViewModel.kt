@@ -21,6 +21,7 @@ class CreateEchoViewModel(
     private val filteredTopics = _allTopics.combine(topicsSearchText) { topics , search ->
         topics.filter { it.contains(search, ignoreCase = true) }
     }
+
     private val _uiState = MutableStateFlow(CreateEchoUiState())
     val uiState = combine( _uiState, filteredTopics) { uiState, filteredTopics ->
         uiState.copy(
@@ -45,6 +46,22 @@ class CreateEchoViewModel(
                     it.copy(
                         topic = action.topic,
                         isTopicsExpanded = true
+                    )
+                }
+            }
+
+           is CreateEchoAction.ShowHideTopics -> {
+                _uiState.update {
+                    it.copy(
+                        isTopicsExpanded = action.visible
+                    )
+                }
+            }
+            is CreateEchoAction.SelectTopic -> {
+                _uiState.update {
+                    it.copy(
+                        topic = action.topic,
+                        isTopicsExpanded = false
                     )
                 }
             }
