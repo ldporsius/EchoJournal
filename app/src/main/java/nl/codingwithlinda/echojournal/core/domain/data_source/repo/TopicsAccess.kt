@@ -8,11 +8,16 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fake
 
 class TopicsAccess: DataSourceAccess<EchoTopic, String> {
 
-    private val topics = fakeUiTopics().map {
+    val fakes = fakeUiTopics().map {
         EchoTopic(it.name)
     }
+    private val topics: MutableList<EchoTopic> = mutableListOf<EchoTopic>().apply {
+        addAll(fakes)
+    }
+
 
     override suspend fun create(item: EchoTopic): EchoTopic {
+        topics.add(item)
        return item
     }
 
@@ -21,10 +26,13 @@ class TopicsAccess: DataSourceAccess<EchoTopic, String> {
     }
 
     override suspend fun update(item: EchoTopic): EchoTopic {
+        topics.removeIf { it.name == item.name }
+        topics.add(item)
         return item
     }
 
     override suspend fun delete(id: String): Boolean {
+        topics.removeIf { it.name == id }
        return true
     }
 

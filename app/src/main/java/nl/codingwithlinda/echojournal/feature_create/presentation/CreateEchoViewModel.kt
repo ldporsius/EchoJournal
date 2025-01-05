@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
@@ -16,16 +16,17 @@ class CreateEchoViewModel(
     val topicsAccess: TopicsAccess
 ): ViewModel() {
 
+    private val topicsSearchText = MutableStateFlow("")
+    private val _allTopics = topicsAccess.readAll().map { it.map { it.name } }
+    private val filteredTopics = _allTopics.combine(topicsSearchText) { topics , search ->
+        topics.filter { it.contains(search, ignoreCase = true) }
+    }
     private val _uiState = MutableStateFlow(CreateEchoUiState())
-    val uiState = _uiState
-        .onStart {
-            _uiState.update {
-                it.copy(
-                    topics = topicsAccess.readAll().first().map { it.name }
-                )
-            }
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
+    val uiState = combine( _uiState, filteredTopics) { uiState, filteredTopics ->
+        uiState.copy(
+            topics = filteredTopics
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
 
     fun onAction(action: CreateEchoAction) {
@@ -39,6 +40,7 @@ class CreateEchoViewModel(
             }
 
             is CreateEchoAction.TopicChanged -> {
+                topicsSearchText.update { action.topic }
                 _uiState.update {
                     it.copy(
                         topic = action.topic,
