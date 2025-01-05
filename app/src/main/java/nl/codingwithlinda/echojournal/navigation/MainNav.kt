@@ -40,7 +40,10 @@ fun MainNav(
       val arguments = it.toRoute<CreateEchoRoute>()
       CreateRoot(
         appModule = appModule,
-        echoDto = arguments.echoDto
+        echoDto = arguments.echoDto,
+        navigateBack = {
+          navController.navigateUp()
+        }
       )
     }
   }
