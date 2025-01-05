@@ -20,7 +20,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.echojournal.core.data.EchoDto
+import nl.codingwithlinda.echojournal.core.data.TopicFactory
 import nl.codingwithlinda.echojournal.core.di.AppModule
+import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +35,10 @@ fun CreateRoot(
     val factory :ViewModelProvider.Factory = viewModelFactory{
         initializer {
             CreateEchoViewModel(
-                topicsAccess = appModule.topicsAccess
+                topicRepo = TopicRepo(
+                    appModule.topicsAccess,
+                    TopicFactory()
+                )
             )
         }
     }

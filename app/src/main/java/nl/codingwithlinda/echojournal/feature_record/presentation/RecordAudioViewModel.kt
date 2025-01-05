@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
-import nl.codingwithlinda.echojournal.feature_record.domain.EchoFactory
+import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import java.util.Locale

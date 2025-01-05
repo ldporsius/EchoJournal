@@ -4,12 +4,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import nl.codingwithlinda.echojournal.core.domain.data_source.DataSourceAccess
 import nl.codingwithlinda.echojournal.core.domain.model.EchoTopic
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
+import kotlin.random.Random
 
 class TopicsAccess: DataSourceAccess<EchoTopic, String> {
 
-    val fakes = fakeUiTopics().map {
-        EchoTopic(it.name)
+    private val text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    val fakes = List(5){
+        EchoTopic(text.substring(0, Random.nextInt( 25)))
     }
     private val topics: MutableList<EchoTopic> = mutableListOf<EchoTopic>().apply {
         addAll(fakes)

@@ -1,6 +1,7 @@
-package nl.codingwithlinda.echojournal.feature_record.domain
+package nl.codingwithlinda.echojournal.core.data
 
-import nl.codingwithlinda.echojournal.core.data.EchoDto
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
 
 class EchoFactory {
 
@@ -10,4 +11,6 @@ class EchoFactory {
             uri = audioRecorderData.uri
         )
     }
+
+
 }
