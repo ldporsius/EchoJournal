@@ -80,8 +80,11 @@ fun EchoListItemContent(
         }
 
         EchoPlaybackComponent(
-            uiEcho = uiEcho,
-            onAction = onAction
+            onAction = onAction,
+            moodColor = Color(uiEcho.mood.color),
+            duration = uiEcho.duration,
+            amplitudes = uiEcho.amplitudes,
+            echoId = uiEcho.id
         )
 
 

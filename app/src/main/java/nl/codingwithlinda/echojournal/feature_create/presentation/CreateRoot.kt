@@ -16,9 +16,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.di.AppModule
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +33,18 @@ fun CreateRoot(
     echoDto: EchoDto,
     navigateBack: () -> Unit
 ) {
+
+    val factory :ViewModelProvider.Factory = viewModelFactory{
+        initializer {
+            CreateEchoViewModel(
+                topicsAccess = appModule.topicsAccess
+            )
+        }
+    }
+    val viewModel = viewModel<CreateEchoViewModel>(
+        factory = factory
+    )
+
     Scaffold(
         modifier = Modifier.safeContentPadding(),
         topBar = {
@@ -52,8 +70,8 @@ fun CreateRoot(
         CreateEchoScreen(
             Modifier.fillMaxSize()
                 .padding(it),
-            uiState = CreateEchoUiState(),
-            onAction = {}
+            uiState = viewModel.uiState.collectAsStateWithLifecycle().value,
+            onAction = viewModel::onAction
         )
     }
 }

@@ -26,18 +26,20 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 
 @Composable
 fun EchoPlaybackComponent(
     modifier: Modifier = Modifier,
-    uiEcho: UiEcho,
-    onAction: (ReplayEchoAction) -> Unit
+    //uiEcho: Echo,
+    onAction: (ReplayEchoAction) -> Unit,
+    moodColor: Color,
+    duration: String,
+    amplitudes: List<Float>,
+    echoId: String
 ) {
 
-    val iconTint = Color(uiEcho.mood.color)
-    val amplitudes = uiEcho.amplitudes
-    val duration = uiEcho.duration
+    val iconTint = moodColor
+
     var playIconSize by remember {
         mutableStateOf(Size.Zero)
     }
@@ -57,7 +59,7 @@ fun EchoPlaybackComponent(
 
     ){
         IconButton(onClick = {
-            onAction(ReplayEchoAction.Play(uiEcho.id))
+            onAction(ReplayEchoAction.Play(echoId))
         },
             modifier = Modifier
                 .onSizeChanged {
