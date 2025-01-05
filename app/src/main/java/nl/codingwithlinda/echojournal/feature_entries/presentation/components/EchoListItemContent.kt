@@ -46,6 +46,7 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
@@ -58,18 +59,12 @@ fun EchoListItemContent(
     uiEcho: UiEcho,
     onAction: (ReplayEchoAction) -> Unit
 ) {
-    val iconTint = Color(uiEcho.mood.color)
+
     val title = uiEcho.name
     val timeStamp = uiEcho.timeStamp
-    val amplitudes = uiEcho.amplitudes
-    val duration = uiEcho.duration
+
     val tags = uiEcho.topics
 
-    var playIconSize by remember {
-        mutableStateOf(Size.Zero)
-    }
-    val amplitudeWidth = 6.dp
-    val amplitudeSpacing = 1.dp
 
     Column(modifier = modifier) {
         Row(
@@ -84,71 +79,10 @@ fun EchoListItemContent(
             Text(timeStamp)
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .background(
-                    color = iconTint.copy(.25f),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
-                )
-                .padding(start = 6.dp, end = 16.dp),
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-
-        ){
-            IconButton(onClick = {
-                onAction(ReplayEchoAction.Play(uiEcho.id))
-            },
-                modifier = Modifier
-                    .onSizeChanged {
-                        playIconSize = it.toSize()
-                    },
-                colors = androidx.compose.material3.IconButtonDefaults.iconButtonColors(
-                    containerColor = androidx.compose.ui.graphics.Color.White,
-                    contentColor = iconTint
-                )
-            ) {
-                Icon(imageVector = androidx.compose.material.icons.Icons.Default.PlayArrow, contentDescription = null)
-            }
-
-            Box(
-                Modifier
-                    .weight(1f)
-                    .height(48.dp)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
-                    .drawBehind {
-                        val width = size.width
-                        val height = size.height
-
-                        (0 until amplitudes.size).forEach { index ->
-                            val x = index * (amplitudeWidth.toPx() + amplitudeSpacing.toPx())
-                            val y = height / 2
-
-                            val amplitudeHeight = height * amplitudes[index]
-
-                            val offsetStart = Offset(x = x, y = y - amplitudeHeight / 2)
-                            val offsetEnd = Offset(x = x, y = y + amplitudeHeight / 2)
-
-                            drawLine(
-                                color = iconTint,
-                                start = offsetStart,
-                                end = offsetEnd,
-                                strokeWidth = amplitudeWidth.toPx()
-                            )
-                        }
-                    }
-            )
-            Spacer(modifier = Modifier
-                .padding(start = 1.dp)
-                .height(48.dp))
-            Text(
-                text = duration,
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                ,
-                style = androidx.compose.material3.MaterialTheme.typography.labelSmall
-            )
-        }
+        EchoPlaybackComponent(
+            uiEcho = uiEcho,
+            onAction = onAction
+        )
 
 
         EchoDescriptionComponent(
@@ -172,142 +106,4 @@ fun EchoListItemContent(
             }
         }
     }
-}
-
-@Composable
-fun EchoDescriptionComponent(
-    //modifier: Modifier = Modifier.fillMaxWidth(),
-    description: String,
-    collapsedMaxLine: Int = 3
-
-) {
-    val showMoreStyle: SpanStyle = SpanStyle(color = Color.Blue, fontWeight = FontWeight.W500)
-    val showLessStyle: SpanStyle = SpanStyle(color = Color.Blue, fontWeight = FontWeight.W500)
-
-    var isExpanded by remember {
-        mutableStateOf(false)
-    }
-    var isClickable by remember {
-        mutableStateOf(false)
-    }
-    /*val textLayoutResultState = remember {
-        mutableStateOf<TextLayoutResult?>(null)
-    }*/
-    //val textLayoutResult = textLayoutResultState.value
-    var lastCharacterIndex by remember { mutableStateOf(0) }
-
-    var finalText: AnnotatedString by remember {
-        mutableStateOf(buildAnnotatedString {
-            append(description)
-        })
-    }
-    val showMoreText = "...Show more"
-    val showLessText = "...Show less"
-
-    //val maxLines = if (isExpanded) Int.MAX_VALUE else 3
-
-   /* LaunchedEffect(textLayoutResult) {
-        if (textLayoutResult == null) return@LaunchedEffect
-
-        if (isExpanded){
-            finalText = buildAnnotatedString {
-                append(description)
-                withLink(
-                    link = LinkAnnotation.Clickable(
-                        tag = "Show Less",
-                        linkInteractionListener = { isExpanded = !isExpanded }
-                    )
-                ){
-                    withStyle(SpanStyle(color = Color.Blue)){
-                        append(showLessText)
-                    }
-                }
-
-            }
-            return@LaunchedEffect
-        }
-        println("Text layout result changed:hasVisualOverflow =  ${textLayoutResult.hasVisualOverflow}")
-
-        if ( textLayoutResult.hasVisualOverflow) {
-
-            val lastCharIndex = (textLayoutResult.layoutInput.text.lastIndex).coerceAtMost(description.length)
-
-            println("Original text lenght: ${description.length}")
-            println("Last char index: $lastCharIndex")
-
-            val adjustedText =  description.substring(0, lastCharIndex)
-                .dropLast(showMoreText.length)
-                .dropLastWhile {
-                    it == ' ' || it == '.'
-                }
-            println("adjusted text: $adjustedText")
-
-            finalText = buildAnnotatedString {
-                append(adjustedText)
-                withLink(
-                    link = LinkAnnotation.Clickable(
-                        tag = "Show More",
-                        linkInteractionListener = { isExpanded = !isExpanded }
-                    )
-                ){
-                    withStyle(SpanStyle(color = Color.Blue)){
-                        append(showMoreText)
-                    }
-                }
-            }
-        }
-    }*/
-
-
-    val annotatedText = buildAnnotatedString {
-        if (isClickable) {
-            if (isExpanded) {
-                append(description)
-                withLink(
-                    link = LinkAnnotation.Clickable(
-                        tag = "",
-                        linkInteractionListener = { isExpanded = !isExpanded }
-                    )
-                ) {
-                    withStyle(style = showLessStyle) {
-                        append(showLessText)
-                    }
-                }
-            } else {
-                val adjustText = description.substring(startIndex = 0, endIndex = lastCharacterIndex)
-                    .dropLast(showMoreText.length)
-                    .dropLastWhile { it.isWhitespace() || it == '.' }
-                append(adjustText)
-                withLink(
-                    link = LinkAnnotation.Clickable(
-                        tag = "Tag",
-                        linkInteractionListener = { isExpanded = !isExpanded }
-                    )
-                ) {
-                    withStyle(style = showMoreStyle) {
-                        append(showMoreText)
-                    }
-                }
-            }
-        } else {
-            append(description)
-        }
-    }
-
-
-    Text(
-        text = annotatedText,
-        style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-        maxLines = if (isExpanded) Int.MAX_VALUE else collapsedMaxLine,
-       // overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-        modifier = Modifier.clickable { isExpanded = !isExpanded },
-        onTextLayout = {textLayoutResult ->
-            //textLayoutResultState.value = textLayoutResult
-            if (!isExpanded && textLayoutResult.hasVisualOverflow) {
-                isClickable = true
-                lastCharacterIndex = textLayoutResult.getLineEnd(collapsedMaxLine - 1)
-            }
-        }
-    )
-
 }

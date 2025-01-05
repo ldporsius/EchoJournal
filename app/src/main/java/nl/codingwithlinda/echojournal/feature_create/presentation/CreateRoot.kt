@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.di.AppModule
+import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,9 @@ fun CreateRoot(
     ) {
         CreateEchoScreen(
             Modifier.fillMaxSize()
-                .padding(it)
+                .padding(it),
+            uiState = CreateEchoUiState(),
+            onAction = {}
         )
     }
 }
