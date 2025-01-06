@@ -14,6 +14,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 
 data class CreateEchoUiState(
     val title: String = "",
+    val description: String = "",
     val moods: List<UiMood> = emptyList(),
     val selectedMood: UiMood? = null,
     val isSelectMoodExpanded: Boolean = false,
@@ -38,6 +39,5 @@ data class CreateEchoUiState(
                 modifier = Modifier.size(32.dp)
             )
         }
-
     }
 }

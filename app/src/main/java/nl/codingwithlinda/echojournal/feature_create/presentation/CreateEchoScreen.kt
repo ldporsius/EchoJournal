@@ -54,7 +54,9 @@ fun CreateEchoScreen(
     onAction: (CreateEchoAction) -> Unit,
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
     ) {
         Row(
             modifier = Modifier
@@ -171,9 +173,9 @@ fun CreateEchoScreen(
 
         //description
         OutlinedTextField(
-            value = uiState.title,
+            value = uiState.description,
             onValueChange = {
-                onAction(CreateEchoAction.TitleChanged(it))
+                onAction(CreateEchoAction.DescriptionChanged(it))
             },
             placeholder = {
                 Text("Add Description",

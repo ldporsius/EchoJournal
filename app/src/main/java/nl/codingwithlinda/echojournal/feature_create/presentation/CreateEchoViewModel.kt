@@ -75,12 +75,19 @@ class CreateEchoViewModel(
                 }
             }
 
+            is CreateEchoAction.DescriptionChanged -> {
+                _uiState.update {
+                    it.copy(
+                        description = action.description
+                    )
+                }
+            }
+
             is CreateEchoAction.TopicChanged -> {
                 _topicsSearchText.update { action.topic }
             }
 
             is CreateEchoAction.ShowHideTopics -> {
-                println("SHOW HIDE TOPICS CALLED: VISIBLE = ${action.visible}")
                 topicsVisible.update {
                     action.visible
                 }

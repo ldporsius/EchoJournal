@@ -4,6 +4,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 
 sealed interface CreateEchoAction {
     data class TitleChanged(val title: String): CreateEchoAction
+    data class DescriptionChanged(val description: String): CreateEchoAction
     data class TopicChanged(val topic: String): CreateEchoAction
     data class ShowHideTopics(val visible: Boolean): CreateEchoAction
     data class ShowHideMoods(val visible: Boolean): CreateEchoAction
