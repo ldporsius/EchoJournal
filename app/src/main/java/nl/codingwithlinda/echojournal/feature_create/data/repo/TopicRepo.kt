@@ -18,4 +18,5 @@ class TopicRepo(
     fun readAll(): Flow<List<String>>{
         return topicsAccess.readAll().map { it.map { it.name } }
     }
+
 }

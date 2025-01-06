@@ -8,6 +8,9 @@ sealed interface CreateEchoAction {
     data class ShowHideTopics(val visible: Boolean): CreateEchoAction
     data class ShowHideMoods(val visible: Boolean): CreateEchoAction
     data class SelectTopic(val topic: String): CreateEchoAction
-    data class SelectMood(val mood: UiMood): CreateEchoAction
     data class CreateTopic(val topic: String): CreateEchoAction
+    data class SelectMood(val mood: UiMood): CreateEchoAction
+    data class ConfirmMood(val mood: UiMood): CreateEchoAction
+
+
 }

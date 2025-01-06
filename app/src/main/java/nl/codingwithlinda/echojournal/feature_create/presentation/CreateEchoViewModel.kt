@@ -13,6 +13,7 @@ import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
+import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
@@ -20,11 +21,27 @@ class CreateEchoViewModel(
     val topicRepo: TopicRepo
 ): ViewModel() {
 
-    private val topicsSearchText = MutableStateFlow("")
-    private val _allTopics = topicRepo.readAll()
-    private val filteredTopics = _allTopics.combine(topicsSearchText) { topics , search ->
-        topics.filter { it.contains(search, ignoreCase = true) }
+    private val _topicsSearchText = MutableStateFlow("")
+
+    private val _filteredTopics = _topicsSearchText.combine(topicRepo.readAll()){search , topics->
+        if (search.isBlank()) topics
+
+        else {
+            topics.filter {
+                it.contains(search, ignoreCase = true)
+            }
+        }
     }
+    private val topicsVisible = MutableStateFlow(false)
+    val topicsUiState = combine(_filteredTopics, _topicsSearchText, topicsVisible) { topics, search , visible ->
+        TopicsUiState(
+            topics = topics,
+            searchText = search,
+            isExpanded = visible
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TopicsUiState())
+
+    val selectedTopics = MutableStateFlow<List<String>>(emptyList())
 
     private val _selectedMood = MutableStateFlow<UiMood?>(null)
     private val coloredMoods = moodToColorMap
@@ -32,16 +49,18 @@ class CreateEchoViewModel(
         if (selectedMood == null) {
             blankMoods
         } else {
-          blankMoods.plus(selectedMood.mood to selectedMood)
+            blankMoods.plus(selectedMood.mood to selectedMood)
         }
     }
 
     private val _uiState = MutableStateFlow(CreateEchoUiState())
-    val uiState = combine( _uiState, filteredTopics, topicsSearchText, _moods) { uiState, filteredTopics, search , moods ->
+    val uiState = combine(
+        _uiState,
+        _moods, _selectedMood) { uiState, moods, selectedMood ->
         uiState.copy(
-            topic = search,
-            topics = filteredTopics,
-            moods = moods.values.toList()
+            moods = moods.values.toList(),
+            selectedMood = selectedMood,
+
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
@@ -57,20 +76,21 @@ class CreateEchoViewModel(
             }
 
             is CreateEchoAction.TopicChanged -> {
-                topicsSearchText.update { action.topic }
+                _topicsSearchText.update { action.topic }
             }
 
-           is CreateEchoAction.ShowHideTopics -> {
-               println("SHOW HIDE TOPICS CALLED: VISIBLE = ${action.visible}")
-                _uiState.update {
-                    it.copy(
-                        isTopicsExpanded = action.visible
-                    )
+            is CreateEchoAction.ShowHideTopics -> {
+                println("SHOW HIDE TOPICS CALLED: VISIBLE = ${action.visible}")
+                topicsVisible.update {
+                    action.visible
                 }
             }
             is CreateEchoAction.SelectTopic -> {
-                topicsSearchText.update {
+                _topicsSearchText.update {
                     action.topic
+                }
+                selectedTopics.update {
+                    it.plus(action.topic)
                 }
             }
             is CreateEchoAction.CreateTopic -> {
@@ -88,16 +108,18 @@ class CreateEchoViewModel(
             }
             is CreateEchoAction.SelectMood -> {
                 val selectedMood =
-                if (_selectedMood.value == action.mood){
-                   null
-                }else coloredMoods[action.mood.mood]
+                    if (_selectedMood.value == action.mood){
+                        null
+                    }else coloredMoods[action.mood.mood]
 
                 _selectedMood.update {
-                   selectedMood
+                    selectedMood
                 }
+            }
+            is CreateEchoAction.ConfirmMood -> {
                 _uiState.update {
                     it.copy(
-                        selectedMood = selectedMood,
+                        confirmedMood = action.mood
                     )
                 }
             }

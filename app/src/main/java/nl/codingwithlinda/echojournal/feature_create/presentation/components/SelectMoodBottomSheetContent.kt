@@ -1,6 +1,5 @@
 package nl.codingwithlinda.echojournal.feature_create.presentation.components
 
-import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,9 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
@@ -30,6 +26,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 fun SelectMoodBottomSheetContent(
     modifier: Modifier = Modifier,
     moods: List<UiMood>,
+    selectedMood: UiMood?,
     onAction: (CreateEchoAction) -> Unit
 ) {
     Column(
@@ -60,22 +57,21 @@ fun SelectMoodBottomSheetContent(
         Row {
             FilledTonalButton (
                 onClick = {
-
+                    onAction(CreateEchoAction.ShowHideMoods(false))
                 },
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
             ) {
                 Text("Cancel")
             }
 
             Button (
                 onClick = {
-
+                    selectedMood?.let {
+                        onAction(CreateEchoAction.ConfirmMood(it))
+                    }
+                    onAction(CreateEchoAction.ShowHideMoods(false))
                 },
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                    containerColor = Blue
-                )
+                enabled = selectedMood != null
+
             ) {
                 Icon(imageVector = Icons.Default.Check,
                     contentDescription = null,
@@ -93,7 +89,6 @@ fun SelectMoodBottomSheetContent(
 fun MoodItemVertical(
     modifier: Modifier = Modifier,
     mood: UiMood,
-    isSelected: Boolean = false
 ) {
     Column(
         modifier = modifier,
@@ -103,7 +98,6 @@ fun MoodItemVertical(
         Image(
             painter = painterResource(id = mood.icon),
             contentDescription = null,
-            //colorFilter = ColorFilter.tint(Color(mood.color))
         )
         Text(mood.name.asString(),
             style = MaterialTheme.typography.labelSmall

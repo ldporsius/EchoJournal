@@ -14,17 +14,18 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 
 data class CreateEchoUiState(
     val title: String = "",
-    val topic: String = "",
-    val topics: List<String> = listOf(),
-    val isTopicsExpanded: Boolean = false,
+    //val topic: String = "",
+    //val topics: List<String> = listOf(),
+    //val isTopicsExpanded: Boolean = false,
     val moods: List<UiMood> = emptyList(),
     val selectedMood: UiMood? = null,
-    val isSelectMoodExpanded: Boolean = false
+    val isSelectMoodExpanded: Boolean = false,
+    val confirmedMood: UiMood? = null,
 )
 {
     @Composable
     fun SelectedMoodIcon(){
-        selectedMood?.let {
+        confirmedMood?.let {
             Image(
                 painter = painterResource(it.icon),
                 contentDescription = null,
@@ -32,7 +33,7 @@ data class CreateEchoUiState(
             )
         }
 
-        if (selectedMood == null){
+        if (confirmedMood == null){
             Icon(
                 Icons.Default.AddCircle,
                 contentDescription = null,
