@@ -77,6 +77,7 @@ class RecordAudioViewModel(
                 recorder.stop()
             }
             RecordAudioAction.SaveRecording -> {
+                    recorder.stop()
                     navToCreateEcho(echoFactory.createEchoDto(recorder.listener.value))
             }
 
