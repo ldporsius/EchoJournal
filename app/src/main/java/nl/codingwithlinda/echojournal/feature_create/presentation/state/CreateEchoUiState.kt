@@ -14,9 +14,6 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 
 data class CreateEchoUiState(
     val title: String = "",
-    //val topic: String = "",
-    //val topics: List<String> = listOf(),
-    //val isTopicsExpanded: Boolean = false,
     val moods: List<UiMood> = emptyList(),
     val selectedMood: UiMood? = null,
     val isSelectMoodExpanded: Boolean = false,

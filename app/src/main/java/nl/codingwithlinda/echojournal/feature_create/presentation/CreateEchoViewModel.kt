@@ -98,6 +98,11 @@ class CreateEchoViewModel(
                     topicRepo.create(action.topic)
                 }
             }
+            is CreateEchoAction.RemoveTopic -> {
+                selectedTopics.update {
+                    it.minus(action.topic)
+                }
+            }
 
             is CreateEchoAction.ShowHideMoods -> {
                 _uiState.update {

@@ -12,14 +12,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -29,10 +31,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.AddTopicComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.SelectMoodBottomSheetContent
@@ -106,14 +110,21 @@ fun CreateEchoScreen(
                     )
                 }
                 false -> {
-                    Row {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(IntrinsicSize.Max),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
                         TextButton(
                             onClick = {
                                 onAction(CreateEchoAction.ShowHideTopics(true))
                             }
                         ) {
-                            Text("# Topic")
+                            val txt = if (selectedTopics.isEmpty()) "Topic" else ""
+                            Text("# $txt")
                         }
                         FlowRow(
                             modifier = Modifier
@@ -123,15 +134,33 @@ fun CreateEchoScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             selectedTopics.forEach {
-                                Text(
-                                    text = "# $it",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    modifier = Modifier.background(
+                                Row(
+                                    modifier = Modifier
+                                        .background(
                                         color = MaterialTheme.colorScheme.secondaryContainer,
                                         shape = CircleShape
+                                    ).heightIn(32.dp, 40.dp)
+                                        .padding(horizontal = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "# $it",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontSize = TextUnit(12f, TextUnitType.Sp),
+                                        modifier = Modifier
                                     )
-                                        .padding(8.dp)
-                                )
+                                    IconButton(
+                                        onClick = {
+                                            onAction(CreateEchoAction.RemoveTopic(it))
+                                        },
+                                        modifier = Modifier.size(18.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -163,7 +192,6 @@ fun CreateEchoScreen(
     }
 
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
 
     if (uiState.isSelectMoodExpanded) {
         ModalBottomSheet(
