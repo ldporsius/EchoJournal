@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_entries.presentation.util
+package nl.codingwithlinda.echojournal.core.data
 
 import android.content.Context
 import android.media.AudioManager

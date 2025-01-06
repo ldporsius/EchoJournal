@@ -23,6 +23,8 @@ import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.data.TopicFactory
 import nl.codingwithlinda.echojournal.core.di.AppModule
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
+import nl.codingwithlinda.echojournal.feature_create.presentation.components.SelectMoodBottomSheetContent
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +74,7 @@ fun CreateRoot(
             Modifier.fillMaxSize()
                 .padding(it),
             uiState = viewModel.uiState.collectAsStateWithLifecycle().value,
-            onAction = viewModel::onAction
+            onAction = viewModel::onAction,
         )
     }
 }
