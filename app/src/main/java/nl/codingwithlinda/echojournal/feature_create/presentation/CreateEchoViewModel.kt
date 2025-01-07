@@ -112,8 +112,8 @@ class CreateEchoViewModel(
                 }
             }
             is CreateEchoAction.SelectTopic -> {
-                _topicsSearchText.update {
-                    action.topic
+               _topicsSearchText.update {
+                    ""
                 }
 
                 _selectedTopics.update {
@@ -125,6 +125,9 @@ class CreateEchoViewModel(
                     topicRepo.create(action.topic).also {
                         _selectedTopics.update {
                             it.plus(action.topic)
+                        }
+                        _topicsSearchText.update {
+                            ""
                         }
                     }
                 }

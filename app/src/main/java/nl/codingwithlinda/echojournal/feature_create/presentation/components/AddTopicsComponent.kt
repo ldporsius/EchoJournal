@@ -77,7 +77,7 @@ fun AddTopicComponent(
                 },
                 placeholder = {
                     Text(
-                        "Topic",
+                        "Search for topic",
                         style = MaterialTheme.typography.titleSmall
                     )
                 },
@@ -119,6 +119,7 @@ fun AddTopicComponent(
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
 
                     ) {
                     topics.forEach { topic ->

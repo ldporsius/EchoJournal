@@ -22,6 +22,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -35,37 +36,23 @@ fun ExistingTopicsComponent(
     onAction: (CreateEchoAction) -> Unit
 ) {
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Max),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    val topicModifier = Modifier
+        .background(
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            shape = CircleShape
+        ).heightIn(32.dp, 32.dp)
+        .padding(horizontal = 8.dp)
 
-        TextButton(
-            onClick = {
-                onAction(CreateEchoAction.ShowHideTopics(true))
-            }
-        ) {
-            val txt = if (selectedTopics.isEmpty()) "Topic" else ""
-            Text("# $txt")
-        }
         FlowRow(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max),
+                ,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             selectedTopics.forEach {
                 Row(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.secondaryContainer,
-                            shape = CircleShape
-                        ).heightIn(32.dp, 40.dp)
-                        .padding(horizontal = 8.dp),
+                    modifier = topicModifier,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -87,6 +74,23 @@ fun ExistingTopicsComponent(
                     }
                 }
             }
-        }
+
+
+            TextButton(
+                onClick = {
+                    onAction(CreateEchoAction.ShowHideTopics(true))
+                },
+                modifier =
+                        Modifier
+                            .heightIn(32.dp, 32.dp)
+                            .background(color = Color.Transparent, shape = CircleShape)
+
+
+            ) {
+                val txt = "Add topic"
+                Text("# $txt"
+                    , style = MaterialTheme.typography.labelSmall)
+            }
+
     }
 }
