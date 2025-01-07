@@ -93,7 +93,9 @@ fun CreateEchoScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         EchoPlaybackComponent(
-            onAction = {},
+            onAction = {
+                onAction(CreateEchoAction.PlayEcho)
+            },
             moodColor = androidx.compose.ui.graphics.Color.Gray,
             duration = "1:23",
             amplitudes = listOf(),

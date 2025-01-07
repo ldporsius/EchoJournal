@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_create.presentation
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
+import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
@@ -23,6 +25,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToCo
 
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
+    private val audioEchoPlayer: EchoPlayer,
     val topicRepo: TopicRepo,
     private val echoFactory: EchoFactory,
     private val echoAccess: EchoAccess,
@@ -75,6 +78,9 @@ class CreateEchoViewModel(
 
     fun onAction(action: CreateEchoAction) {
         when (action) {
+            CreateEchoAction.PlayEcho -> {
+               audioEchoPlayer.play(Uri.parse(echoDto.uri))
+            }
             is CreateEchoAction.TitleChanged -> {
                 _uiState.update {
                     it.copy(

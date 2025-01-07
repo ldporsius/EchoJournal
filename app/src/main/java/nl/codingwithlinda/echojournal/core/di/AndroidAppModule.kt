@@ -1,7 +1,9 @@
 package nl.codingwithlinda.echojournal.core.di
 
 import android.app.Application
+import nl.codingwithlinda.echojournal.core.data.AndroidEchoPlayer
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
+import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
@@ -17,6 +19,9 @@ class AndroidAppModule(
         get() = AndroidAudioRecorder(
             context, dispatcherProvider
         )
+
+    override val echoPlayer: EchoPlayer
+        get() = AndroidEchoPlayer(context)
 
     override val topicsAccess: TopicsAccess
         get() = TopicsAccess()

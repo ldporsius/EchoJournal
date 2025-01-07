@@ -17,14 +17,13 @@ import nl.codingwithlinda.echojournal.feature_record.presentation.RecordAudioVie
 @Composable
 fun EchosRoot(
    appModule: AppModule,
-   echoPlayer: EchoPlayer,
    navToCreateEcho: (EchoDto) -> Unit
 ) {
 
    val echoesFactory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
          EchosViewModel(
-            echoPlayer = echoPlayer
+            echoPlayer = appModule.echoPlayer
          )
       }
    }

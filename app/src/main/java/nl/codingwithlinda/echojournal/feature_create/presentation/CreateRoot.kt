@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import nl.codingwithlinda.echojournal.core.data.AndroidEchoPlayer
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.data.TopicFactory
 import nl.codingwithlinda.echojournal.core.di.AppModule
@@ -36,6 +37,7 @@ fun CreateRoot(
         initializer {
             CreateEchoViewModel(
                 echoDto = echoDto,
+                audioEchoPlayer = appModule.echoPlayer,
                 echoFactory = appModule.echoFactory,
                 echoAccess = appModule.echoAccess,
                 topicRepo = TopicRepo(

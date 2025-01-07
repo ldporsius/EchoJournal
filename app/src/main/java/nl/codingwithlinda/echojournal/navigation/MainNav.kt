@@ -16,14 +16,12 @@ import kotlin.reflect.typeOf
 fun MainNav(
   navController: NavHostController,
   appModule: AppModule,
-  echoPlayer: EchoPlayer
 ) {
 
   NavHost(navController = navController, startDestination = EchosRoute) {
     composable<EchosRoute> {
       EchosRoot(
         appModule = appModule,
-        echoPlayer = echoPlayer,
         navToCreateEcho = {
           navController.navigate(CreateEchoRoute(
             echoDto = it

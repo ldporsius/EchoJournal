@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
                 MainNav(
                     navController = navController,
                     appModule = appModule,
-                    echoPlayer = AndroidEchoPlayer(this)
                 )
             }
 
