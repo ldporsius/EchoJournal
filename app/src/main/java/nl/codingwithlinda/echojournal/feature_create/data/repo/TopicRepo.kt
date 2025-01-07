@@ -8,11 +8,14 @@ import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
 class TopicRepo(
     private val topicsAccess: TopicsAccess,
     private val topicFactory: TopicFactory
-
 ) {
 
     suspend fun create(name: String) {
         topicsAccess.create(topicFactory.createTopic(name))
+    }
+
+    suspend fun delete(id: String) {
+        topicsAccess.delete(id)
     }
 
     fun readAll(): Flow<List<String>>{

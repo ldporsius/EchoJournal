@@ -39,12 +39,13 @@ import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.AddTopicComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.CreateCancelSaveButtons
+import nl.codingwithlinda.echojournal.feature_create.presentation.components.ExistingTopicsComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.SelectMoodBottomSheetContent
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEchoScreen(
     modifier: Modifier = Modifier,
@@ -96,7 +97,7 @@ fun CreateEchoScreen(
             onAction = {
                 onAction(CreateEchoAction.PlayEcho)
             },
-            moodColor = androidx.compose.ui.graphics.Color.Gray,
+            moodColor = Color.Gray,
             duration = "1:23",
             amplitudes = listOf(),
             echoId = ""
@@ -109,66 +110,15 @@ fun CreateEchoScreen(
                     AddTopicComponent(
                         topic = topicsUiState.searchText,
                         topics = topicsUiState.topics,
-                        isTopicsExpanded = topicsUiState.isExpanded,
                         shouldShowCreate = topicsUiState.shouldShowCreate(),
                         onAction = onAction
                     )
                 }
                 false -> {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Max),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        TextButton(
-                            onClick = {
-                                onAction(CreateEchoAction.ShowHideTopics(true))
-                            }
-                        ) {
-                            val txt = if (selectedTopics.isEmpty()) "Topic" else ""
-                            Text("# $txt")
-                        }
-                        FlowRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Max),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            selectedTopics.forEach {
-                                Row(
-                                    modifier = Modifier
-                                        .background(
-                                        color = MaterialTheme.colorScheme.secondaryContainer,
-                                        shape = CircleShape
-                                    ).heightIn(32.dp, 40.dp)
-                                        .padding(horizontal = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "# $it",
-                                        style = MaterialTheme.typography.titleSmall,
-                                        fontSize = TextUnit(12f, TextUnitType.Sp),
-                                        modifier = Modifier
-                                    )
-                                    IconButton(
-                                        onClick = {
-                                            onAction(CreateEchoAction.RemoveTopic(it))
-                                        },
-                                        modifier = Modifier.size(18.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Close,
-                                            contentDescription = null
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    ExistingTopicsComponent(
+                        selectedTopics = selectedTopics,
+                        onAction = onAction
+                    )
                 }
             }
         }

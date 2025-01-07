@@ -47,7 +47,6 @@ fun AddTopicComponent(
     modifier: Modifier = Modifier,
     topic: String,
     topics: List<String>,
-    isTopicsExpanded: Boolean,
     shouldShowCreate: Boolean,
     onAction: (CreateEchoAction) -> Unit,
 ) {
@@ -130,6 +129,7 @@ fun AddTopicComponent(
                             },
                             onClick = {
                                 onAction(CreateEchoAction.SelectTopic(topic))
+                                onAction(CreateEchoAction.ShowHideTopics(false))
                             }
                         )
                     }

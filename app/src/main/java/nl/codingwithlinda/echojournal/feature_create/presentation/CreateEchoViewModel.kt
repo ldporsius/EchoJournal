@@ -44,6 +44,9 @@ class CreateEchoViewModel(
         }
     }
     private val topicsVisible = MutableStateFlow(false)
+
+    private val _selectedTopics = MutableStateFlow<Set<String>>(emptySet())
+
     val topicsUiState = combine(_filteredTopics, _topicsSearchText, topicsVisible) { topics, search , visible ->
         TopicsUiState(
             topics = topics,
@@ -52,7 +55,9 @@ class CreateEchoViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TopicsUiState())
 
-    val selectedTopics = MutableStateFlow<List<String>>(emptyList())
+    val selectedTopics = _selectedTopics.map {
+        it.toList()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _selectedMood = MutableStateFlow<UiMood?>(null)
     private val coloredMoods = moodToColorMap
@@ -110,18 +115,26 @@ class CreateEchoViewModel(
                 _topicsSearchText.update {
                     action.topic
                 }
-                selectedTopics.update {
+
+                _selectedTopics.update {
                     it.plus(action.topic)
                 }
             }
             is CreateEchoAction.CreateTopic -> {
                 viewModelScope.launch {
-                    topicRepo.create(action.topic)
+                    topicRepo.create(action.topic).also {
+                        _selectedTopics.update {
+                            it.plus(action.topic)
+                        }
+                    }
                 }
             }
             is CreateEchoAction.RemoveTopic -> {
-                selectedTopics.update {
+               _selectedTopics.update {
                     it.minus(action.topic)
+                }
+                _topicsSearchText.update {
+                    ""
                 }
             }
 
