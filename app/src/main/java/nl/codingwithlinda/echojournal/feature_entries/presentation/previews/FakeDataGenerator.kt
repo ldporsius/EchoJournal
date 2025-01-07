@@ -12,6 +12,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.neutal80
+import java.util.UUID
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
@@ -33,7 +34,7 @@ val defaultDescription =
 
 fun fakeEcho(mood: Mood, timestamp: Long): Echo {
     return Echo(
-        id = "1",
+        id = UUID.randomUUID().toString(),
         mood = mood,
         title = "Entry 1",
         description = defaultDescription.take(

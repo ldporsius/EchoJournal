@@ -21,7 +21,9 @@ class AndroidAppModule(
         )
 
     override val echoPlayer: EchoPlayer
-        get() = AndroidEchoPlayer(context)
+        get() = AndroidEchoPlayer(
+            context,dispatcherProvider
+        )
 
     override val topicsAccess: TopicsAccess
         get() = TopicsAccess()

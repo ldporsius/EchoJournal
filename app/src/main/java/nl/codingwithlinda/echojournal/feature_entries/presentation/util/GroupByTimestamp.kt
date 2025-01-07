@@ -40,7 +40,7 @@ object GroupByTimestamp {
 
     fun createGroups(entries: List<Echo>): List<UiEchoGroup>  = groupByTimestamp(entries).map { listEntry ->
 
-        val headerUI = GroupByTimestamp.timeDiffAsUiText(listEntry.key)
+        val headerUI = timeDiffAsUiText(listEntry.key)
 
         val formatter : DateTimeFormatter = if(listEntry.key > 1L)
             DateTimeFormatterMedium()

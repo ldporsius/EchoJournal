@@ -12,6 +12,8 @@ import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
+import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.RecordAudioViewModel
 
 @Composable
@@ -23,6 +25,7 @@ fun EchosRoot(
    val echoesFactory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
          EchosViewModel(
+            echoAccess = appModule.echoAccess,
             echoPlayer = appModule.echoPlayer
          )
       }
@@ -53,6 +56,7 @@ fun EchosRoot(
       echoesUiState = echosViewModel.echoesUiState.collectAsStateWithLifecycle().value,
       topicsUiState = topicsUiState.value,
       moodsUiState = echosViewModel.moodsUiState.collectAsStateWithLifecycle().value,
+      replayUiState = echosViewModel.replayUiState.collectAsStateWithLifecycle().value,
       onFilterAction = echosViewModel::onFilterAction,
       onReplayAction = echosViewModel::onReplayAction,
       recordAudioUiState = recordAudioViewModel.uiState.collectAsStateWithLifecycle().value,

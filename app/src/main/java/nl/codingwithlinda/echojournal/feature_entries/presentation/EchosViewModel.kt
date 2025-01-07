@@ -5,11 +5,15 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
+import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
 import nl.codingwithlinda.echojournal.feature_entries.domain.usecase.FilterOnMoodAndTopic
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound2
@@ -17,14 +21,18 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesU
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
+import java.lang.Math.abs
 
 class EchosViewModel(
+    private val echoAccess: EchoAccess,
     private val echoPlayer: EchoPlayer
 ): ViewModel() {
 
@@ -60,9 +68,25 @@ class EchosViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
 
-    private val _echoes = MutableStateFlow(entries)
+    private val waves = echoPlayer.waves.map {
+        it.map {
+           1 / (it.toFloat())
+        }
+    }
+    private val _playingEcho = MutableStateFlow<String?>(null)
+
+    val replayUiState = combine(_playingEcho, waves){playing, waves ->
+        println("playing: $playing")
+        println("waves: ${waves.take(25)}")
+        ReplayUiState(
+            playingEchoId = playing,
+            waves = waves
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReplayUiState())
+
+    private val _echoes = echoAccess.readAll()
     val echoesUiState
-            = combine(_echoes, _selectedTopics, _selectedMoods) { echoes, topics, moods ->
+            = combine(_echoes, _selectedTopics, _selectedMoods) { echoes, topics, moods->
 
         val moodNames = moods.map { it.mood }
         val topicNames = topics.map { it.name }
@@ -72,11 +96,9 @@ class EchosViewModel(
 
         EchoesUiState(
             echoesTotal = echoes.size,
-            selectedEchoes = res
+            selectedEchoes = res,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), EchoesUiState(0, emptyList()))
-
-
 
     fun onFilterAction(action: FilterEchoAction){
         when(action){
@@ -118,14 +140,32 @@ class EchosViewModel(
     fun onReplayAction(action: ReplayEchoAction){
         when(action){
             ReplayEchoAction.Pause -> {
+                _playingEcho.update {
+                    null
+                }
                 echoPlayer.pause()
             }
             is ReplayEchoAction.Play -> {
-                val id = action.echoId.toInt()
+                val id = echoesUiState.value.selectedEchoes.indexOfFirst {
+                    it.entries.any { it.id == action.echoId }
+                }
+                _playingEcho.update {
+                    action.echoId
+                }
+
                 val sound = if (id  % 2 == 0) testSound() else testSound2()
-                echoPlayer.play(sound)
+                viewModelScope.launch {
+                    _playingEcho.update {
+                        action.echoId
+                    }
+                    echoPlayer.play(sound)
+                }
+
             }
             ReplayEchoAction.Stop -> {
+                _playingEcho.update {
+                    null
+                }
                 echoPlayer.stop()
             }
         }

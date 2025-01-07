@@ -8,11 +8,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 
@@ -20,9 +24,11 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEc
 @Composable
 fun EchoListComponent(
     entries: List<UiEchoGroup>,
+    echoesUiState: EchoesUiState,
     selectedMoods: @Composable () -> Unit,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
+    replayUiState: ReplayUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
     onReplayAction: (ReplayEchoAction) -> Unit
 ) {
@@ -56,7 +62,16 @@ fun EchoListComponent(
                             EchoListItemContent(
                                 modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                                 uiEcho = uiEcho,
-                                onAction = onReplayAction
+                                replayComponent = {
+                                    EchoPlaybackComponent(
+                                        modifier = Modifier,
+                                        onAction = onReplayAction,
+                                        moodColor = Color( uiEcho.mood.color),
+                                        duration = uiEcho.duration,
+                                        amplitudes = if (uiEcho.id == replayUiState.playingEchoId) replayUiState.waves else emptyList(),
+                                        echoId = uiEcho.id
+                                    )
+                                },
                             )
 
                         }

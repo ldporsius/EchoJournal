@@ -129,7 +129,7 @@ private fun EchoListItemPreview() {
                       .padding(16.dp)
                   ,
                   uiEcho = fakeUiEcho("0", mood = Mood.SAD, timestamp = "17:59"),
-                  onAction = {}
+                  replayComponent =  {}
               )
            }
         )
@@ -146,7 +146,7 @@ private fun EchoListItemContentPreview() {
                 .fillMaxWidth()
                 .wrapContentHeight(),
             uiEcho = fakeUiEcho("1", mood = Mood.SAD, timestamp = "17:59"),
-            onAction = {}
+            replayComponent =  {}
         )
     }
 }

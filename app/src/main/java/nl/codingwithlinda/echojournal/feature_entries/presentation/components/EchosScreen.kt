@@ -19,6 +19,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesU
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.RecordAudioComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
@@ -31,6 +32,7 @@ fun EchosScreen(
     echoesUiState: EchoesUiState,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
+    replayUiState: ReplayUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
     onReplayAction: (ReplayEchoAction) -> Unit,
     recordAudioUiState: RecordAudioUiState,
@@ -67,11 +69,13 @@ fun EchosScreen(
             else{
                 EchoListComponent(
                     entries = echoesUiState.selectedEchoes,
+                    echoesUiState = echoesUiState,
                     selectedMoods = { moodsUiState.SelectedMoodsLabel() },
                     moodsUiState = moodsUiState,
                     topicsUiState = topicsUiState,
+                    replayUiState = replayUiState,
                     onFilterAction = onFilterAction,
-                    onReplayAction = onReplayAction
+                    onReplayAction = onReplayAction,
                 )
             }
         }

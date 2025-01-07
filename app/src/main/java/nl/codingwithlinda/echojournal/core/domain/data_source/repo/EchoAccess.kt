@@ -5,10 +5,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.echojournal.core.domain.data_source.DataSourceAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
 
 class EchoAccess: DataSourceAccess<Echo, String> {
 
-    private val echoes = MutableStateFlow<List<Echo>>(emptyList())
+    private val fakes = entries
+    private val echoes = MutableStateFlow<List<Echo>>(fakes)
     override suspend fun create(item: Echo): Echo {
         echoes.update {
             it + item
