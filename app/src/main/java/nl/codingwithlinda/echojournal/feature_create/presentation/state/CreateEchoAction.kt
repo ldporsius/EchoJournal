@@ -13,6 +13,8 @@ sealed interface CreateEchoAction {
     data class RemoveTopic(val topic: String): CreateEchoAction
     data class SelectMood(val mood: UiMood): CreateEchoAction
     data class ConfirmMood(val mood: UiMood): CreateEchoAction
+    data object Save: CreateEchoAction
+
 
 
 }

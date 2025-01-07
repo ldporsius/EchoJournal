@@ -1,5 +1,9 @@
 package nl.codingwithlinda.echojournal.ui.theme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradient
 
 val primaryLight = Color(0xFF475D92)
 val onPrimaryLight = Color(0xFFFFFFFF)
@@ -225,7 +229,17 @@ val neutal80 = Color(0xFF41B278)
 val peaceful80 = Color(0xFFBE3294)
 val exited80 = Color(0xFFDB6C0B)
 
-val defaultButtonColor = primary50
+val lightButtonColor = Color(0xFF578CFF)
+val darkButtonColor = Color(0xFF1F70F5)
+val buttonGradient = Brush.linearGradient(
+    colors = listOf(lightButtonColor, darkButtonColor),
+    start = Offset(0f, 0f),
+    end = Offset(0f, 500f)
+)
 
-
+val buttonDisabledGradient = Brush.linearGradient(
+    colors = listOf(Color.LightGray, Color.Gray),
+    start = Offset(0f, 0f),
+    end = Offset(0f, 500f)
+)
 

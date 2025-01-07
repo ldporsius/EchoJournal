@@ -3,6 +3,7 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.map
 import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
 import nl.codingwithlinda.echojournal.core.domain.model.Echo
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
@@ -15,11 +16,13 @@ fun Echo.toUi(
     return UiEcho(
         id = id,
         mood = mood.toUi(),
-        name = name,
+        name = title,
         description = description,
         timeStamp = dateTimeFormatter.formatDateTime(timeStamp,locale),
         amplitudes = amplitudes,
-        topics = topics,
+        topics = topics.map {
+           it.name
+        },
         duration = "0:00"
     )
 }

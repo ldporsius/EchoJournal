@@ -18,11 +18,11 @@ class FilterOnMoodAndTopic {
         }
         if (moods.isEmpty()){
             return echoes.filter {
-                it.topics.any { topic -> topic in topics }
+                it.topics.any { topic -> topic.name in topics }
             }
         }
         return echoes.filter {
-            it.mood in moods && it.topics.any { topic -> topic in topics }
+            it.mood in moods && it.topics.any { topic -> topic.name in topics }
         }
 
     }

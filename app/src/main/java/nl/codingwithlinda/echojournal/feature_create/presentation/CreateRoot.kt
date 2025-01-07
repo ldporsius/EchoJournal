@@ -35,10 +35,14 @@ fun CreateRoot(
     val factory :ViewModelProvider.Factory = viewModelFactory{
         initializer {
             CreateEchoViewModel(
+                echoDto = echoDto,
+                echoFactory = appModule.echoFactory,
+                echoAccess = appModule.echoAccess,
                 topicRepo = TopicRepo(
                     appModule.topicsAccess,
                     TopicFactory()
-                )
+                ),
+                onSaved = navigateBack
             )
         }
     }
@@ -75,6 +79,7 @@ fun CreateRoot(
             topicsUiState = viewModel.topicsUiState.collectAsStateWithLifecycle().value,
             selectedTopics = viewModel.selectedTopics.collectAsStateWithLifecycle().value,
             onAction = viewModel::onAction,
+            onCancel = navigateBack
         )
     }
 }

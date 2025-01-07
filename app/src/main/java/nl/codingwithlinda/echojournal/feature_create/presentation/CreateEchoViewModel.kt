@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.echojournal.core.data.EchoDto
+import nl.codingwithlinda.echojournal.core.data.EchoFactory
+import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
@@ -18,7 +22,11 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
 class CreateEchoViewModel(
-    val topicRepo: TopicRepo
+    private val echoDto: EchoDto,
+    val topicRepo: TopicRepo,
+    private val echoFactory: EchoFactory,
+    private val echoAccess: EchoAccess,
+    private val onSaved: () -> Unit
 ): ViewModel() {
 
     private val _topicsSearchText = MutableStateFlow("")
@@ -134,6 +142,28 @@ class CreateEchoViewModel(
                         confirmedMood = action.mood
                     )
                 }
+            }
+
+            CreateEchoAction.Save -> {
+                viewModelScope.launch {
+                    val userInput = uiState.value
+                    userInput.confirmedMood ?: return@launch
+
+                    val topics = topicsUiState.value.topics.map { Topic(it) }
+
+                    echoFactory.createEcho(
+                        echoDto = echoDto,
+                        topics = topics,
+                        title = userInput.title,
+                        description = userInput.description,
+                        mood = userInput.confirmedMood.mood,
+                    ).also {
+                        echoAccess.create(it)
+                        onSaved()
+
+                    }
+                }
+
             }
         }
     }

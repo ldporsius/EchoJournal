@@ -3,9 +3,10 @@ package nl.codingwithlinda.echojournal.core.domain.model
 data class Echo(
     val id: String,
     val mood: Mood,
-    val name: String,
+    val title: String,
     val description: String,
     val timeStamp: Long,
     val amplitudes: List<Float>,
-    val topics: List<String>,
+    val topics: List<Topic>,
+    val uri: String
 )

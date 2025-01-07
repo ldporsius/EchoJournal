@@ -21,6 +21,9 @@ data class CreateEchoUiState(
     val confirmedMood: UiMood? = null,
 )
 {
+    fun canSave(): Boolean
+         = title.isNotBlank() && confirmedMood != null
+
     @Composable
     fun SelectedMoodIcon(){
         confirmedMood?.let {
