@@ -56,7 +56,7 @@ class AndroidEchoPlayer(
                 //visualizer = Visualizer(0)
 
                 if (visualizer.enabled ) return
-                visualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate(), true, false)
+                visualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate(), true, true)
                 visualizer.captureSize = 256
 
                 visualizer.setMeasurementMode(MEASUREMENT_MODE_PEAK_RMS)
@@ -94,7 +94,7 @@ class AndroidEchoPlayer(
     }
 
     override fun onWaveFormDataCapture(v: Visualizer?, waveform: ByteArray?, samplingRate: Int) {
-        println("Waveform: ${waveform?.joinToString(",")}")
+        //println("Waveform: ${waveform?.joinToString(",")}")
 
         waveform?.let { b ->
             CoroutineScope(dispatcherProvider.default).launch {

@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,13 +21,11 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
-import java.lang.Math.abs
 
 class EchosViewModel(
     private val echoAccess: EchoAccess,
