@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface AudioRecorder {
     val listener: StateFlow<AudioRecorderData>
     fun start()
+    fun pause()
     fun stop()
 
 }

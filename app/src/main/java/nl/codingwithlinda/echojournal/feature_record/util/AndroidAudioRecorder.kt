@@ -3,6 +3,7 @@ package nl.codingwithlinda.echojournal.feature_record.util
 import android.app.Application
 import android.content.Intent
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -96,6 +97,15 @@ class AndroidAudioRecorder(
         startSpeechRecognition()
         println("started recording")
         startRecording()
+    }
+
+    override fun pause() {
+        println("paused recording")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            recorder?.pause()
+        }
+        stopRecording()
+        recognizer.stopListening()
     }
 
     override fun stop() {

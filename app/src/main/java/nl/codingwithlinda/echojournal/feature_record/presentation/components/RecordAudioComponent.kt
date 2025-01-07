@@ -76,12 +76,13 @@ fun RecordAudioComponent(
             Text(text = uiState.duration,
                 style = MaterialTheme.typography.labelSmall)
 
-            when (uiState.isRecording) {
-                true -> RecordingActiveComponent(
+            if(uiState.isRecording) {
+                RecordingActiveComponent(
                     modifier = recorderModifier,
                     onAction = onAction
-                )
-                false -> RecordingPausedComponent(
+                )}
+            if (uiState.isPaused) {
+                RecordingPausedComponent(
                     modifier = recorderModifier,
                     onAction = onAction,
                 )

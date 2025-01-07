@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.data.EchoDto
@@ -13,6 +16,7 @@ import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingState
 import java.util.Locale
 
 class RecordAudioViewModel(
@@ -22,33 +26,44 @@ class RecordAudioViewModel(
     val navToCreateEcho: (EchoDto) -> Unit
 ): ViewModel() {
 
+    private val recordingState = MutableStateFlow(RecordingState.STOPPED)
     private val _uiState = MutableStateFlow(RecordAudioUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.combine(recordingState){ uiState, recording ->
+        uiState.copy(
+           recordingState = recording
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), _uiState.value)
+
 
     fun onAction(action: RecordAudioAction) {
         when (action) {
             RecordAudioAction.ToggleVisibility -> {
-                _uiState.update {
-                    it.copy(
-                        shouldShowRecordAudioComponent = !_uiState.value.shouldShowRecordAudioComponent
-                    )
+                recordingState.update {
+                    when (it) {
+                        RecordingState.RECORDING -> RecordingState.PAUSED
+                        RecordingState.PAUSED -> RecordingState.RECORDING
+                        RecordingState.STOPPED -> RecordingState.RECORDING
+                    }
                 }
+
+                println("RECORDING STATE = ${recordingState.value}")
             }
             is RecordAudioAction.StartRecording -> {
-                _uiState.update {
-                    it.copy(
-                        isRecording = true,
-                    )
-                }
+
                 recorder.start()
+
+                recordingState.update {
+                    RecordingState.RECORDING
+                }
 
                 var duration = 0L
                 viewModelScope.launch {
                     while (
-                        uiState.value.isRecording
+                        recordingState.value == RecordingState.RECORDING
                     ){
                         duration += DateTimeFormatterDuration.updateFrequency
                         val durationText = dateTimeFormatter.formatDateTime(duration, Locale.getDefault())
+
                         _uiState.update {
                             it.copy(
                                 duration = durationText ,
@@ -60,25 +75,24 @@ class RecordAudioViewModel(
             }
 
             RecordAudioAction.CancelRecording -> {
-                _uiState.update {
-                    it.copy(
-                        shouldShowRecordAudioComponent = false
-                    )
-                }
                 recorder.stop()
+                recordingState.update {
+                    RecordingState.STOPPED
+                }
             }
 
             RecordAudioAction.PauseRecording -> {
-                _uiState.update {
-                    it.copy(
-                        isRecording = false,
-                    )
+                recorder.pause()
+                recordingState.update {
+                    RecordingState.PAUSED
                 }
-                recorder.stop()
             }
             RecordAudioAction.SaveRecording -> {
-                    recorder.stop()
-                    navToCreateEcho(echoFactory.createEchoDto(recorder.listener.value))
+                recorder.stop()
+                recordingState.update {
+                    RecordingState.STOPPED
+                }
+                navToCreateEcho(echoFactory.createEchoDto(recorder.listener.value))
             }
 
             RecordAudioAction.CloseDialog -> {
