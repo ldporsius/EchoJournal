@@ -69,7 +69,6 @@ fun EchosScreen(
             else{
                 EchoListComponent(
                     entries = echoesUiState.selectedEchoes,
-                    echoesUiState = echoesUiState,
                     selectedMoods = { moodsUiState.SelectedMoodsLabel() },
                     moodsUiState = moodsUiState,
                     topicsUiState = topicsUiState,

@@ -52,6 +52,7 @@ fun fakeEcho(mood: Mood, timestamp: Long): Echo {
 fun fakeUiEcho(id: String, mood: Mood, timestamp: String): UiEcho {
     return UiEcho(
         id = id,
+        uri = testSound().toString(),
         mood = moodToColorMap.getOrElse(mood){
             defaultUiMood
         },

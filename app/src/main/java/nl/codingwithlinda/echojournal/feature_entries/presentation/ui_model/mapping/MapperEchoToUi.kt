@@ -15,6 +15,7 @@ fun Echo.toUi(
 ): UiEcho{
     return UiEcho(
         id = id,
+        uri = uri,
         mood = mood.toUi(),
         name = title,
         description = description,
@@ -23,7 +24,7 @@ fun Echo.toUi(
         topics = topics.map {
            it.name
         },
-        duration = "0:00"
+        duration = "todo"
     )
 }
 

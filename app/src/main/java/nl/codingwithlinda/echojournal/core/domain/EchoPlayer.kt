@@ -4,6 +4,7 @@ import android.net.Uri
 import kotlinx.coroutines.flow.StateFlow
 
 interface EchoPlayer {
+    suspend fun amplitudes(uri: Uri): List<Float>
     fun play(uri: Uri)
     fun pause()
     fun stop()

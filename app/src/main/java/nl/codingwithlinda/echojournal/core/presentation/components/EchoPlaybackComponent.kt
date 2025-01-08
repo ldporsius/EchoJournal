@@ -30,20 +30,17 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayE
 @Composable
 fun EchoPlaybackComponent(
     modifier: Modifier = Modifier,
-    //uiEcho: Echo,
     onAction: (ReplayEchoAction) -> Unit,
     moodColor: Color,
     duration: String,
     amplitudes: List<Float>,
-    echoId: String
+    uri: String,
 ) {
-
-    val iconTint = moodColor
 
     var playIconSize by remember {
         mutableStateOf(Size.Zero)
     }
-    val amplitudeWidth = 6.dp
+    val amplitudeWidth = 2.dp
     val amplitudeSpacing = 1.dp
 
     Row(
@@ -51,7 +48,7 @@ fun EchoPlaybackComponent(
             .fillMaxWidth()
             .height(48.dp)
             .background(
-                color = iconTint.copy(.25f),
+                color = moodColor.copy(.25f),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
             )
             .padding(start = 6.dp, end = 16.dp),
@@ -59,7 +56,7 @@ fun EchoPlaybackComponent(
 
     ){
         IconButton(onClick = {
-            onAction(ReplayEchoAction.Play(echoId))
+            onAction(ReplayEchoAction.Play(uri))
         },
             modifier = Modifier
                 .onSizeChanged {
@@ -67,7 +64,7 @@ fun EchoPlaybackComponent(
                 },
             colors = androidx.compose.material3.IconButtonDefaults.iconButtonColors(
                 containerColor = androidx.compose.ui.graphics.Color.White,
-                contentColor = iconTint
+                contentColor = moodColor
             )
         ) {
             Icon(imageVector = androidx.compose.material.icons.Icons.Default.PlayArrow, contentDescription = null)
@@ -82,20 +79,24 @@ fun EchoPlaybackComponent(
                     val width = size.width
                     val height = size.height
 
-                    (0 until amplitudes.size).forEach { index ->
-                        val x = index * (amplitudeWidth.toPx() + amplitudeSpacing.toPx())
+                    val barWidthFactor = width / amplitudes.size
+                    val maxAmplitude = amplitudes.maxOrNull() ?: 1f
+                    val normalizedAmplitudes = amplitudes.map { it / maxAmplitude }
+
+                    normalizedAmplitudes.indices.forEach { index ->
+                        val x = index * (amplitudeWidth.toPx() + amplitudeSpacing.toPx()) * barWidthFactor
                         val y = height / 2
 
-                        val amplitudeHeight = height * amplitudes[index]
+                        val amplitudeHeight = height * normalizedAmplitudes[index]
 
                         val offsetStart = Offset(x = x, y = y - amplitudeHeight / 2)
                         val offsetEnd = Offset(x = x, y = y + amplitudeHeight / 2)
 
                         drawLine(
-                            color = iconTint,
+                            color = moodColor,
                             start = offsetStart,
                             end = offsetEnd,
-                            strokeWidth = amplitudeWidth.toPx()
+                            strokeWidth = amplitudeWidth.toPx() * barWidthFactor
                         )
                     }
                 }

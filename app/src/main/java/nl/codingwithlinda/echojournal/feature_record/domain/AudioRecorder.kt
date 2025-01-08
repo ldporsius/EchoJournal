@@ -1,9 +1,9 @@
 package nl.codingwithlinda.echojournal.feature_record.domain
 
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 
 interface AudioRecorder {
-    val listener: StateFlow<AudioRecorderData>
+    val listener: Flow<AudioRecorderData>
     fun start()
     fun pause()
     fun stop()

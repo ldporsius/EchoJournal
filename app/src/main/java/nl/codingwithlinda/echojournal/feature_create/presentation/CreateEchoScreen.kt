@@ -38,6 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.core.data.EchoDto
+import nl.codingwithlinda.echojournal.core.domain.model.Echo
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.AddTopicComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.CreateCancelSaveButtons
@@ -51,7 +53,7 @@ import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUi
 @Composable
 fun CreateEchoScreen(
     modifier: Modifier = Modifier,
-    uiState: CreateEchoUiState = CreateEchoUiState(),
+    uiState: CreateEchoUiState,
     topicsUiState: TopicsUiState,
     selectedTopics: List<String>,
     onAction: (CreateEchoAction) -> Unit,
@@ -102,9 +104,9 @@ fun CreateEchoScreen(
                 onAction(CreateEchoAction.PlayEcho)
             },
             moodColor = Color.Gray,
-            duration = "1:23",
-            amplitudes = listOf(),
-            echoId = ""
+            duration = uiState.duration,
+            amplitudes = uiState.amplitudes,
+            uri = ""
         )
 
         Spacer(modifier = Modifier.height(16.dp))

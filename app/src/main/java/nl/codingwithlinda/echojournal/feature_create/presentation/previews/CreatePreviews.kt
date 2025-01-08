@@ -14,12 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.core.presentation.components.GradientButton
 import nl.codingwithlinda.echojournal.feature_create.presentation.CreateEchoScreen
-import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
 import nl.codingwithlinda.echojournal.ui.theme.buttonDisabledGradient
-import nl.codingwithlinda.echojournal.ui.theme.buttonGradient
 
 @Preview
 @Composable
@@ -30,7 +28,10 @@ private fun CreateScreenPreview() {
                 .fillMaxSize()
                 .padding(16.dp)
             ,
-            uiState = CreateEchoUiState()
+            uiState = CreateEchoUiState(
+                duration = "10",
+                amplitudes = listOf(1f, 2f, 3f)
+            )
                 .copy(
                     title = "title",
 

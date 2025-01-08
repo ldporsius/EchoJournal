@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -69,7 +70,11 @@ class CreateEchoViewModel(
         }
     }
 
-    private val _uiState = MutableStateFlow(CreateEchoUiState())
+
+    private val _uiState = MutableStateFlow(CreateEchoUiState(
+        duration = echoDto.duration.toString(),
+        amplitudes = emptyList()
+    ))
     val uiState = combine(
         _uiState,
         _moods, _selectedMood) { uiState, moods, selectedMood ->
@@ -80,6 +85,22 @@ class CreateEchoViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
+
+    init {
+        viewModelScope.launch {
+            try {
+                println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri)}")
+                _uiState.update {
+                    it.copy(
+                        amplitudes = audioEchoPlayer.amplitudes(Uri.parse(echoDto.uri))
+                    )
+                }
+            }catch (e: Exception){
+
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun onAction(action: CreateEchoAction) {
         when (action) {
@@ -179,6 +200,7 @@ class CreateEchoViewModel(
                         title = userInput.title,
                         description = userInput.description,
                         mood = userInput.confirmedMood.mood,
+                        amplitudes = userInput.amplitudes
                     ).also {
                         echoAccess.create(it)
                         onSaved()

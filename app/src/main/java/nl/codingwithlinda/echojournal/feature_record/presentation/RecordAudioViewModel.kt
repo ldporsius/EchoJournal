@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,6 +30,7 @@ class RecordAudioViewModel(
 
     private val recordingState = MutableStateFlow(RecordingState.STOPPED)
     private val _uiState = MutableStateFlow(RecordAudioUiState())
+
     val uiState = _uiState.combine(recordingState){ uiState, recording ->
         uiState.copy(
            recordingState = recording
@@ -92,7 +95,12 @@ class RecordAudioViewModel(
                 recordingState.update {
                     RecordingState.STOPPED
                 }
-                navToCreateEcho(echoFactory.createEchoDto(recorder.listener.value))
+
+                viewModelScope.launch {
+                    recorder.listener.firstOrNull()?.let {
+                        navToCreateEcho(echoFactory.createEchoDto(it))
+                    }
+                }
             }
 
             RecordAudioAction.CloseDialog -> {

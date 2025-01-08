@@ -11,8 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
+import java.io.FileInputStream
 
 
 class AndroidEchoPlayer(
@@ -28,13 +30,46 @@ class AndroidEchoPlayer(
 
     private var player: MediaPlayer? = null
     private var visualizer = Visualizer(0)
+    private val chunkSize = 100
+
+    override suspend fun amplitudes(uri: Uri): List<Float> {
+
+        val scheme = uri.scheme ?: ""
+
+        if (scheme.contains("resource")){
+
+            return withContext(dispatcherProvider.default) {
+                val res = context.contentResolver?.openInputStream(uri).use { inputStream ->
+                    val bytes = inputStream?.readBytes() ?: byteArrayOf()
+                    println("Amplitudes input stream read bytes: ${bytes.toList()}")
+                    bytes.toList().chunked(chunkSize) {
+                        val max = it.maxOrNull()?.toFloat() ?: 1f
+                        val average = it.average().toFloat()
+                       max
+                    } ?: emptyList()
+                }
+
+                println("Amplitudes res for raw: ${res}")
+                res
+            }
+        }
+
+        return withContext(dispatcherProvider.default) {
+            val inputStream = FileInputStream(uri.path)
+            inputStream.use{
+                it.readBytes().toList().chunked(1000){
+                   1 / it.average().toFloat()
+                }
+            }
+        }
+    }
 
     override fun play(uri: Uri) {
         releaseMediaPlayer()
 
         player = MediaPlayer.create(context, uri)
         player?.start()
-        println("Playing ${uri.path ?: "no uri path"}")
+
         visualiseRpm()
     }
 
@@ -49,14 +84,13 @@ class AndroidEchoPlayer(
         visualizer.setDataCaptureListener(null, 0, false, false);
     }
 
-    fun visualiseRpm(){
+    private fun visualiseRpm(){
         player?.let {
 
             try {
-                //visualizer = Visualizer(0)
 
                 if (visualizer.enabled ) return
-                visualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate(), true, true)
+                visualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate(), true, false)
                 visualizer.captureSize = 256
 
                 visualizer.setMeasurementMode(MEASUREMENT_MODE_PEAK_RMS)

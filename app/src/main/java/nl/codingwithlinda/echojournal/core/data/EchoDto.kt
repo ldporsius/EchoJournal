@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EchoDto(
-    val amplitudes: List<Float>,
+    val duration: Long,
     val uri: String
 )

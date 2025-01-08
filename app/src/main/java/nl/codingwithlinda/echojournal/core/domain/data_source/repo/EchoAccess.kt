@@ -23,6 +23,11 @@ class EchoAccess: DataSourceAccess<Echo, String> {
     }
 
     override suspend fun update(item: Echo): Echo {
+        echoes.update { echoList ->
+            echoList.map {
+                if (it.id == item.id) item else it
+            }
+        }
        return item
     }
 

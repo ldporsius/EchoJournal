@@ -1,10 +1,12 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -69,10 +71,10 @@ class EchosViewModel(
            1 / (it.toFloat())
         }
     }
-    private val _playingEcho = MutableStateFlow<String?>(null)
+    private val _playingEchoUri = MutableStateFlow<String?>(null)
 
-    val replayUiState = combine(_playingEcho, waves){playing, waves ->
-        println("playing: $playing")
+    val replayUiState = combine(_playingEchoUri, waves){ playing, waves ->
+        println("playing uri: $playing")
         println("waves: ${waves.take(25)}")
         ReplayUiState(
             playingEchoId = playing,
@@ -81,6 +83,22 @@ class EchosViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReplayUiState())
 
     private val _echoes = echoAccess.readAll()
+
+    init {
+        viewModelScope.launch {
+            _echoes.first().forEachIndexed {index, echo ->
+                val sound = if (index % 2 == 0) testSound().toString() else testSound2().toString()
+                println("test sound: $sound")
+                println("uri from sound: ${Uri.parse(sound)}")
+                val update = echo.copy(
+                    uri = sound ,
+                    amplitudes = echoPlayer.amplitudes(Uri.parse(sound))
+                )
+                echoAccess.update(update)
+            }
+        }
+    }
+
     val echoesUiState
             = combine(_echoes, _selectedTopics, _selectedMoods) { echoes, topics, moods->
 
@@ -136,30 +154,25 @@ class EchosViewModel(
     fun onReplayAction(action: ReplayEchoAction){
         when(action){
             ReplayEchoAction.Pause -> {
-                _playingEcho.update {
+                _playingEchoUri.update {
                     null
                 }
                 echoPlayer.pause()
             }
             is ReplayEchoAction.Play -> {
-                val id = echoesUiState.value.selectedEchoes.indexOfFirst {
-                    it.entries.any { it.id == action.echoId }
-                }
-                _playingEcho.update {
-                    action.echoId
-                }
-
-                val sound = if (id  % 2 == 0) testSound() else testSound2()
+               /* val id = echoesUiState.value.selectedEchoes.indexOfFirst {
+                    it.entries.any { it.uri == action.echoId }
+                }*/
                 viewModelScope.launch {
-                    _playingEcho.update {
-                        action.echoId
+                    _playingEchoUri.update {
+                        action.uri
                     }
-                    echoPlayer.play(sound)
+                    echoPlayer.play(Uri.parse(action.uri))
                 }
 
             }
             ReplayEchoAction.Stop -> {
-                _playingEcho.update {
+                _playingEchoUri.update {
                     null
                 }
                 echoPlayer.stop()

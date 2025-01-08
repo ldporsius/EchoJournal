@@ -24,7 +24,6 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEc
 @Composable
 fun EchoListComponent(
     entries: List<UiEchoGroup>,
-    echoesUiState: EchoesUiState,
     selectedMoods: @Composable () -> Unit,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
@@ -68,8 +67,8 @@ fun EchoListComponent(
                                         onAction = onReplayAction,
                                         moodColor = Color( uiEcho.mood.color),
                                         duration = uiEcho.duration,
-                                        amplitudes = if (uiEcho.id == replayUiState.playingEchoId) replayUiState.waves else emptyList(),
-                                        echoId = uiEcho.id
+                                        amplitudes = uiEcho.amplitudes,
+                                        uri = uiEcho.uri
                                     )
                                 },
                             )

@@ -10,13 +10,14 @@ class EchoFactory {
 
     fun createEchoDto(audioRecorderData: AudioRecorderData): EchoDto {
         return EchoDto(
-            amplitudes = emptyList(),
+            duration = audioRecorderData.duration,
             uri = audioRecorderData.uri
         )
     }
 
     fun createEcho(
         echoDto: EchoDto,
+        amplitudes: List<Float>,
         topics: List<Topic>,
         title: String,
         description: String,
@@ -30,7 +31,7 @@ class EchoFactory {
             mood = mood,
             uri = echoDto.uri,
             timeStamp = System.currentTimeMillis(),
-            amplitudes = echoDto.amplitudes,
+            amplitudes = amplitudes,
         )
     }
 }
