@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -40,7 +41,7 @@ fun EchoPlaybackComponent(
     var playIconSize by remember {
         mutableStateOf(Size.Zero)
     }
-    val amplitudeWidth = 2.dp
+    //val amplitudeWidth = 1024.dp
     val amplitudeSpacing = 1.dp
 
     Row(
@@ -74,30 +75,36 @@ fun EchoPlaybackComponent(
             Modifier
                 .weight(1f)
                 .height(48.dp)
-                .clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
+                //.clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
                 .drawBehind {
                     val width = size.width
                     val height = size.height
+                    val amplitudeBarCount = (width / (2 * amplitudes.size)).toInt()
 
-                    val barWidthFactor = width / amplitudes.size
-                    val maxAmplitude = amplitudes.maxOrNull() ?: 1f
-                    val normalizedAmplitudes = amplitudes.map { it / maxAmplitude }
+                    val amplWidth = 3.dp.toPx()
 
-                    normalizedAmplitudes.indices.forEach { index ->
-                        val x = index * (amplitudeWidth.toPx() + amplitudeSpacing.toPx()) * barWidthFactor
-                        val y = height / 2
+                    this.scale(
+                        scaleX = 1f,
+                        scaleY = 1f,
+                        pivot = Offset(0f, center.y)
+                    ) {
+                        amplitudes.forEachIndexed { index, amplitude ->
+                            val x = index * amplWidth * 2
+                            val y = height / 2
 
-                        val amplitudeHeight = height * normalizedAmplitudes[index]
+                            val yTopStart = center.y - (height / 2) * amplitude
 
-                        val offsetStart = Offset(x = x, y = y - amplitudeHeight / 2)
-                        val offsetEnd = Offset(x = x, y = y + amplitudeHeight / 2)
+                            drawRoundRect(
+                                color = moodColor,
+                                topLeft = Offset(x, yTopStart),
+                                size = Size(
+                                    amplWidth,
+                                    (center.y - yTopStart) * 2f
+                                ),
+                                cornerRadius = androidx.compose.ui.geometry.CornerRadius(100f)
+                            )
 
-                        drawLine(
-                            color = moodColor,
-                            start = offsetStart,
-                            end = offsetEnd,
-                            strokeWidth = amplitudeWidth.toPx() * barWidthFactor
-                        )
+                        }
                     }
                 }
         )

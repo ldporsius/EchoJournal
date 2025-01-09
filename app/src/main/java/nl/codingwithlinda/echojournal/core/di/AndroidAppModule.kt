@@ -2,6 +2,8 @@ package nl.codingwithlinda.echojournal.core.di
 
 import android.app.Application
 import nl.codingwithlinda.echojournal.core.data.AndroidEchoPlayer
+import nl.codingwithlinda.echojournal.core.data.AudioExtractorAMR
+import nl.codingwithlinda.echojournal.core.data.AudioSampleExtractor
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
@@ -22,7 +24,9 @@ class AndroidAppModule(
 
     override val echoPlayer: EchoPlayer
         get() = AndroidEchoPlayer(
-            context,dispatcherProvider
+            context,
+            dispatcherProvider,
+            audioSampleExtractor = AudioExtractorAMR()
         )
 
     override val topicsAccess: TopicsAccess

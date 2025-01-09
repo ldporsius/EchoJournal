@@ -20,7 +20,7 @@ class AndroidMediaRecorder(
     private val context: Application,
     private val dispatcherProvider: DispatcherProvider
 ): AudioRecorder{
-    private var fileName: String = File(context.filesDir,"audio.3gp").path
+    private var fileName: String = File(context.filesDir,"audio.mp4").path
 
     private val _waves = MutableStateFlow<ByteArray>(byteArrayOf())
     private val samplingRate = 8_000
@@ -42,9 +42,9 @@ class AndroidMediaRecorder(
     private fun startRecording() {
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(fileName)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
             setAudioSamplingRate(samplingRate)
 
             try {
@@ -72,7 +72,7 @@ class AndroidMediaRecorder(
 
         visualizer.setEnabled(false)
 
-        val input = FileInputStream(fileName)
+       /* val input = FileInputStream(fileName)
 
         try {
            val read = input.readBytes()
@@ -84,7 +84,7 @@ class AndroidMediaRecorder(
 
         }catch (e: Exception){
             e.printStackTrace()
-        }
+        }*/
     }
 
 
