@@ -60,7 +60,8 @@ class AndroidAudioRecorder(
     private val uri = File(context.filesDir, "echo.mp3")
     private val _listener = MutableStateFlow(AudioRecorderData(
         duration = 0L,
-        uri = uri.path
+        uri = uri.path,
+        amplitudesUri = ""
     ))
     override val listener: StateFlow<AudioRecorderData>
         get() = _listener.asStateFlow()

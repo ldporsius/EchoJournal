@@ -67,7 +67,7 @@ fun EchoListComponent(
                                         onAction = onReplayAction,
                                         moodColor = Color( uiEcho.mood.color),
                                         duration = uiEcho.duration,
-                                        amplitudes = uiEcho.amplitudes,
+                                        amplitudes = replayUiState.waves,
                                         uri = uiEcho.uri
                                     )
                                 },
@@ -77,7 +77,6 @@ fun EchoListComponent(
                                     )
                                 }
                             )
-
                         }
                     )
                 }

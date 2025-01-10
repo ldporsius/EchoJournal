@@ -20,16 +20,13 @@ class AndroidMediaRecorder(
     private val context: Application,
     private val dispatcherProvider: DispatcherProvider,
 
-): AudioRecorder{
+    ): AudioRecorder{
+    private val pathAmplitudes: String = File(context.filesDir, FILE_NAME_AMPLITUDES).path
+    private val pathAudio: String = File(context.filesDir,FILE_NAME_AUDIO).path
 
     companion object{
-        lateinit var fileName: String
-        lateinit var fileNameWaves: String
-    }
-
-    init {
-        fileName = File(context.filesDir,"audio.mp4").path
-        fileNameWaves = File(context.filesDir,"audio_waves.txt").path
+        const val FILE_NAME_AUDIO: String = "audio.mp4"
+        const val FILE_NAME_AMPLITUDES = "audio_waves.txt"
     }
 
     private val _waves = MutableStateFlow<List<Int>>(emptyList())
@@ -39,7 +36,8 @@ class AndroidMediaRecorder(
             = _waves.map {
         AudioRecorderData(
             duration = (it.size * 100).toLong(),
-            uri = fileName
+            uri = pathAudio,
+            amplitudesUri = pathAmplitudes
         )
     }
 
@@ -51,7 +49,7 @@ class AndroidMediaRecorder(
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setOutputFile(fileName)
+            setOutputFile(pathAudio)
             setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
             setAudioSamplingRate(samplingRate)
 
@@ -85,17 +83,15 @@ class AndroidMediaRecorder(
         recorder = null
 
         val output = _waves.value.toList()
-        println("output size = ${output.size}")
-        println("output = ${output.takeLast(1000)}")
 
-        val fileWriter = FileWriter(fileNameWaves)
-       CoroutineScope(dispatcherProvider.io).launch{
+        val fileWriter = FileWriter(pathAmplitudes)
+        CoroutineScope(dispatcherProvider.io).launch{
             fileWriter.use {
                 it.write(output.joinToString(","))
             }
         }
+        _waves.value = emptyList()
     }
-
 
     override fun start() {
         println("started recording")
@@ -108,16 +104,10 @@ class AndroidMediaRecorder(
             recorder?.pause()
         }
         stopRecording()
-
     }
 
     override fun stop() {
         println("stopped recording")
-
         stopRecording()
-
     }
-
-
-
 }

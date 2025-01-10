@@ -7,13 +7,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.echojournal.core.data.EchoDto
+import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.di.AppModule
-import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
-import nl.codingwithlinda.echojournal.core.data.EchoFactory
-import nl.codingwithlinda.echojournal.core.domain.model.Echo
-import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.RecordAudioViewModel
 
 @Composable

@@ -3,11 +3,12 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -66,19 +67,20 @@ class EchosViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
 
-    private val waves = echoPlayer.waves.map {
+   /* private val waves = echoPlayer.waves.map {
         it.map {
-           1 / (it.toFloat())
+            1 / (it.toFloat())
         }
-    }
+    }*/
     private val _playingEchoUri = MutableStateFlow<String?>(null)
+    private val _playingEchoAmplitudes = MutableStateFlow<List<Float>>(emptyList())
 
-    val replayUiState = combine(_playingEchoUri, waves){ playing, waves ->
-        //println("Echos viewmodel. playing uri: $playing")
-        //println("Echos viewmodel. waves: ${waves.takeLast(25)}")
+    val replayUiState = combine(_playingEchoUri, _playingEchoAmplitudes){ playing, amplitudes ->
+        println("Echos viewmodel. playing uri: $playing")
+        println("Echos viewmodel. waves: ${amplitudes.takeLast(25)}")
         ReplayUiState(
-            playingEchoId = playing,
-            waves = waves
+            playingEchoUri = playing,
+            waves = amplitudes
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReplayUiState())
 
@@ -117,19 +119,19 @@ class EchosViewModel(
     fun onFilterAction(action: FilterEchoAction){
         when(action){
             is FilterEchoAction.ToggleSelectTopic -> {
-               if (action.topic in _selectedTopics.value){
-                   _selectedTopics.update {
-                       it.minus(action.topic)
-                   }
-               }else{
-                   _selectedTopics.update {
-                       it.plus(action.topic)
-                   }
-               }
+                if (action.topic in _selectedTopics.value){
+                    _selectedTopics.update {
+                        it.minus(action.topic)
+                    }
+                }else{
+                    _selectedTopics.update {
+                        it.plus(action.topic)
+                    }
+                }
             }
 
             FilterEchoAction.ClearTopicSelection -> {
-               _selectedTopics.update { emptyList() }
+                _selectedTopics.update { emptyList() }
             }
 
             FilterEchoAction.ClearMoodSelection -> {
@@ -160,14 +162,16 @@ class EchosViewModel(
                 echoPlayer.pause()
             }
             is ReplayEchoAction.Play -> {
-               /* val id = echoesUiState.value.selectedEchoes.indexOfFirst {
-                    it.entries.any { it.uri == action.echoId }
-                }*/
+
                 viewModelScope.launch {
-                    _playingEchoUri.update {
-                        action.uri
+                    _echoes.firstOrNull()?.find {
+                        it.uri == action.uri
+                    }?.also {
+                        echoPlayer.play(Uri.parse(action.uri))
+
+                        println("playing echo: ${it.amplitudes.take(25)}")
+                        visualiseAmplitudes(action.uri, it.amplitudes)
                     }
-                    echoPlayer.play(Uri.parse(action.uri))
                 }
 
             }
@@ -177,6 +181,23 @@ class EchosViewModel(
                 }
                 echoPlayer.stop()
             }
+        }
+    }
+
+    private fun visualiseAmplitudes(uri: String, amplitudes: List<Float>){
+        viewModelScope.launch {
+            println("visualiseAmplitudes: $amplitudes")
+            val delayMillis = (10L)
+            amplitudes.onEachIndexed { index, fl ->
+                _playingEchoAmplitudes.update {
+                    amplitudes.subList(index, amplitudes.size)
+                }
+            }
+            delay(delayMillis)
+        }
+
+        _playingEchoAmplitudes.update {
+            amplitudes
         }
     }
 }

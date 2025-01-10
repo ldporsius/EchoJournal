@@ -52,7 +52,8 @@ fun EchoPlaybackComponent(
                 color = moodColor.copy(.25f),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
             )
-            .padding(start = 6.dp, end = 16.dp),
+            .padding(start = 0.dp, end = 16.dp)
+        ,
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
 
     ){
@@ -76,21 +77,25 @@ fun EchoPlaybackComponent(
                 .weight(1f)
                 .height(48.dp)
                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
+                .background(color = Color.Red.copy(.1f))
                 .drawBehind {
                     val width = size.width
                     val height = size.height
                     val amplitudeBarCount = (width / (2 * amplitudes.size)).toInt()
 
-                    val amplWidth = 3.dp.toPx()
+                    val amplWidth = 2.dp.toPx()
+
+                    val spaceFactor = 0.5f
+
+                    val scaleX = 1f //width / (amplitudes.size * (1 + spaceFactor))
 
                     this.scale(
-                        scaleX = 1f,
-                        scaleY = 1f,
+                        scaleX = 0.97f,
+                        scaleY = 0.9f,
                         pivot = Offset(0f, center.y)
                     ) {
                         amplitudes.forEachIndexed { index, amplitude ->
-                            val x = index * amplWidth * 1.5f
-                            val y = height / 2
+                            val x = index * amplWidth * (1 + spaceFactor)
 
                             val yTopStart = center.y - (height / 2) * amplitude
 
@@ -98,8 +103,8 @@ fun EchoPlaybackComponent(
                                 color = moodColor,
                                 topLeft = Offset(x, yTopStart),
                                 size = Size(
-                                    amplWidth,
-                                    (center.y - yTopStart) * 2f
+                                    width = amplWidth,
+                                    height = (center.y - yTopStart) * 2f
                                 ),
                                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(100f)
                             )

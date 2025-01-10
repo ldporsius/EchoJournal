@@ -23,7 +23,6 @@ import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEc
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
-import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
@@ -86,15 +85,14 @@ class CreateEchoViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
-    private val soundCapturerWaves = audioEchoPlayer.waves
 
     private var amplitudes = emptyList<Float>()
     init {
         viewModelScope.launch {
             try {
                 println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri)}")
-                val wavesUri = AndroidMediaRecorder.fileNameWaves
-                val amplitudes = audioEchoPlayer.amplitudes(Uri.parse(wavesUri))
+
+                val amplitudes = audioEchoPlayer.amplitudes(Uri.parse(echoDto.amplitudesUri))
                 this@CreateEchoViewModel.amplitudes = amplitudes
 
                 _uiState.update {
@@ -104,13 +102,12 @@ class CreateEchoViewModel(
                 }
 
             }catch (e: Exception){
-
                 e.printStackTrace()
             }
         }
     }
 
-    private fun playback(amplitudes: List<Float>){
+    private fun visualiseAmplitudes(amplitudes: List<Float>){
         viewModelScope.launch {
 
             val delayMillis = (10L)
@@ -135,7 +132,7 @@ class CreateEchoViewModel(
         when (action) {
             CreateEchoAction.PlayEcho -> {
                audioEchoPlayer.play(Uri.parse(echoDto.uri))
-                playback(amplitudes)
+               // visualiseAmplitudes(amplitudes)
             }
             is CreateEchoAction.TitleChanged -> {
                 _uiState.update {
@@ -230,7 +227,7 @@ class CreateEchoViewModel(
                         title = userInput.title,
                         description = userInput.description,
                         mood = userInput.confirmedMood.mood,
-                        amplitudes = userInput.amplitudes
+                        amplitudes = amplitudes
                     ).also {
                         echoAccess.create(it)
                         onSaved()

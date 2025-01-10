@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.SoundCapturer
+import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -30,6 +31,8 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.OutputStream
 import java.nio.ByteBuffer
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 
 class AndroidEchoPlayer(
@@ -49,65 +52,70 @@ class AndroidEchoPlayer(
     override suspend fun amplitudes(uri: Uri): List<Float> {
 
         val scheme = uri.scheme ?: ""
-        val childPath = uri.path?.split("/")?.last()
-        val path = File(context.filesDir, "$childPath")
-        val txtPath = File(context.filesDir, "${childPath}.txt")
+        //val childPath = uri.path?.split("/")?.last()
+        val pathAmplitudesTest = File(context.filesDir, AndroidMediaRecorder.FILE_NAME_AMPLITUDES).path
 
-        println("Path in amplitudes: ${path.path}")
 
         if (scheme.contains("resource")) {
             return withContext(dispatcherProvider.default) {
-
-                val inputStream =
-                    context.contentResolver.openInputStream(uri) ?: return@withContext emptyList()
-                inputStream.use { input ->
-                    val bytes = input.readBytes()
-
-                    println("Bytes size: ${bytes.size}")
-                    println("Bytes min/max: ${bytes.minOrNull()}, ${bytes.maxOrNull()}")
-
-                    val shorts = bytes.asSequence().map {
-                        it + 128
-                    }
-
-                    val res = shorts
-                        .chunked(2) {
-                            (it.average().toFloat() / 256f)
-                        }.toList()
-
-
-                    println("Res min/max: ${res.minOrNull()}, ${res.maxOrNull()}")
-                    println("Res size: ${res.size}")
-
-                    emptyList()
-                }
+                amplitudesFromFile(Uri.parse(pathAmplitudesTest))
             }
         }
 
         return withContext(dispatcherProvider.default) {
-
-            val fileReader = FileReader(uri.path)
-            fileReader.use {
-               val amplitudes =  it.readLines().flatMap {
-                   it.split(",").map {
-                       it.toFloat()
-                   }
-               }
-                println("Amplitudes input stream read bytes: ${amplitudes}")
-                println("Amplitudes size: ${amplitudes.size}")
-                println("Amplitudes min/max: ${amplitudes.minOrNull()}, ${amplitudes.maxOrNull()}")
-                val chunkSize = (amplitudes.size / 500) .coerceAtLeast(1)
-                println("Amplitudes chunk size: $chunkSize")
-
-                val maxAmplitude = amplitudes.maxOrNull() ?: 1f
-                amplitudes.chunked(chunkSize){
-                   it.average().toFloat() / maxAmplitude
+                amplitudesFromFile(uri).also {
+                    println("Amplitudes: ${it.size}")
                 }
             }
+        }
 
+    private fun amplitudesFromBytes(uri: Uri): List<Float> {
+        val inputStream =
+            context.contentResolver.openInputStream(uri) ?: return emptyList()
+        inputStream.use { input ->
+            val bytes = input.readBytes()
+
+            println("Bytes size: ${bytes.size}")
+            println("Bytes min/max: ${bytes.minOrNull()}, ${bytes.maxOrNull()}")
+
+            val shorts = bytes.asSequence().map {
+                it + 128
+            }
+
+            val res = shorts
+                .chunked(2) {
+                    (it.average().toFloat() / 256f)
+                }.toList()
+
+
+            println("Res min/max: ${res.minOrNull()}, ${res.maxOrNull()}")
+            println("Res size: ${res.size}")
+
+            return res
         }
     }
 
+    private fun amplitudesFromFile(uri: Uri): List<Float> {
+        val BAR_NUM = 100
+        val fileReader = FileReader(uri.path)
+        fileReader.use { reader ->
+            val amplitudes = reader.readLines().flatMap {
+                it.split(",").map {
+                    it.toFloat()
+                }
+            }
+            println("Amplitudes input stream read bytes: ${amplitudes}")
+            println("Amplitudes size: ${amplitudes.size}")
+            println("Amplitudes min/max: ${amplitudes.minOrNull()}, ${amplitudes.maxOrNull()}")
+            val chunkSize = ceil(1.0 * amplitudes.size / BAR_NUM).roundToInt().coerceAtLeast(1)
+            println("Amplitudes chunk size: $chunkSize")
+
+            val maxAmplitude = amplitudes.maxOrNull() ?: 1f
+            return amplitudes.chunked(chunkSize) {
+                it.max().toFloat() / maxAmplitude
+            }
+        }
+    }
 
     override fun play(uri: Uri) {
         releaseMediaPlayer()
@@ -115,11 +123,12 @@ class AndroidEchoPlayer(
         player = MediaPlayer.create(context, uri)
         player?.start()
 
-        soundCapturer.visualiseRpm()
+        //soundCapturer.visualiseRpm()
     }
 
     override fun pause() {
         player?.pause()
+        soundCapturer.stop()
     }
 
     override fun stop() {

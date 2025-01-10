@@ -11,7 +11,8 @@ class EchoFactory {
     fun createEchoDto(audioRecorderData: AudioRecorderData): EchoDto {
         return EchoDto(
             duration = audioRecorderData.duration,
-            uri = audioRecorderData.uri
+            uri = audioRecorderData.uri,
+            amplitudesUri = audioRecorderData.amplitudesUri
         )
     }
 
