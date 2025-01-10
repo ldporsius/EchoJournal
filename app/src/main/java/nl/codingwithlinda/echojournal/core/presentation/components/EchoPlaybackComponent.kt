@@ -87,10 +87,10 @@ fun EchoPlaybackComponent(
 
                     val spaceFactor = 0.5f
 
-                    val scaleX = 1f //width / (amplitudes.size * (1 + spaceFactor))
+                    val scaleX = width / (amplitudes.size * (1 + spaceFactor) * amplWidth)
 
                     this.scale(
-                        scaleX = 0.97f,
+                        scaleX = scaleX*0.95f,
                         scaleY = 0.9f,
                         pivot = Offset(0f, center.y)
                     ) {
