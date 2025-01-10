@@ -32,11 +32,9 @@ class AndroidAppModule(
             soundCapturer = soundCapturer
         )
 
-    override val topicsAccess: TopicsAccess
-        get() = TopicsAccess()
+    override val topicsAccess: TopicsAccess = TopicsAccess()
 
-    override val echoAccess: EchoAccess
-        get() = EchoAccess()
+    override val echoAccess: EchoAccess = EchoAccess()
 
     override val echoFactory: EchoFactory
         get() = EchoFactory()
