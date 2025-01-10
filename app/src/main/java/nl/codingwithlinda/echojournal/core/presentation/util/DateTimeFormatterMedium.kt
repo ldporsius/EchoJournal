@@ -22,7 +22,7 @@ class DateTimeFormatterMedium: DateTimeFormatter {
 }
 
 /*
-fun formatDateTime(timestamp: Long, locale: Locale): String {
+fun formatDateTimeMillis(timestamp: Long, locale: Locale): String {
     val dateFormatterLocale = java.time.format.DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(locale)
 
     return dateFormatterLocale.format(LocalDateTime.ofEpochSecond(timestamp/1000, 0, ZoneOffset.UTC))

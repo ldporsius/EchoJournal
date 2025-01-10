@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -65,7 +63,7 @@ class RecordAudioViewModel(
                         recordingState.value == RecordingState.RECORDING
                     ){
                         duration += DateTimeFormatterDuration.updateFrequency
-                        val durationText = dateTimeFormatter.formatDateTime(duration, Locale.getDefault())
+                        val durationText = dateTimeFormatter.formatDateTimeMillis(duration)
 
                         _uiState.update {
                             it.copy(

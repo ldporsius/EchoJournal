@@ -1,11 +1,9 @@
 package nl.codingwithlinda.echojournal.core.presentation.util
 
-import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
-import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 
-class DateTimeFormatterDuration: DateTimeFormatter {
-    override fun formatDateTime(timestamp: Long, locale: Locale): String {
+class DateTimeFormatterDuration{
+    fun formatDateTimeMillis(timestamp: Long): String {
 
         return timestamp.milliseconds.toComponents{ minutes, seconds, nanoseconds ->
            val millis = nanoseconds / 1_000_000 / updateFrequency

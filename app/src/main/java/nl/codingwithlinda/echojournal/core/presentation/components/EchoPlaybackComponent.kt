@@ -75,7 +75,7 @@ fun EchoPlaybackComponent(
             Modifier
                 .weight(1f)
                 .height(48.dp)
-                //.clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
+                .clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
                 .drawBehind {
                     val width = size.width
                     val height = size.height
@@ -89,7 +89,7 @@ fun EchoPlaybackComponent(
                         pivot = Offset(0f, center.y)
                     ) {
                         amplitudes.forEachIndexed { index, amplitude ->
-                            val x = index * amplWidth * 2
+                            val x = index * amplWidth * 1.5f
                             val y = height / 2
 
                             val yTopStart = center.y - (height / 2) * amplitude

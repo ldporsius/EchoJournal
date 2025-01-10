@@ -37,7 +37,6 @@ class EchosViewModel(
 
     private val filterOnMoodAndTopic = FilterOnMoodAndTopic()
 
-
     private val _topics = topicsAccess.readAll()
     private val _selectedTopics = MutableStateFlow<List<Topic>>(emptyList())
     private val _topicsUiState = MutableStateFlow(TopicsUiState(
@@ -75,8 +74,8 @@ class EchosViewModel(
     private val _playingEchoUri = MutableStateFlow<String?>(null)
 
     val replayUiState = combine(_playingEchoUri, waves){ playing, waves ->
-        println("playing uri: $playing")
-        println("waves: ${waves.take(25)}")
+        //println("Echos viewmodel. playing uri: $playing")
+        //println("Echos viewmodel. waves: ${waves.takeLast(25)}")
         ReplayUiState(
             playingEchoId = playing,
             waves = waves

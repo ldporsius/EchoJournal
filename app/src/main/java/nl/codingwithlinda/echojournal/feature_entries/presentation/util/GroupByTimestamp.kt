@@ -6,6 +6,7 @@ import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMe
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterShort
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi
 import java.util.Locale
@@ -52,6 +53,7 @@ object GroupByTimestamp {
             entries = listEntry.value.mapIndexed { index, echo ->
                 echo.toUi(
                     dateTimeFormatter = formatter,
+                    durationFormatter = DateTimeFormatterDuration(),
                     locale = Locale.getDefault()
                 )
             }

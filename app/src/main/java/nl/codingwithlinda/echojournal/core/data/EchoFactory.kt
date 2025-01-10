@@ -31,6 +31,7 @@ class EchoFactory {
             mood = mood,
             uri = echoDto.uri,
             timeStamp = System.currentTimeMillis(),
+            duration = echoDto.duration,
             amplitudes = amplitudes,
         )
     }

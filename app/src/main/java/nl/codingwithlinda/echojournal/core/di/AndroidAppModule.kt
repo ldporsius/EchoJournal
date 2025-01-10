@@ -6,6 +6,7 @@ import nl.codingwithlinda.echojournal.core.data.AudioExtractorAMR
 import nl.codingwithlinda.echojournal.core.data.AudioSampleExtractor
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
+import nl.codingwithlinda.echojournal.core.domain.SoundCapturer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
@@ -16,17 +17,19 @@ class AndroidAppModule(
 ): AppModule {
 
     private val dispatcherProvider = AndroidDispatcherProvider()
-
+    private val soundCapturer = SoundCapturer()
     override val audioRecorder: AudioRecorder
         get() = AndroidMediaRecorder(
-            context, dispatcherProvider
+            context = context,
+            dispatcherProvider = dispatcherProvider,
         )
 
     override val echoPlayer: EchoPlayer
         get() = AndroidEchoPlayer(
-            context,
-            dispatcherProvider,
-            audioSampleExtractor = AudioExtractorAMR()
+            context = context,
+            dispatcherProvider = dispatcherProvider,
+            audioSampleExtractor = AudioExtractorAMR(),
+            soundCapturer = soundCapturer
         )
 
     override val topicsAccess: TopicsAccess

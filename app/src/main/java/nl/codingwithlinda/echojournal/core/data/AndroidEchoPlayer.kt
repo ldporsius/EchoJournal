@@ -21,10 +21,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
+import nl.codingwithlinda.echojournal.core.domain.SoundCapturer
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.FileReader
 import java.io.FileWriter
 import java.io.OutputStream
 import java.nio.ByteBuffer
@@ -33,33 +35,28 @@ import java.nio.ByteBuffer
 class AndroidEchoPlayer(
     private val context: Context,
     private val dispatcherProvider: DispatcherProvider,
-    private val audioSampleExtractor: AudioExtractorAMR
-): EchoPlayer, Visualizer.OnDataCaptureListener {
+    private val audioSampleExtractor: AudioExtractorAMR,
+    private val soundCapturer: SoundCapturer
+): EchoPlayer{
 
-
-    private val _waves = MutableStateFlow<ByteArray>(byteArrayOf())
-    override val waves = _waves.asStateFlow()
+    override val waves = soundCapturer.waves
 
     /** Handles audio focus when playing a sound file  */
     private val mAudioManager: AudioManager? = null
 
     private var player: MediaPlayer? = null
-    private var visualizer = Visualizer(0)
-    private val chunkSize = 100
-    val mediaExtractor = MediaExtractor()
-
 
     override suspend fun amplitudes(uri: Uri): List<Float> {
 
         val scheme = uri.scheme ?: ""
         val childPath = uri.path?.split("/")?.last()
         val path = File(context.filesDir, "$childPath")
+        val txtPath = File(context.filesDir, "${childPath}.txt")
 
         println("Path in amplitudes: ${path.path}")
 
         if (scheme.contains("resource")) {
             return withContext(dispatcherProvider.default) {
-                val txtPath = File(context.filesDir, "${childPath}.txt")
 
                 val inputStream =
                     context.contentResolver.openInputStream(uri) ?: return@withContext emptyList()
@@ -87,31 +84,27 @@ class AndroidEchoPlayer(
             }
         }
 
-           /* return withContext(dispatcherProvider.default) {
-                 val res = context.contentResolver?.openInputStream(uri).use { inputStream ->
-                     val bytes = inputStream?.readBytes() ?: byteArrayOf()
-                     println("Amplitudes input stream read bytes: ${bytes.toList()}")
-                     bytes.toList().chunked(chunkSize) {
-                         val max = it.maxOrNull()?.toFloat() ?: 1f
-                         val average = it.average().toFloat()
-                        max
-                     } ?: emptyList()
-                 }
-
-                 println("Amplitudes res for raw: ${res}")
-                 res
-             }*/
-
-
-        return audioSampleExtractor.extractSamples(audioPath = path.path).toList()
-
         return withContext(dispatcherProvider.default) {
-            val inputStream = FileInputStream(uri.path)
-            inputStream.use{
-                it.readBytes().toList().chunked(1000){
-                    1 / it.average().toFloat()
+
+            val fileReader = FileReader(uri.path)
+            fileReader.use {
+               val amplitudes =  it.readLines().flatMap {
+                   it.split(",").map {
+                       it.toFloat()
+                   }
+               }
+                println("Amplitudes input stream read bytes: ${amplitudes}")
+                println("Amplitudes size: ${amplitudes.size}")
+                println("Amplitudes min/max: ${amplitudes.minOrNull()}, ${amplitudes.maxOrNull()}")
+                val chunkSize = (amplitudes.size / 500) .coerceAtLeast(1)
+                println("Amplitudes chunk size: $chunkSize")
+
+                val maxAmplitude = amplitudes.maxOrNull() ?: 1f
+                amplitudes.chunked(chunkSize){
+                   it.average().toFloat() / maxAmplitude
                 }
             }
+
         }
     }
 
@@ -122,7 +115,7 @@ class AndroidEchoPlayer(
         player = MediaPlayer.create(context, uri)
         player?.start()
 
-        visualiseRpm()
+        soundCapturer.visualiseRpm()
     }
 
     override fun pause() {
@@ -131,40 +124,15 @@ class AndroidEchoPlayer(
 
     override fun stop() {
         player?.stop()
-        visualizer.enabled = false
-        visualizer.release()
-        visualizer.setDataCaptureListener(null, 0, false, false);
+        soundCapturer.stop()
     }
 
-    private fun visualiseRpm(){
-        player?.let {
 
-            try {
-
-                if (visualizer.enabled ) return
-                visualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate(), true, false)
-                visualizer.captureSize = 256
-
-                visualizer.setMeasurementMode(MEASUREMENT_MODE_PEAK_RMS)
-                visualizer.setEnabled(true).also {
-                    println("visualizer enabled: $it")
-                }
-
-            }catch (e: Exception){
-                _waves.update {
-                    ByteArray(0)
-                }
-                e.printStackTrace()
-            }
-
-        }
-    }
     /**
      * Clean up the media player by releasing its resources.
      */
     private fun releaseMediaPlayer() {
         // If the media player is not null, then it may be currently playing a sound.
-
         if (player != null) {
             // Regardless of the current state of the media player, release its resources
             // because we no longer need it.
@@ -173,25 +141,8 @@ class AndroidEchoPlayer(
             // setting the media player to null is an easy way to tell that the media player
             // is not configured to play an audio file at the moment.
             player = null
-            _waves.update {
-                ByteArray(0)
-            }
+
         }
     }
 
-    override fun onWaveFormDataCapture(v: Visualizer?, waveform: ByteArray?, samplingRate: Int) {
-        //println("Waveform: ${waveform?.joinToString(",")}")
-
-        waveform?.let { b ->
-            CoroutineScope(dispatcherProvider.default).launch {
-                _waves.update {
-                    b.clone()
-                }
-            }
-        }
-    }
-
-    override fun onFftDataCapture(v: Visualizer?, bytes: ByteArray?, p2: Int) {
-        println("fft: ${bytes?.joinToString(",")}")
-    }
 }

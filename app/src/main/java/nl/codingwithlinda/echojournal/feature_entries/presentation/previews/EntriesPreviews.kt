@@ -2,7 +2,6 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.previews
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -19,7 +18,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
+import nl.codingwithlinda.echojournal.core.presentation.util.toColor
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItemContent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EmptyListComponent
@@ -132,6 +134,7 @@ private fun EchoListItemPreview() {
                   ,
                   uiEcho = fakeEcho(mood = Mood.SAD, timestamp = System.currentTimeMillis()).toUi(
                       dateTimeFormatter = DateTimeFormatterMedium(),
+                      durationFormatter = DateTimeFormatterDuration(),
                       locale = Locale.getDefault()
                   ),
                   replayComponent =  {},
@@ -153,9 +156,19 @@ private fun EchoListItemContentPreview() {
                 .wrapContentHeight(),
             uiEcho = fakeEcho(mood = Mood.SAD, timestamp = System.currentTimeMillis()).toUi(
                 dateTimeFormatter = DateTimeFormatterMedium(),
+                durationFormatter = DateTimeFormatterDuration(),
                 locale = Locale.getDefault()
             ),
-            replayComponent =  {},
+            replayComponent =  {
+                EchoPlaybackComponent(
+                    modifier = Modifier,
+                    onAction = {  },
+                    moodColor = Color( Mood.SAD.toColor()),
+                    duration = DateTimeFormatterDuration().formatDateTimeMillis(1000),
+                    amplitudes = fakeAmplitudes(),
+                    uri = ""
+                )
+            },
             onFilterTopic = {}
 
         )

@@ -47,6 +47,7 @@ fun fakeEcho(mood: Mood, timestamp: Long): Echo {
         ),
         timeStamp = timestamp,
         amplitudes = listOf(0.1f, 0.2f, 0.3f),
+        duration = 1000,
         topics = listOf( fakeTopics.random(), fakeTopics.random()),
         uri = "",
     )

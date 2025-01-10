@@ -3,11 +3,11 @@ package nl.codingwithlinda.echojournal.feature_create.presentation
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,6 +23,7 @@ import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEc
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
+import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
@@ -85,19 +86,47 @@ class CreateEchoViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
+    private val soundCapturerWaves = audioEchoPlayer.waves
 
+    private var amplitudes = emptyList<Float>()
     init {
         viewModelScope.launch {
             try {
                 println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri)}")
+                val wavesUri = AndroidMediaRecorder.fileNameWaves
+                val amplitudes = audioEchoPlayer.amplitudes(Uri.parse(wavesUri))
+                this@CreateEchoViewModel.amplitudes = amplitudes
+
                 _uiState.update {
                     it.copy(
-                        amplitudes = audioEchoPlayer.amplitudes(Uri.parse(echoDto.uri))
+                        amplitudes = amplitudes
                     )
                 }
+
             }catch (e: Exception){
 
                 e.printStackTrace()
+            }
+        }
+    }
+
+    private fun playback(amplitudes: List<Float>){
+        viewModelScope.launch {
+
+            val delayMillis = (10L)
+            amplitudes.onEachIndexed { index, fl ->
+                _uiState.update {
+                    it.copy(
+                        amplitudes = amplitudes.subList(index, amplitudes.size)
+                    )
+                }
+                delay(delayMillis)
+            }
+
+            _uiState.update {
+                it.copy(
+                    amplitudes = amplitudes
+                )
             }
         }
     }
@@ -106,6 +135,7 @@ class CreateEchoViewModel(
         when (action) {
             CreateEchoAction.PlayEcho -> {
                audioEchoPlayer.play(Uri.parse(echoDto.uri))
+                playback(amplitudes)
             }
             is CreateEchoAction.TitleChanged -> {
                 _uiState.update {
