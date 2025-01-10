@@ -1,10 +1,10 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.util
 
 import nl.codingwithlinda.echojournal.R
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 
-fun limitTopics(topics: List<UiTopic>): UiText{
+fun limitTopics(topics: List<Topic>): UiText{
 
     if(topics.isEmpty()){
         return UiText.StringResource(R.string.all_topics)

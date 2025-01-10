@@ -3,19 +3,15 @@ package nl.codingwithlinda.echojournal.core.domain.data_source.repo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.echojournal.core.domain.data_source.DataSourceAccess
 import nl.codingwithlinda.echojournal.core.domain.model.EchoTopic
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeTopics
 
 class TopicsAccess: DataSourceAccess<EchoTopic, String> {
 
-    private val text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    val fakes = List(5){
-        EchoTopic(text.substring(0, 5 + it))
-    }
+    private val fakes =  fakeTopics
     private val topics = MutableStateFlow<List<EchoTopic>>(fakes)
-
 
     override suspend fun create(item: EchoTopic): EchoTopic {
         topics.update {

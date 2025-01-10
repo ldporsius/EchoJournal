@@ -3,14 +3,12 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.previews
 import android.net.Uri
 import androidx.compose.ui.graphics.toArgb
 import nl.codingwithlinda.echojournal.R
-import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.echojournal.core.domain.model.EchoTopic
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
+import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
-import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.neutal80
 import java.util.UUID
 import kotlin.random.Random
@@ -32,6 +30,10 @@ val defaultDescription =
             "Veni, Vidi, Vici." +
             "Natura artis magistra est."
 
+private const val text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+val fakeTopics = List(5){
+    EchoTopic(text.substring(0, 5 + it))
+}
 fun fakeEcho(mood: Mood, timestamp: Long): Echo {
     return Echo(
         id = UUID.randomUUID().toString(),
@@ -45,44 +47,13 @@ fun fakeEcho(mood: Mood, timestamp: Long): Echo {
         ),
         timeStamp = timestamp,
         amplitudes = listOf(0.1f, 0.2f, 0.3f),
-        topics = listOf(Topic("Topic 1"), Topic("Topic 2")),
+        topics = listOf( fakeTopics.random(), fakeTopics.random()),
         uri = "",
     )
 }
-fun fakeUiEcho(id: String, mood: Mood, timestamp: String): UiEcho {
-    return UiEcho(
-        id = id,
-        uri = testSound().toString(),
-        mood = moodToColorMap.getOrElse(mood){
-            defaultUiMood
-        },
-        name = "Entry 1",
-        description = defaultDescription.take(Random.nextInt(0, defaultDescription.length)),
-        timeStamp = timestamp,
-        duration = "0:00/12:00",
-        amplitudes = fakeAmplitudes(),
-        topics = fakeUiTopics().take(Random.nextInt(0, 4)).map { it.name }
-    )
-}
-fun fakeUiTopics(): List<UiTopic>{
-    return listOf(
-        UiTopic(
-            name = "Topic 0",
-        ),
-        UiTopic(
-            name = "Topic 1",
-        ),
-        UiTopic(
-            name = "Topic 2",
-        ),
-        UiTopic(
-            name = "Topic 3",
-        ),
-    )
-}
+
 
 fun fakeAmplitudes(): List<Float>{
-
     return List(100){
         Random.nextFloat()
     }

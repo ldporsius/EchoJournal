@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
+import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_entries.domain.usecase.FilterOnMoodAndTopic
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeUiTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound2
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
@@ -24,23 +25,23 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayE
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
 class EchosViewModel(
     private val echoAccess: EchoAccess,
+    private val topicsAccess: TopicsAccess,
     private val echoPlayer: EchoPlayer
 ): ViewModel() {
 
     private val filterOnMoodAndTopic = FilterOnMoodAndTopic()
 
-    private val fakeTopics = fakeUiTopics()
-    private val _topics = MutableStateFlow<List<UiTopic>>(fakeTopics)
-    private val _selectedTopics = MutableStateFlow<List<UiTopic>>(emptyList())
+
+    private val _topics = topicsAccess.readAll()
+    private val _selectedTopics = MutableStateFlow<List<Topic>>(emptyList())
     private val _topicsUiState = MutableStateFlow(TopicsUiState(
-        topics = fakeTopics
+        topics = emptyList()
     ))
     val topicsUiState = combine(_topics, _selectedTopics, _topicsUiState){topics, selectedTopics, topicsUiState ->
 

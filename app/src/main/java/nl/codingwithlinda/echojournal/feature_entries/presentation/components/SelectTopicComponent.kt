@@ -17,14 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiTopic
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 
 @Composable
 fun SelectTopicComponent(
     modifier: Modifier = Modifier,
-    topics: List<UiTopic>,
-    isSelected: (UiTopic) -> Boolean,
-    onTopicSelected: (UiTopic) -> Unit,
+    topics: List<Topic>,
+    isSelected: (Topic) -> Boolean,
+    onTopicSelected: (Topic) -> Unit,
     onDismiss: () -> Unit
 ) {
     

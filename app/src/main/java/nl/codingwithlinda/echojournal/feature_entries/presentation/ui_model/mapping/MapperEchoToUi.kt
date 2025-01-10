@@ -21,9 +21,7 @@ fun Echo.toUi(
         description = description,
         timeStamp = dateTimeFormatter.formatDateTime(timeStamp,locale),
         amplitudes = amplitudes,
-        topics = topics.map {
-           it.name
-        },
+        topics = topics,
         duration = "todo"
     )
 }

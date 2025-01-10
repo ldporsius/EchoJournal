@@ -26,6 +26,7 @@ fun EchosRoot(
       initializer {
          EchosViewModel(
             echoAccess = appModule.echoAccess,
+            topicsAccess = appModule.topicsAccess,
             echoPlayer = appModule.echoPlayer
          )
       }

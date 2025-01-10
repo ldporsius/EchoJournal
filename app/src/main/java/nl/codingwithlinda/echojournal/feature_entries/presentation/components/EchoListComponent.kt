@@ -71,6 +71,11 @@ fun EchoListComponent(
                                         uri = uiEcho.uri
                                     )
                                 },
+                                onFilterTopic = {topic ->
+                                    onFilterAction(
+                                        FilterEchoAction.ToggleSelectTopic(topic)
+                                    )
+                                }
                             )
 
                         }

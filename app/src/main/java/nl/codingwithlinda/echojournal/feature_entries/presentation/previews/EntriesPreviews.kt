@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItemContent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EmptyListComponent
@@ -29,6 +30,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
+import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable
@@ -128,8 +130,12 @@ private fun EchoListItemPreview() {
                       .wrapContentHeight()
                       .padding(16.dp)
                   ,
-                  uiEcho = fakeUiEcho("0", mood = Mood.SAD, timestamp = "17:59"),
-                  replayComponent =  {}
+                  uiEcho = fakeEcho(mood = Mood.SAD, timestamp = System.currentTimeMillis()).toUi(
+                      dateTimeFormatter = DateTimeFormatterMedium(),
+                      locale = Locale.getDefault()
+                  ),
+                  replayComponent =  {},
+                  onFilterTopic = {}
               )
            }
         )
@@ -145,8 +151,13 @@ private fun EchoListItemContentPreview() {
                 .background(color = Color.White)
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            uiEcho = fakeUiEcho("1", mood = Mood.SAD, timestamp = "17:59"),
-            replayComponent =  {}
+            uiEcho = fakeEcho(mood = Mood.SAD, timestamp = System.currentTimeMillis()).toUi(
+                dateTimeFormatter = DateTimeFormatterMedium(),
+                locale = Locale.getDefault()
+            ),
+            replayComponent =  {},
+            onFilterTopic = {}
+
         )
     }
 }
