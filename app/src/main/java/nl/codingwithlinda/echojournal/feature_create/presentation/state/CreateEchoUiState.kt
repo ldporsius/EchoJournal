@@ -33,6 +33,8 @@ data class CreateEchoUiState(
          = title.isNotBlank() && confirmedMood != null
 
     private val selectedMoodColor: Color =  selectedMood?.let { Color(it.color) } ?: Color.DarkGray
+
+    fun playbackBackgroundColor() = selectedMoodColor.copy(.25f)
     fun amplitudeColor(index: Int) : Color{
         return if(index in amplitudesPlayed){
            selectedMoodColor

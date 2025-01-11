@@ -1,17 +1,26 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.state
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.presentation.util.toColor
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 
 data class ReplayUiState(
     val playbackState: PlaybackState = PlaybackState.STOPPED,
-    //val playingEchoUri: String? = null,
+    val mood: Mood,
     val waves: List<Int> = emptyList()
 ){
-    fun amplitudeColor(index: Int): androidx.compose.ui.graphics.Color {
+    fun amplitudeColor(index: Int): Color {
         return if (index in waves) {
-            androidx.compose.ui.graphics.Color.Blue
+            Color(mood.toColor())
         } else {
-            androidx.compose.ui.graphics.Color.DarkGray
+            Color(mood.toColor()).copy(.20f).compositeOver(Color.Gray)
         }
     }
+
+    fun backgroundColor(): Color {
+       return Color(mood.toColor()).copy(.50f).compositeOver(Color.Gray).copy(.10f)
+    }
+
 }

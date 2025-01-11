@@ -1,6 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -64,13 +65,17 @@ fun EchoListComponent(
                                 uiEcho = uiEcho,
                                 replayComponent = {
                                     EchoPlaybackComponent(
-                                        modifier = Modifier,
+                                        modifier = Modifier
+                                            .background(
+                                                color = replayUiState.backgroundColor(),
+                                                shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
+                                            ),
                                         playbackIcon = {
                                             PlaybackIcon(
                                                 modifier = Modifier,
                                                 id = uiEcho.id,
                                                 uri = uiEcho.uri,
-                                                moodColorPlayed = Color( uiEcho.mood.color),
+                                                moodColor = Color( uiEcho.mood.color),
                                                 playbackState = replayUiState.playbackState,
                                                 onAction = onReplayAction
                                             )

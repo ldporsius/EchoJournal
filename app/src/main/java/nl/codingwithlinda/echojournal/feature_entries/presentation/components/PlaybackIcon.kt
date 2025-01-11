@@ -24,7 +24,7 @@ fun PlaybackIcon(
     modifier: Modifier = Modifier,
     id: String,
     uri: String,
-    moodColorPlayed: Color,
+    moodColor: Color,
     playbackState: PlaybackState,
     onAction: (ReplayEchoAction) -> Unit
 ) {
@@ -53,7 +53,7 @@ fun PlaybackIcon(
               },
           colors = androidx.compose.material3.IconButtonDefaults.iconButtonColors(
               containerColor = androidx.compose.ui.graphics.Color.White,
-              contentColor = moodColorPlayed
+              contentColor = moodColor
           )
       ) {
         icon()

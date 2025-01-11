@@ -87,6 +87,7 @@ class EchosViewModel(
             val map = echoes.associate{
                 it.id to  ReplayUiState(
                     playbackState = PlaybackState.STOPPED,
+                    mood = it.mood,
                     waves = emptyList()
                 )
             }
@@ -128,6 +129,7 @@ class EchosViewModel(
                 _replayUiState.update {
                   echo.id to ReplayUiState(
                             playbackState = PlaybackState.PLAYING,
+                      mood = echo.mood,
                             waves = emptyList()
                         )
                 }
@@ -140,7 +142,7 @@ class EchosViewModel(
         combine(echoPlayer.waves, echoPlayer.playbackState){ waves, playbackState ->
             _replayUiState.update {
                 it?.copy(
-                    second = ReplayUiState(
+                    second = it.second.copy(
                         playbackState = playbackState,
                         waves = waves
                     )

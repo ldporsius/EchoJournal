@@ -31,7 +31,7 @@ import java.util.concurrent.Future
 
 @Composable
 fun EchoPlaybackComponent(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     playbackIcon: @Composable () -> Unit,
     duration: String,
     amplitudes: List<Float>,
@@ -39,13 +39,10 @@ fun EchoPlaybackComponent(
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(
-                color = Color.Gray.copy(.25f),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
-            )
+
             .padding(start = 0.dp, end = 16.dp)
         ,
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically

@@ -93,9 +93,10 @@ class CreateEchoViewModel(
     init {
         viewModelScope.launch {
             try {
-                println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri)}")
+                println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri.substringAfterLast('/'))}")
 
-                val amplitudes = audioEchoPlayer.amplitudes(echoDto.amplitudesUri)
+                val amplitudesPath = echoDto.amplitudesUri.substringAfterLast('/')
+                val amplitudes = audioEchoPlayer.amplitudes(amplitudesPath)
                 this@CreateEchoViewModel.amplitudes = amplitudes
 
                 _uiState.update {
@@ -113,12 +114,16 @@ class CreateEchoViewModel(
     private fun visualiseAmplitudes(amplitudes: List<Float>, duration: Long){
         viewModelScope.launch {
 
+            if(amplitudes.isEmpty()) return@launch
+
             val amplitudesSilent = amplitudes.takeWhile {
                 it < 1.0f
             }.size
             println("CreateEchoViewModel delaying while silent for $amplitudesSilent millis")
+
             delay(amplitudesSilent * 1L)
             val delayMillis = duration / amplitudes.size
+
             println("CreateEchoViewModel amplitudes size = ${amplitudes.size}")
             println("CreateEchoViewModel duration = ${duration}")
             println("CreateEchoViewModel delaying visualise by $delayMillis millis")

@@ -1,6 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_create.presentation
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -88,6 +89,11 @@ fun CreateEchoScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         EchoPlaybackComponent(
+            modifier = Modifier
+                .background(
+                    color = uiState.playbackBackgroundColor(),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
+                ),
             playbackIcon = {
                 uiState.PlaybackIcon(
                     modifier = Modifier,
