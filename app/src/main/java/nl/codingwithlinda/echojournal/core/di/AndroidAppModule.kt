@@ -28,7 +28,6 @@ class AndroidAppModule(
         get() = AndroidEchoPlayer(
             context = context,
             dispatcherProvider = dispatcherProvider,
-            audioSampleExtractor = AudioExtractorAMR(),
             soundCapturer = soundCapturer
         )
 

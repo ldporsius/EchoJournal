@@ -6,4 +6,6 @@ data class ReplayUiState(
     val playbackState: PlaybackState = PlaybackState.STOPPED,
     val playingEchoUri: String? = null,
     val waves: List<Float> = emptyList()
-)
+){
+
+}

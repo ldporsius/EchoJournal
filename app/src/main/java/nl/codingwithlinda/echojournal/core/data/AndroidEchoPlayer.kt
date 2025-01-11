@@ -40,7 +40,6 @@ import kotlin.math.roundToInt
 class AndroidEchoPlayer(
     private val context: Context,
     private val dispatcherProvider: DispatcherProvider,
-    private val audioSampleExtractor: AudioExtractorAMR,
     private val soundCapturer: SoundCapturer
 ): EchoPlayer{
 
@@ -50,7 +49,8 @@ class AndroidEchoPlayer(
     private val mAudioManager: AudioManager? = null
 
     private var player: MediaPlayer? = null
-    private var playbackState: PlaybackState = PlaybackState.STOPPED
+    private val _playbackState = MutableStateFlow(PlaybackState.STOPPED)
+    override val playbackState = _playbackState.asStateFlow()
 
     override suspend fun amplitudes(uri: Uri): List<Float> {
 
@@ -124,25 +124,29 @@ class AndroidEchoPlayer(
 
         player = MediaPlayer.create(context, uri)
 
-        player?.start()
+        playingTimeLeft = player?.duration ?: 0
+        player?.start().also {
+            _playbackState.update { PlaybackState.PLAYING }
+        }
 
         CoroutineScope(dispatcherProvider.default).launch {
             while (playingTimeLeft > 0) {
-                if (playbackState == PlaybackState.PLAYING) {
+                if (playbackState.value == PlaybackState.PLAYING) {
                     playingTimeLeft -= 100
                     delay(100)
                 }
             }
+            stop()
         }
     }
 
     override fun pause() {
-        playbackState = PlaybackState.PAUSED
+        _playbackState.update { PlaybackState.PAUSED }
         player?.pause()
         soundCapturer.stop()
     }
     override fun resume() {
-        playbackState = PlaybackState.PLAYING
+        _playbackState.update {  PlaybackState.PLAYING }
         player?.run {
             seekTo(playingTimeLeft)
             start()
@@ -150,7 +154,7 @@ class AndroidEchoPlayer(
     }
 
     override fun stop() {
-        playbackState = PlaybackState.STOPPED
+        _playbackState.update { PlaybackState.STOPPED }
         player?.stop()
         soundCapturer.stop()
     }

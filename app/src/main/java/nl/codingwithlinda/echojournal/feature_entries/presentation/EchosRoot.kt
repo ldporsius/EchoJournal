@@ -50,11 +50,15 @@ fun EchosRoot(
    val topicsUiState = echosViewModel.topicsUiState
       .collectAsStateWithLifecycle()
 
+   val replayUiState = echosViewModel.replayUiState.collectAsStateWithLifecycle().value
    EchosScreen(
       echoesUiState = echosViewModel.echoesUiState.collectAsStateWithLifecycle().value,
       topicsUiState = topicsUiState.value,
       moodsUiState = echosViewModel.moodsUiState.collectAsStateWithLifecycle().value,
-      replayUiState = echosViewModel.replayUiState.collectAsStateWithLifecycle().value,
+      replayUiState = {
+         replayUiState.getValue(it.id)
+      }
+      ,
       onFilterAction = echosViewModel::onFilterAction,
       onReplayAction = echosViewModel::onReplayAction,
       recordAudioUiState = recordAudioViewModel.uiState.collectAsStateWithLifecycle().value,

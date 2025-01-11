@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -68,32 +67,50 @@ class EchosViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
 
+    private val _echoes = echoAccess.readAll()
 
     private val _playingEchoUri = MutableStateFlow<String?>(null)
-    private val _playbackState = MutableStateFlow(PlaybackState.STOPPED)
+    private val _playbackState = echoPlayer.playbackState
 
-    val replayUiState = combine(_playingEchoUri, _playbackState){ uri , playbackState ->
+    val replayUiState = combine(_echoes, _playingEchoUri, _playbackState){ echoes, uri , playbackState ->
         println("Echos viewmodel. playing uri: $uri")
-        ReplayUiState(
-            playbackState = playbackState,
-            playingEchoUri = uri,
-            waves = emptyList()
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReplayUiState())
+        val currentlyPlaying = echoes.find {
+            it.uri == uri
+        } ?.let {
+            it.id to  ReplayUiState(
+                playbackState = playbackState,
+                playingEchoUri = uri,
+                waves = emptyList()
+            )
+        }
 
-    private val _echoes = echoAccess.readAll()
+        echoes.associate{
+           it.id to  ReplayUiState(
+                playbackState = PlaybackState.STOPPED,
+                playingEchoUri = null,
+                waves = emptyList()
+            )
+        }.let {map ->
+            currentlyPlaying?.let {  map.plus(it) } ?: map
+        }
+
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
 
     init {
         viewModelScope.launch {
             _echoes.first().forEachIndexed {index, echo ->
-                val sound = if (index % 2 == 0) testSound().toString() else testSound2().toString()
-                println("test sound: $sound")
-                println("uri from sound: ${Uri.parse(sound)}")
-                val update = echo.copy(
-                    uri = sound ,
-                    amplitudes = echoPlayer.amplitudes(Uri.parse(sound))
-                )
-                echoAccess.update(update)
+                if (echo.id.startsWith("FAKE")) {
+                    val sound =
+                        if (index % 2 == 0) testSound().toString() else testSound2().toString()
+                    println("test sound: $sound")
+                    println("uri from sound: ${Uri.parse(sound)}")
+                    val update = echo.copy(
+                        uri = sound,
+                        amplitudes = echoPlayer.amplitudes(Uri.parse(sound))
+                    )
+                    echoAccess.update(update)
+                }
             }
         }
     }
@@ -153,11 +170,9 @@ class EchosViewModel(
     fun onReplayAction(action: ReplayEchoAction){
         when(action){
             is ReplayEchoAction.Play -> {
+                println("ECHOES VIEWMODEL. PLAYBACKSTATE = ${_playbackState.value}")
                 when(_playbackState.value){
                     PlaybackState.PLAYING ->{
-                        _playbackState.update {
-                            PlaybackState.PAUSED
-                        }
                         echoPlayer.pause()
 
                     }
@@ -174,19 +189,14 @@ class EchosViewModel(
 
     private fun playback(uri: String, isPaused: Boolean){
         viewModelScope.launch {
-            _echoes.firstOrNull()?.find {
-                it.uri == uri
-            }?.also {
-                _playbackState.update {
-                    PlaybackState.PLAYING
-                }
+
+            if (isPaused){
+                echoPlayer.resume()
+            } else {
                 _playingEchoUri.update {
                     uri
                 }
-                if (isPaused) echoPlayer.resume() else echoPlayer.play(Uri.parse(uri))
-
-                println("playing echo: ${it.amplitudes.take(25)}")
-                visualiseAmplitudes(uri, it.amplitudes)
+                echoPlayer.play(Uri.parse(uri))
             }
         }
     }

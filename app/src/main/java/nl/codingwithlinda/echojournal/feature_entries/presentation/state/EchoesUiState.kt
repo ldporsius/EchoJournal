@@ -5,5 +5,4 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEc
 data class EchoesUiState(
     val echoesTotal:Int,
     val selectedEchoes: List<UiEchoGroup>,
-){
-}
+)

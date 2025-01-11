@@ -17,6 +17,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 
 
@@ -26,7 +27,7 @@ fun EchoListComponent(
     selectedMoods: @Composable () -> Unit,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
-    replayUiState: ReplayUiState,
+    replayUiState: (uiEcho: UiEcho) -> ReplayUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
     onReplayAction: (ReplayEchoAction) -> Unit
 ) {
@@ -68,7 +69,7 @@ fun EchoListComponent(
                                                 modifier = Modifier,
                                                 uri = uiEcho.uri,
                                                 moodColorPlayed = Color( uiEcho.mood.color),
-                                                playbackState = replayUiState.playbackState,
+                                                playbackState = replayUiState(uiEcho).playbackState,
                                                 onAction = onReplayAction
                                             )
                                         },

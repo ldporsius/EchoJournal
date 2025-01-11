@@ -21,6 +21,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.RecordAudioComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
@@ -32,13 +33,12 @@ fun EchosScreen(
     echoesUiState: EchoesUiState,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
-    replayUiState: ReplayUiState,
+    replayUiState: (uiEcho: UiEcho) -> ReplayUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
     onReplayAction: (ReplayEchoAction) -> Unit,
     recordAudioUiState: RecordAudioUiState,
     onRecordAudioAction: (RecordAudioAction) -> Unit,
     ) {
-
 
     Scaffold(
         modifier = Modifier.safeContentPadding(),
@@ -72,7 +72,9 @@ fun EchosScreen(
                     selectedMoods = { moodsUiState.SelectedMoodsLabel() },
                     moodsUiState = moodsUiState,
                     topicsUiState = topicsUiState,
-                    replayUiState = replayUiState,
+                    replayUiState = {
+                        replayUiState(it)
+                    },
                     onFilterAction = onFilterAction,
                     onReplayAction = onReplayAction,
                 )

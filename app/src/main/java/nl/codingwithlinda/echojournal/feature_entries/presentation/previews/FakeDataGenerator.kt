@@ -15,12 +15,7 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 
-val defaultUiMood = UiMood(
-    mood = Mood.NEUTRAL,
-    icon = R.drawable.mood_neutral,
-    color = neutal80.toArgb(),
-    name = UiText.DynamicString("Neutral")
-)
+
 val defaultDescription =
             "Mens sana in corpore sano." +
             "Homo homini lupus est." +
@@ -36,7 +31,7 @@ val fakeTopics = List(5){
 }
 fun fakeEcho(mood: Mood, timestamp: Long): Echo {
     return Echo(
-        id = UUID.randomUUID().toString(),
+        id = "FAKE" + UUID.randomUUID().toString(),
         mood = mood,
         title = "Entry 1",
         description = defaultDescription.take(

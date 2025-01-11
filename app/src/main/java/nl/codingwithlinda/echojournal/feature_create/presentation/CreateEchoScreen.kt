@@ -87,7 +87,6 @@ fun CreateEchoScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //val moodColor = uiState.selectedMood?.let { Color(it.color) } ?: Color.Gray
         EchoPlaybackComponent(
             playbackIcon = {
                 uiState.PlaybackIcon(
