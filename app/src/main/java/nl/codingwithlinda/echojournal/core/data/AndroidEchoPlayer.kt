@@ -67,33 +67,6 @@ class AndroidEchoPlayer(
         }
     }
 
-    private fun amplitudesFromBytes(uri: Uri): List<Float> {
-        val inputStream =
-            context.contentResolver.openInputStream(uri) ?: return emptyList()
-        inputStream.use { input ->
-            val bytes = input.readBytes()
-
-            println("Bytes size: ${bytes.size}")
-            println("Bytes min/max: ${bytes.minOrNull()}, ${bytes.maxOrNull()}")
-
-            val shorts = bytes.asSequence().map {
-                it + 128
-            }
-
-            val res = shorts
-                .chunked(2) {
-                    (it.average().toFloat() / 256f)
-                }.toList()
-
-
-            println("Res min/max: ${res.minOrNull()}, ${res.maxOrNull()}")
-            println("Res size: ${res.size}")
-
-            return res
-        }
-    }
-
-
     private fun amplitudesFromFile(uri: Uri): List<Float> {
         val BAR_NUM = 100
 
@@ -119,10 +92,7 @@ class AndroidEchoPlayer(
     override fun play(uri: Uri) {
         releaseMediaPlayer()
 
-        val soundTest = File(context.filesDir, AndroidMediaRecorder.FILE_NAME_AUDIO).path
-        val uriTest = Uri.parse(soundTest)
-
-        player = MediaPlayer.create(context, uriTest)
+        player = MediaPlayer.create(context, uri)
 
         playingTimeLeft = player?.duration ?: 0
 

@@ -21,13 +21,12 @@ class AndroidMediaRecorder(
     private val dispatcherProvider: DispatcherProvider,
 
     ): AudioRecorder{
-    private val pathAmplitudes: String = File(context.filesDir, FILE_NAME_AMPLITUDES).path
-    private val pathAudio: String = File(context.filesDir,FILE_NAME_AUDIO).path
 
-    companion object{
-        const val FILE_NAME_AUDIO: String = "audio.mp4"
-        const val FILE_NAME_AMPLITUDES = "audio_waves.txt"
-    }
+    private val FILE_NAME_AUDIO: String = "audio.mp4"
+    private val FILE_NAME_AMPLITUDES = "audio_waves.txt"
+
+    private val pathAmplitudes: String = File(context.filesDir, FILE_NAME_AMPLITUDES).path
+    private var pathAudio: String = File(context.filesDir,FILE_NAME_AUDIO).path
 
     private var startRecordingTime: Long = 0L
     private var endRecordingTime: Long = 0L
@@ -47,7 +46,9 @@ class AndroidMediaRecorder(
 
     private var isRecording: Boolean = false
 
-    private fun startRecording() {
+    private fun startRecording(pathAudio: String) {
+        println("AndroidMediaRecorder started recording on path: $pathAudio")
+        this.pathAudio = pathAudio
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -90,6 +91,7 @@ class AndroidMediaRecorder(
         val output = _waves.value.toList()
 
         val fileWriter = FileWriter(pathAmplitudes)
+
         CoroutineScope(dispatcherProvider.io).launch{
             fileWriter.use {
                 it.write(output.joinToString(","))
@@ -98,9 +100,10 @@ class AndroidMediaRecorder(
         _waves.value = emptyList()
     }
 
-    override fun start() {
+    override fun start(path:String) {
         println("started recording")
-        startRecording()
+        val internalStoragePath = File(context.filesDir, path).path
+        startRecording(internalStoragePath)
     }
 
     override fun pause() {

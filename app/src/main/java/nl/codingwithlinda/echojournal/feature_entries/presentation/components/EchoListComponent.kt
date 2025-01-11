@@ -59,7 +59,7 @@ fun EchoListComponent(
                             )
                         },
                         content = {
-                            val replayUiState = replayUiState(uiEcho)
+                            val replayUiState1 = replayUiState(uiEcho)
                             EchoListItemContent(
                                 modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                                 uiEcho = uiEcho,
@@ -67,7 +67,7 @@ fun EchoListComponent(
                                     EchoPlaybackComponent(
                                         modifier = Modifier
                                             .background(
-                                                color = replayUiState.backgroundColor(),
+                                                color = replayUiState1.backgroundColor(),
                                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
                                             ),
                                         playbackIcon = {
@@ -76,14 +76,14 @@ fun EchoListComponent(
                                                 id = uiEcho.id,
                                                 uri = uiEcho.uri,
                                                 moodColor = Color( uiEcho.mood.color),
-                                                playbackState = replayUiState.playbackState,
+                                                playbackState = replayUiState1.playbackState,
                                                 onAction = onReplayAction
                                             )
                                         },
                                         duration = uiEcho.duration,
                                         amplitudes = uiEcho.amplitudes,
                                         amplitudeColor = {
-                                           replayUiState.amplitudeColor(it)
+                                           replayUiState1.amplitudeColor(it)
                                         },
                                     )
                                 },

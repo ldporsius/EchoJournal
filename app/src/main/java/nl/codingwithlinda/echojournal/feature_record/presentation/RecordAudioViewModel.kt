@@ -51,7 +51,7 @@ class RecordAudioViewModel(
             }
             is RecordAudioAction.StartRecording -> {
 
-                recorder.start()
+                recorder.start(System.currentTimeMillis().toString())
 
                 recordingState.update {
                     RecordingState.RECORDING

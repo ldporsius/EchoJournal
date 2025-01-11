@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AudioRecorder {
     val listener: Flow<AudioRecorderData>
-    fun start()
+    fun start(path: String)
     fun pause()
     fun stop()
 

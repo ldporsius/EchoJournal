@@ -33,7 +33,7 @@ fun EchosRoot(
          RecordAudioViewModel(
             recorder = appModule.audioRecorder,
             dateTimeFormatter = DateTimeFormatterDuration(),
-            echoFactory = EchoFactory(),
+            echoFactory = appModule.echoFactory,
             navToCreateEcho = {
                navToCreateEcho(it)
             }

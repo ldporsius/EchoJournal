@@ -36,6 +36,8 @@ class AndroidAppModule(
     override val echoAccess: EchoAccess = EchoAccess()
 
     override val echoFactory: EchoFactory
-        get() = EchoFactory()
+        get() = EchoFactory(
+            context
+        )
 
 }

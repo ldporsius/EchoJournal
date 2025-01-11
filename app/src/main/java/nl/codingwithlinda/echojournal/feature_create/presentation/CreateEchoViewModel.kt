@@ -3,7 +3,6 @@ package nl.codingwithlinda.echojournal.feature_create.presentation
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -22,7 +21,6 @@ import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
-import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
@@ -89,13 +87,11 @@ class CreateEchoViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
 
-    //private val playbackState = MutableStateFlow(PlaybackState.STOPPED)
-
     private var amplitudes = emptyList<Float>()
     init {
         viewModelScope.launch {
             try {
-                println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri.substringAfterLast('/'))}")
+               // println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri.substringAfterLast('/'))}")
 
                 val amplitudesPath = echoDto.amplitudesUri.substringAfterLast('/')
                 val amplitudes = audioEchoPlayer.amplitudes(amplitudesPath)
@@ -121,60 +117,18 @@ class CreateEchoViewModel(
         }.launchIn(viewModelScope)
     }
 
-   /* private fun visualiseAmplitudes(amplitudes: List<Float>, duration: Long){
-        viewModelScope.launch {
 
-            if(amplitudes.isEmpty()) return@launch
-
-            val amplitudesSilent = amplitudes.takeWhile {
-                it < 1.0f
-            }.size
-            println("CreateEchoViewModel delaying while silent for $amplitudesSilent millis")
-
-            delay(amplitudesSilent * 1L)
-            val delayMillis = duration / amplitudes.size
-
-            println("CreateEchoViewModel amplitudes size = ${amplitudes.size}")
-            println("CreateEchoViewModel duration = ${duration}")
-            println("CreateEchoViewModel delaying visualise by $delayMillis millis")
-
-            (1 .. amplitudes.size).onEachIndexed { index, fl ->
-                if (playbackState.value == PlaybackState.PLAYING) {
-                    _uiState.update {
-                        it.copy(
-                            amplitudesPlayed = it.amplitudesPlayed + index
-                        )
-                    }
-                    delay(delayMillis)
-                }
-            }
-
-            _uiState.update {
-                it.copy(
-                    amplitudesPlayed = emptyList()
-                )
-            }
-            playbackState.update {
-                PlaybackState.STOPPED
-            }
-        }
-    }
-*/
     fun onAction(action: CreateEchoAction) {
         when (action) {
             CreateEchoAction.PlayEcho -> {
-               /* playbackState.update {
-                    PlaybackState.PLAYING
-                }*/
+
                audioEchoPlayer.play(Uri.parse(echoDto.uri))
                 viewModelScope.launch {
                     audioEchoPlayer.visualiseAmplitudes(amplitudes, echoDto.duration)
                 }
             }
             CreateEchoAction.PauseEcho -> {
-               /* playbackState.update {
-                    PlaybackState.PAUSED
-                }*/
+
                 audioEchoPlayer.pause()
 
             }

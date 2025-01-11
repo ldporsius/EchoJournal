@@ -76,7 +76,7 @@ class EchosViewModel(
 
     private val _echoes = echoAccess.readAll()
 
-    //private val _playingEchoUri = MutableStateFlow<String?>(null)
+
     private val _playingEchoId = MutableSharedFlow<String>(replay = 10)
     private val _playbackState = echoPlayer.playbackState
 
@@ -102,39 +102,40 @@ class EchosViewModel(
 
 
     init {
-        viewModelScope.launch {
+       /* viewModelScope.launch {
             _echoes.first().forEachIndexed {index, echo ->
                 if (echo.id.startsWith("FAKE")) {
-                    val sound = AndroidMediaRecorder.FILE_NAME_AUDIO
+                    //val sound = AndroidMediaRecorder.FILE_NAME_AUDIO
 
                     val amplitudesPath = AndroidMediaRecorder.FILE_NAME_AMPLITUDES
-                    println("test sound: $sound")
-                    println("uri from sound: ${Uri.parse(sound)}")
+
                     val update = echo.copy(
-                        uri = sound,
                         amplitudes = echoPlayer.amplitudes(amplitudesPath),
                         duration = 1000L
                     )
                     echoAccess.update(update)
                 }
             }
-        }
+        }*/
 
         _playingEchoId.onEach { id ->
             val echo = _echoes.first().find {
                 it.id == id
             }
-            echo?.let{echo ->
+            echo?.let{ echo1 ->
                 println("visualising echo with id: $id")
                 _replayUiState.update {
-                  echo.id to ReplayUiState(
-                            playbackState = PlaybackState.PLAYING,
-                      mood = echo.mood,
-                            waves = emptyList()
-                        )
+                    id to ReplayUiState(
+                        playbackState = PlaybackState.PLAYING,
+                        mood = echo.mood,
+                        waves = emptyList()
+                    )
                 }
-                echoPlayer.play(Uri.parse(echo.uri))
-                echoPlayer.visualiseAmplitudes(echo.amplitudes, echo.duration)
+                val uri = Uri.parse(echo1.uri)
+
+                println("EchoViewModel is going to play uri: $uri")
+                echoPlayer.play(uri)
+                echoPlayer.visualiseAmplitudes(echo1.amplitudes, echo1.duration)
             }
 
         }.launchIn(viewModelScope)
@@ -208,21 +209,19 @@ class EchosViewModel(
                 println("ECHOES VIEWMODEL. PLAYBACKSTATE = ${_playbackState.value}")
                 viewModelScope.launch {
 
-                when(_playbackState.value){
-                    PlaybackState.PLAYING ->{
-                        echoPlayer.pause()
-                    }
-                    PlaybackState.PAUSED -> {
-                        //playback(action.uri, true)
-                        _playingEchoId.emit(
-                            action.id
-                        )
-                    }
-                    PlaybackState.STOPPED -> {
+                    when(_playbackState.value){
+                        PlaybackState.PLAYING ->{
+                            echoPlayer.pause()
+                        }
+                        PlaybackState.PAUSED -> {
                             _playingEchoId.emit(
                                 action.id
                             )
-                            //playback(action.uri, false)
+                        }
+                        PlaybackState.STOPPED -> {
+                            _playingEchoId.emit(
+                                action.id
+                            )
                         }
                     }
                 }
