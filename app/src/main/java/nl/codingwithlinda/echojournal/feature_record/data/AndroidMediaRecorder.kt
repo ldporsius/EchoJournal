@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
@@ -29,15 +29,17 @@ class AndroidMediaRecorder(
         const val FILE_NAME_AMPLITUDES = "audio_waves.txt"
     }
 
+    private var startRecordingTime: Long = 0L
+    private var endRecordingTime: Long = 0L
     private val _waves = MutableStateFlow<List<Int>>(emptyList())
     private val samplingRate = 8_000
 
-    override val listener: Flow<AudioRecorderData>
-            = _waves.map {
-        AudioRecorderData(
-            duration = (it.size * 100).toLong(),
+    override val listener: Flow<AudioRecorderData> = flow {
+        emit(AudioRecorderData(
+            duration = endRecordingTime - startRecordingTime,
             uri = pathAudio,
             amplitudesUri = pathAmplitudes
+        )
         )
     }
 
@@ -59,6 +61,7 @@ class AndroidMediaRecorder(
                 e.printStackTrace()
             }
             start()
+            startRecordingTime = System.currentTimeMillis();
         }
 
         isRecording = true
@@ -74,12 +77,14 @@ class AndroidMediaRecorder(
     }
 
     private fun stopRecording() {
-
         isRecording = false
+        endRecordingTime = System.currentTimeMillis();
+
         recorder?.apply {
             stop()
             release()
         }
+
         recorder = null
 
         val output = _waves.value.toList()

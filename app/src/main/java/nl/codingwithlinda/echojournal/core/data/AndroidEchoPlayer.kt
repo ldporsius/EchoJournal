@@ -14,6 +14,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -22,6 +23,7 @@ import kotlinx.coroutines.withContext
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.SoundCapturer
+import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 import java.io.BufferedOutputStream
 import java.io.File
@@ -48,13 +50,12 @@ class AndroidEchoPlayer(
     private val mAudioManager: AudioManager? = null
 
     private var player: MediaPlayer? = null
+    private var playbackState: PlaybackState = PlaybackState.STOPPED
 
     override suspend fun amplitudes(uri: Uri): List<Float> {
 
         val scheme = uri.scheme ?: ""
-        //val childPath = uri.path?.split("/")?.last()
         val pathAmplitudesTest = File(context.filesDir, AndroidMediaRecorder.FILE_NAME_AMPLITUDES).path
-
 
         if (scheme.contains("resource")) {
             return withContext(dispatcherProvider.default) {
@@ -116,22 +117,40 @@ class AndroidEchoPlayer(
             }
         }
     }
+    private var playingTimeLeft = player?.duration ?: 0
 
     override fun play(uri: Uri) {
         releaseMediaPlayer()
 
         player = MediaPlayer.create(context, uri)
+
         player?.start()
 
-        //soundCapturer.visualiseRpm()
+        CoroutineScope(dispatcherProvider.default).launch {
+            while (playingTimeLeft > 0) {
+                if (playbackState == PlaybackState.PLAYING) {
+                    playingTimeLeft -= 100
+                    delay(100)
+                }
+            }
+        }
     }
 
     override fun pause() {
+        playbackState = PlaybackState.PAUSED
         player?.pause()
         soundCapturer.stop()
     }
+    override fun resume() {
+        playbackState = PlaybackState.PLAYING
+        player?.run {
+            seekTo(playingTimeLeft)
+            start()
+        }
+    }
 
     override fun stop() {
+        playbackState = PlaybackState.STOPPED
         player?.stop()
         soundCapturer.stop()
     }

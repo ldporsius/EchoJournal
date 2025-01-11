@@ -27,29 +27,23 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
+import java.util.concurrent.Future
 
 @Composable
 fun EchoPlaybackComponent(
     modifier: Modifier = Modifier,
-    onAction: (ReplayEchoAction) -> Unit,
-    moodColor: Color,
+    playbackIcon: @Composable () -> Unit,
     duration: String,
     amplitudes: List<Float>,
-    uri: String,
+    amplitudeColor: (index: Int) -> Color,
 ) {
-
-    var playIconSize by remember {
-        mutableStateOf(Size.Zero)
-    }
-    //val amplitudeWidth = 1024.dp
-    val amplitudeSpacing = 1.dp
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
             .background(
-                color = moodColor.copy(.25f),
+                color = Color.Gray.copy(.25f),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(100)
             )
             .padding(start = 0.dp, end = 16.dp)
@@ -57,31 +51,17 @@ fun EchoPlaybackComponent(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
 
     ){
-        IconButton(onClick = {
-            onAction(ReplayEchoAction.Play(uri))
-        },
-            modifier = Modifier
-                .onSizeChanged {
-                    playIconSize = it.toSize()
-                },
-            colors = androidx.compose.material3.IconButtonDefaults.iconButtonColors(
-                containerColor = androidx.compose.ui.graphics.Color.White,
-                contentColor = moodColor
-            )
-        ) {
-            Icon(imageVector = androidx.compose.material.icons.Icons.Default.PlayArrow, contentDescription = null)
-        }
+
+        playbackIcon()
 
         Box(
             Modifier
                 .weight(1f)
                 .height(48.dp)
                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(1))
-                .background(color = Color.Red.copy(.1f))
                 .drawBehind {
                     val width = size.width
                     val height = size.height
-                    val amplitudeBarCount = (width / (2 * amplitudes.size)).toInt()
 
                     val amplWidth = 2.dp.toPx()
 
@@ -90,17 +70,20 @@ fun EchoPlaybackComponent(
                     val scaleX = width / (amplitudes.size * (1 + spaceFactor) * amplWidth)
 
                     this.scale(
-                        scaleX = scaleX*0.95f,
+                        scaleX = scaleX*0.97f,
                         scaleY = 0.9f,
                         pivot = Offset(0f, center.y)
                     ) {
+
+
                         amplitudes.forEachIndexed { index, amplitude ->
+                            val color = amplitudeColor(index)
                             val x = index * amplWidth * (1 + spaceFactor)
 
                             val yTopStart = center.y - (height / 2) * amplitude
 
                             drawRoundRect(
-                                color = moodColor,
+                                color = color,
                                 topLeft = Offset(x, yTopStart),
                                 size = Size(
                                     width = amplWidth,
@@ -108,7 +91,6 @@ fun EchoPlaybackComponent(
                                 ),
                                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(100f)
                             )
-
                         }
                     }
                 }

@@ -16,6 +16,7 @@ import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import nl.codingwithlinda.echojournal.feature_entries.domain.usecase.FilterOnMoodAndTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound2
@@ -67,20 +68,16 @@ class EchosViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moodsUiState.value)
 
-   /* private val waves = echoPlayer.waves.map {
-        it.map {
-            1 / (it.toFloat())
-        }
-    }*/
-    private val _playingEchoUri = MutableStateFlow<String?>(null)
-    private val _playingEchoAmplitudes = MutableStateFlow<List<Float>>(emptyList())
 
-    val replayUiState = combine(_playingEchoUri, _playingEchoAmplitudes){ playing, amplitudes ->
-        println("Echos viewmodel. playing uri: $playing")
-        println("Echos viewmodel. waves: ${amplitudes.takeLast(25)}")
+    private val _playingEchoUri = MutableStateFlow<String?>(null)
+    private val _playbackState = MutableStateFlow(PlaybackState.STOPPED)
+
+    val replayUiState = combine(_playingEchoUri, _playbackState){ uri , playbackState ->
+        println("Echos viewmodel. playing uri: $uri")
         ReplayUiState(
-            playingEchoUri = playing,
-            waves = amplitudes
+            playbackState = playbackState,
+            playingEchoUri = uri,
+            waves = emptyList()
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReplayUiState())
 
@@ -155,31 +152,41 @@ class EchosViewModel(
 
     fun onReplayAction(action: ReplayEchoAction){
         when(action){
-            ReplayEchoAction.Pause -> {
-                _playingEchoUri.update {
-                    null
-                }
-                echoPlayer.pause()
-            }
             is ReplayEchoAction.Play -> {
+                when(_playbackState.value){
+                    PlaybackState.PLAYING ->{
+                        _playbackState.update {
+                            PlaybackState.PAUSED
+                        }
+                        echoPlayer.pause()
 
-                viewModelScope.launch {
-                    _echoes.firstOrNull()?.find {
-                        it.uri == action.uri
-                    }?.also {
-                        echoPlayer.play(Uri.parse(action.uri))
-
-                        println("playing echo: ${it.amplitudes.take(25)}")
-                        visualiseAmplitudes(action.uri, it.amplitudes)
+                    }
+                    PlaybackState.PAUSED -> {
+                        playback(action.uri, true)
+                    }
+                    PlaybackState.STOPPED -> {
+                        playback(action.uri, false)
                     }
                 }
-
             }
-            ReplayEchoAction.Stop -> {
-                _playingEchoUri.update {
-                    null
+        }
+    }
+
+    private fun playback(uri: String, isPaused: Boolean){
+        viewModelScope.launch {
+            _echoes.firstOrNull()?.find {
+                it.uri == uri
+            }?.also {
+                _playbackState.update {
+                    PlaybackState.PLAYING
                 }
-                echoPlayer.stop()
+                _playingEchoUri.update {
+                    uri
+                }
+                if (isPaused) echoPlayer.resume() else echoPlayer.play(Uri.parse(uri))
+
+                println("playing echo: ${it.amplitudes.take(25)}")
+                visualiseAmplitudes(uri, it.amplitudes)
             }
         }
     }
@@ -189,15 +196,9 @@ class EchosViewModel(
             println("visualiseAmplitudes: $amplitudes")
             val delayMillis = (10L)
             amplitudes.onEachIndexed { index, fl ->
-                _playingEchoAmplitudes.update {
-                    amplitudes.subList(index, amplitudes.size)
-                }
+
             }
             delay(delayMillis)
-        }
-
-        _playingEchoAmplitudes.update {
-            amplitudes
         }
     }
 }

@@ -20,9 +20,11 @@ import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
+import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingState
 
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
@@ -86,6 +88,8 @@ class CreateEchoViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
 
+    private val playbackState = MutableStateFlow(PlaybackState.STOPPED)
+
     private var amplitudes = emptyList<Float>()
     init {
         viewModelScope.launch {
@@ -107,14 +111,24 @@ class CreateEchoViewModel(
         }
     }
 
-    private fun visualiseAmplitudes(amplitudes: List<Float>){
+    private fun visualiseAmplitudes(amplitudes: List<Float>, duration: Long){
         viewModelScope.launch {
 
-            val delayMillis = (10L)
-            amplitudes.onEachIndexed { index, fl ->
+            val amplitudesSilent = amplitudes.takeWhile {
+                it < 1.0f
+            }.size
+            println("CreateEchoViewModel delaying while silent for $amplitudesSilent millis")
+            delay(amplitudesSilent * 1L)
+            val delayMillis = duration / amplitudes.size
+            println("CreateEchoViewModel amplitudes size = ${amplitudes.size}")
+            println("CreateEchoViewModel duration = ${duration}")
+            println("CreateEchoViewModel delaying visualise by $delayMillis millis")
+
+            (1 .. amplitudes.size).onEachIndexed { index, fl ->
+                if (playbackState.value == PlaybackState.PLAYING)
                 _uiState.update {
                     it.copy(
-                        amplitudes = amplitudes.subList(index, amplitudes.size)
+                        amplitudesPlayed = it.amplitudesPlayed + index
                     )
                 }
                 delay(delayMillis)
@@ -122,8 +136,11 @@ class CreateEchoViewModel(
 
             _uiState.update {
                 it.copy(
-                    amplitudes = amplitudes
+                    amplitudesPlayed = emptyList()
                 )
+            }
+            playbackState.update {
+                PlaybackState.STOPPED
             }
         }
     }
@@ -131,8 +148,19 @@ class CreateEchoViewModel(
     fun onAction(action: CreateEchoAction) {
         when (action) {
             CreateEchoAction.PlayEcho -> {
+                playbackState.update {
+                    PlaybackState.PLAYING
+                }
                audioEchoPlayer.play(Uri.parse(echoDto.uri))
-               // visualiseAmplitudes(amplitudes)
+               visualiseAmplitudes(amplitudes, echoDto.duration)
+
+            }
+            CreateEchoAction.PauseEcho -> {
+                playbackState.update {
+                    PlaybackState.PAUSED
+                }
+                audioEchoPlayer.pause()
+
             }
             is CreateEchoAction.TitleChanged -> {
                 _uiState.update {

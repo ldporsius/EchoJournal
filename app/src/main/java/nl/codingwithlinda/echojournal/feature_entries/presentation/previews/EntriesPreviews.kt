@@ -162,11 +162,14 @@ private fun EchoListItemContentPreview() {
             replayComponent =  {
                 EchoPlaybackComponent(
                     modifier = Modifier,
-                    onAction = {  },
-                    moodColor = Color( Mood.SAD.toColor()),
+                    playbackIcon = {
+
+                    },
                     duration = DateTimeFormatterDuration().formatDateTimeMillis(1000),
                     amplitudes = fakeAmplitudes(),
-                    uri = ""
+                    amplitudeColor = {
+                        Color.Red
+                    },
                 )
             },
             onFilterTopic = {}

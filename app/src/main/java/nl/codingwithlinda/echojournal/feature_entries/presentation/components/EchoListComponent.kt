@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
-import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayEchoAction
@@ -64,11 +63,21 @@ fun EchoListComponent(
                                 replayComponent = {
                                     EchoPlaybackComponent(
                                         modifier = Modifier,
-                                        onAction = onReplayAction,
-                                        moodColor = Color( uiEcho.mood.color),
+                                        playbackIcon = {
+                                            PlaybackIcon(
+                                                modifier = Modifier,
+                                                uri = uiEcho.uri,
+                                                moodColorPlayed = Color( uiEcho.mood.color),
+                                                playbackState = replayUiState.playbackState,
+                                                onAction = onReplayAction
+                                            )
+                                        },
                                         duration = uiEcho.duration,
-                                        amplitudes = replayUiState.waves,
-                                        uri = uiEcho.uri
+                                        amplitudes = uiEcho.amplitudes,
+                                        amplitudeColor = {
+                                            Color.Gray
+                                        },
+
                                     )
                                 },
                                 onFilterTopic = {topic ->
