@@ -11,10 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
+import nl.codingwithlinda.echojournal.ui.theme.amplitudeColorUndefined
+import nl.codingwithlinda.echojournal.ui.theme.playbackBackgroundUndefined
 
 data class CreateEchoUiState(
     val title: String = "",
@@ -32,14 +35,15 @@ data class CreateEchoUiState(
     fun canSave(): Boolean
          = title.isNotBlank() && confirmedMood != null
 
-    private val selectedMoodColor: Color =  selectedMood?.let { Color(it.color) } ?: Color.DarkGray
+    private val selectedMoodColor: Color =  selectedMood?.let { Color(it.color) } ?: amplitudeColorUndefined
 
-    fun playbackBackgroundColor() = selectedMoodColor.copy(.25f)
+    fun playbackBackgroundColor() = selectedMood?.let { selectedMoodColor.copy(.25f) } ?: playbackBackgroundUndefined
+
     fun amplitudeColor(index: Int) : Color{
         return if(index in amplitudesPlayed){
            selectedMoodColor
         }
-        else Color.Gray
+        else amplitudeColorUndefined.copy(.1f).compositeOver(Color.Gray)
     }
 
     @Composable

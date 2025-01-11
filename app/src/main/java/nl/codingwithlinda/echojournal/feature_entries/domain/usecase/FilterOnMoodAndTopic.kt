@@ -2,10 +2,11 @@ package nl.codingwithlinda.echojournal.feature_entries.domain.usecase
 
 import nl.codingwithlinda.echojournal.core.domain.model.Echo
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 
 class FilterOnMoodAndTopic {
 
-    fun filter(echoes: List<Echo>, moods: List<Mood>, topics: List<String>): List<Echo>{
+    fun filter(echoes: List<Echo>, moods: List<Mood>, topics: List<Topic>): List<Echo>{
 
         if (moods.isEmpty() && topics.isEmpty()){
             return echoes
@@ -18,11 +19,11 @@ class FilterOnMoodAndTopic {
         }
         if (moods.isEmpty()){
             return echoes.filter {
-                it.topics.any { topic -> topic.name in topics }
+                it.topics.any { topic -> topic in topics }
             }
         }
         return echoes.filter {
-            it.mood in moods && it.topics.any { topic -> topic.name in topics }
+            it.mood in moods && it.topics.any { topic -> topic in topics }
         }
 
     }

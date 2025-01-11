@@ -155,9 +155,8 @@ class EchosViewModel(
             = combine(_echoes, _selectedTopics, _selectedMoods) { echoes, topics, moods->
 
         val moodNames = moods.map { it.mood }
-        val topicNames = topics.map { it.name }
 
-        val selectedEchoes =  filterOnMoodAndTopic.filter(echoes, moodNames, topicNames)
+        val selectedEchoes =  filterOnMoodAndTopic.filter(echoes, moodNames, topics)
         val res = GroupByTimestamp.createGroups(selectedEchoes)
 
         EchoesUiState(

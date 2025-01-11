@@ -1,9 +1,7 @@
 package nl.codingwithlinda.echojournal.ui.theme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradient
 
 val primaryLight = Color(0xFF475D92)
 val onPrimaryLight = Color(0xFFFFFFFF)
@@ -21,7 +19,7 @@ val errorLight = Color(0xFF904A4B)
 val onErrorLight = Color(0xFFFFFFFF)
 val errorContainerLight = Color(0xFFFFDAD9)
 val onErrorContainerLight = Color(0xFF3B080D)
-val backgroundLight = Color(0xFFFAF8FF)
+val backgroundLight = Color(0xFFFCFDFE)
 val onBackgroundLight = Color(0xFF1A1B20)
 val surfaceLight = Color(0xFFFAF8FF)
 val onSurfaceLight = Color(0xFF1A1B20)
@@ -243,3 +241,5 @@ val buttonDisabledGradient = Brush.linearGradient(
     end = Offset(0f, 500f)
 )
 
+val playbackBackgroundUndefined = Color(0xFFEEF0FF)
+val amplitudeColorUndefined = Color(0xFFBAC6E9)

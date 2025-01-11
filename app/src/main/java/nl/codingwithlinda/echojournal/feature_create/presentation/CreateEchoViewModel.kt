@@ -7,7 +7,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -87,7 +89,7 @@ class CreateEchoViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
 
 
-    private val playbackState = MutableStateFlow(PlaybackState.STOPPED)
+    //private val playbackState = MutableStateFlow(PlaybackState.STOPPED)
 
     private var amplitudes = emptyList<Float>()
     init {
@@ -109,9 +111,17 @@ class CreateEchoViewModel(
                 e.printStackTrace()
             }
         }
+
+        audioEchoPlayer.waves.onEach { waves ->
+            _uiState.update {
+                it.copy(
+                    amplitudesPlayed = waves
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
-    private fun visualiseAmplitudes(amplitudes: List<Float>, duration: Long){
+   /* private fun visualiseAmplitudes(amplitudes: List<Float>, duration: Long){
         viewModelScope.launch {
 
             if(amplitudes.isEmpty()) return@launch
@@ -149,21 +159,22 @@ class CreateEchoViewModel(
             }
         }
     }
-
+*/
     fun onAction(action: CreateEchoAction) {
         when (action) {
             CreateEchoAction.PlayEcho -> {
-                playbackState.update {
+               /* playbackState.update {
                     PlaybackState.PLAYING
-                }
+                }*/
                audioEchoPlayer.play(Uri.parse(echoDto.uri))
-               visualiseAmplitudes(amplitudes, echoDto.duration)
-
+                viewModelScope.launch {
+                    audioEchoPlayer.visualiseAmplitudes(amplitudes, echoDto.duration)
+                }
             }
             CreateEchoAction.PauseEcho -> {
-                playbackState.update {
+               /* playbackState.update {
                     PlaybackState.PAUSED
-                }
+                }*/
                 audioEchoPlayer.pause()
 
             }

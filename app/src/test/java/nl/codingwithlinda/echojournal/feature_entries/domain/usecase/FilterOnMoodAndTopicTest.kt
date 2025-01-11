@@ -1,7 +1,9 @@
 package nl.codingwithlinda.echojournal.feature_entries.domain.usecase
 
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeTopics
 import org.junit.Test
 
 
@@ -11,14 +13,15 @@ class FilterOnMoodAndTopicTest{
     private val echoes = entries.mapIndexed {i, echo ->
         echo.copy(
             mood = Mood.SAD,
-            topics = listOf("Topic $i", "Topic ${i+1}")
+            topics = fakeTopics
         )
     }
 
+    private val testTopics = listOf(Topic("Topic 1"), Topic("Topic 2"))
     @Test
     fun `test filter on mood and topic - result contains all moods and topics`(){
         val moods = listOf(Mood.SAD, Mood.NEUTRAL)
-        val topics = emptyList<String>()
+        val topics = emptyList<Topic>()
 
         val res = filterOnMoodAndTopic.filter(echoes, moods, topics)
 
@@ -35,7 +38,7 @@ class FilterOnMoodAndTopicTest{
     @Test
     fun `test filter on mood and topic - result contains filtered moods and topics`(){
         val moods = listOf(Mood.SAD, Mood.NEUTRAL)
-        val topics = listOf("Topic 1", "Topic 2")
+        val topics = testTopics
 
         val res = filterOnMoodAndTopic.filter(echoes, moods, topics)
 
@@ -51,7 +54,7 @@ class FilterOnMoodAndTopicTest{
     @Test
     fun `test filter on mood and topic - result is empty no mood match`(){
         val moods = listOf(Mood.PEACEFUL)
-        val topics = listOf("Topic 1", "Topic 2")
+        val topics = testTopics
 
         val res = filterOnMoodAndTopic.filter(echoes, moods, topics)
 
@@ -67,7 +70,7 @@ class FilterOnMoodAndTopicTest{
     @Test
     fun `test filter on mood and topic - result is empty no topics match`(){
         val moods = listOf(Mood.SAD)
-        val topics = listOf("Topic 10")
+        val topics = testTopics
 
         val res = filterOnMoodAndTopic.filter(echoes, moods, topics)
 
