@@ -2,12 +2,18 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,6 +35,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
+import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 
 class EchosViewModel(
     private val echoAccess: EchoAccess,
@@ -69,50 +76,77 @@ class EchosViewModel(
 
     private val _echoes = echoAccess.readAll()
 
-    private val _playingEchoUri = MutableStateFlow<String?>(null)
+    //private val _playingEchoUri = MutableStateFlow<String?>(null)
+    private val _playingEchoId = MutableSharedFlow<String>(replay = 10)
     private val _playbackState = echoPlayer.playbackState
 
-    val replayUiState = combine(_echoes, _playingEchoUri, _playbackState){ echoes, uri , playbackState ->
-        println("Echos viewmodel. playing uri: $uri")
-        val currentlyPlaying = echoes.find {
-            it.uri == uri
-        } ?.let {
-            it.id to  ReplayUiState(
-                playbackState = playbackState,
-                playingEchoUri = uri,
-                waves = emptyList()
-            )
-        }
+    private val _replayUiState = MutableStateFlow<Pair<String, ReplayUiState>?>(null)
+    val replayUiState =
+        _echoes.combine(_replayUiState) { echoes, state ->
 
-        echoes.associate{
-           it.id to  ReplayUiState(
-                playbackState = PlaybackState.STOPPED,
-                playingEchoUri = null,
-                waves = emptyList()
-            )
-        }.let {map ->
-            currentlyPlaying?.let {  map.plus(it) } ?: map
-        }
+            val map = echoes.associate{
+                it.id to  ReplayUiState(
+                    playbackState = PlaybackState.STOPPED,
+                    waves = emptyList()
+                )
+            }
 
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+            if (state != null){
+                map.plus(state)
+            } else {
+                map
+            }
+
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
 
     init {
         viewModelScope.launch {
             _echoes.first().forEachIndexed {index, echo ->
                 if (echo.id.startsWith("FAKE")) {
-                    val sound =
-                        if (index % 2 == 0) testSound().toString() else testSound2().toString()
+                    val sound = AndroidMediaRecorder.FILE_NAME_AUDIO
+
+                    val amplitudesPath = AndroidMediaRecorder.FILE_NAME_AMPLITUDES
                     println("test sound: $sound")
                     println("uri from sound: ${Uri.parse(sound)}")
                     val update = echo.copy(
                         uri = sound,
-                        amplitudes = echoPlayer.amplitudes(Uri.parse(sound))
+                        amplitudes = echoPlayer.amplitudes(amplitudesPath),
+                        duration = 1000L
                     )
                     echoAccess.update(update)
                 }
             }
         }
+
+        _playingEchoId.onEach { id ->
+            val echo = _echoes.first().find {
+                it.id == id
+            }
+            echo?.let{echo ->
+                println("visualising echo with id: $id")
+                _replayUiState.update {
+                  echo.id to ReplayUiState(
+                            playbackState = PlaybackState.PLAYING,
+                            waves = emptyList()
+                        )
+                }
+                echoPlayer.play(Uri.parse(echo.uri))
+                echoPlayer.visualiseAmplitudes(echo.amplitudes, echo.duration)
+            }
+
+        }.launchIn(viewModelScope)
+
+        combine(echoPlayer.waves, echoPlayer.playbackState){ waves, playbackState ->
+            _replayUiState.update {
+                it?.copy(
+                    second = ReplayUiState(
+                        playbackState = playbackState,
+                        waves = waves
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     val echoesUiState
@@ -171,16 +205,24 @@ class EchosViewModel(
         when(action){
             is ReplayEchoAction.Play -> {
                 println("ECHOES VIEWMODEL. PLAYBACKSTATE = ${_playbackState.value}")
+                viewModelScope.launch {
+
                 when(_playbackState.value){
                     PlaybackState.PLAYING ->{
                         echoPlayer.pause()
-
                     }
                     PlaybackState.PAUSED -> {
-                        playback(action.uri, true)
+                        //playback(action.uri, true)
+                        _playingEchoId.emit(
+                            action.id
+                        )
                     }
                     PlaybackState.STOPPED -> {
-                        playback(action.uri, false)
+                            _playingEchoId.emit(
+                                action.id
+                            )
+                            //playback(action.uri, false)
+                        }
                     }
                 }
             }
@@ -193,22 +235,9 @@ class EchosViewModel(
             if (isPaused){
                 echoPlayer.resume()
             } else {
-                _playingEchoUri.update {
-                    uri
-                }
                 echoPlayer.play(Uri.parse(uri))
             }
         }
     }
 
-    private fun visualiseAmplitudes(uri: String, amplitudes: List<Float>){
-        viewModelScope.launch {
-            println("visualiseAmplitudes: $amplitudes")
-            val delayMillis = (10L)
-            amplitudes.onEachIndexed { index, fl ->
-
-            }
-            delay(delayMillis)
-        }
-    }
 }

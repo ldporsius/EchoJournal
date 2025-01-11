@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +44,8 @@ class AndroidEchoPlayer(
     private val soundCapturer: SoundCapturer
 ): EchoPlayer{
 
-    override val waves = soundCapturer.waves
+    private val _amplitudesPlayed = MutableStateFlow(emptyList<Int>())
+    override val waves = _amplitudesPlayed.asStateFlow()
 
     /** Handles audio focus when playing a sound file  */
     private val mAudioManager: AudioManager? = null
@@ -52,23 +54,18 @@ class AndroidEchoPlayer(
     private val _playbackState = MutableStateFlow(PlaybackState.STOPPED)
     override val playbackState = _playbackState.asStateFlow()
 
-    override suspend fun amplitudes(uri: Uri): List<Float> {
 
-        val scheme = uri.scheme ?: ""
-        val pathAmplitudesTest = File(context.filesDir, AndroidMediaRecorder.FILE_NAME_AMPLITUDES).path
+    override suspend fun amplitudes(path: String): List<Float> {
 
-        if (scheme.contains("resource")) {
-            return withContext(dispatcherProvider.default) {
-                amplitudesFromFile(Uri.parse(pathAmplitudesTest))
-            }
-        }
+        val pathAmplitudes = File(context.filesDir, path).path
+        val uri = Uri.parse(pathAmplitudes)
 
         return withContext(dispatcherProvider.default) {
-                amplitudesFromFile(uri).also {
-                    println("Amplitudes: ${it.size}")
-                }
+            amplitudesFromFile(uri).also {
+                println("Amplitudes: ${it.size}")
             }
         }
+    }
 
     private fun amplitudesFromBytes(uri: Uri): List<Float> {
         val inputStream =
@@ -122,9 +119,13 @@ class AndroidEchoPlayer(
     override fun play(uri: Uri) {
         releaseMediaPlayer()
 
-        player = MediaPlayer.create(context, uri)
+        val soundTest = File(context.filesDir, AndroidMediaRecorder.FILE_NAME_AUDIO).path
+        val uriTest = Uri.parse(soundTest)
+
+        player = MediaPlayer.create(context, uriTest)
 
         playingTimeLeft = player?.duration ?: 0
+
         player?.start().also {
             _playbackState.update { PlaybackState.PLAYING }
         }
@@ -177,4 +178,38 @@ class AndroidEchoPlayer(
         }
     }
 
+    override suspend fun visualiseAmplitudes(amplitudes: List<Float>, duration: Long){
+
+        _amplitudesPlayed.update {
+            emptyList()
+        }
+        val _duration = player?.duration?.toLong() ?: 1000L
+
+        val amplitudesSilent = amplitudes.takeWhile {
+            it < 1.0f
+        }.size
+
+        println("AndroidEchoPlayer delaying while silent for $amplitudesSilent millis")
+        delay(amplitudesSilent * 1L)
+
+        val delayMillis = _duration / amplitudes.size
+
+        println("AndroidEchoPlayer amplitudes size = ${amplitudes.size}")
+        println("AndroidEchoPlayer duration = ${_duration}")
+        println("AndroidEchoPlayer delaying visualise by $delayMillis millis")
+
+        (1 .. amplitudes.size).onEachIndexed { index, fl ->
+            if (playbackState.value == PlaybackState.PLAYING) {
+                _amplitudesPlayed.value += index
+            }
+            delay(delayMillis)
+        }
+
+        _amplitudesPlayed.update {
+            emptyList()
+        }
+        _playbackState.update {
+            PlaybackState.STOPPED
+        }
+    }
 }

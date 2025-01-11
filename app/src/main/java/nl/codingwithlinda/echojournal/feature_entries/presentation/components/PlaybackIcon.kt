@@ -22,6 +22,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayE
 @Composable
 fun PlaybackIcon(
     modifier: Modifier = Modifier,
+    id: String,
     uri: String,
     moodColorPlayed: Color,
     playbackState: PlaybackState,
@@ -44,7 +45,7 @@ fun PlaybackIcon(
         }
     }
     IconButton(onClick = {
-          onAction(ReplayEchoAction.Play(uri))
+          onAction(ReplayEchoAction.Play(id, uri))
       },
           modifier = Modifier
               .onSizeChanged {

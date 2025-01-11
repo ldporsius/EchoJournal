@@ -58,6 +58,7 @@ fun EchoListComponent(
                             )
                         },
                         content = {
+                            val replayUiState = replayUiState(uiEcho)
                             EchoListItemContent(
                                 modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                                 uiEcho = uiEcho,
@@ -67,18 +68,18 @@ fun EchoListComponent(
                                         playbackIcon = {
                                             PlaybackIcon(
                                                 modifier = Modifier,
+                                                id = uiEcho.id,
                                                 uri = uiEcho.uri,
                                                 moodColorPlayed = Color( uiEcho.mood.color),
-                                                playbackState = replayUiState(uiEcho).playbackState,
+                                                playbackState = replayUiState.playbackState,
                                                 onAction = onReplayAction
                                             )
                                         },
                                         duration = uiEcho.duration,
                                         amplitudes = uiEcho.amplitudes,
                                         amplitudeColor = {
-                                            Color.Gray
+                                           replayUiState.amplitudeColor(it)
                                         },
-
                                     )
                                 },
                                 onFilterTopic = {topic ->

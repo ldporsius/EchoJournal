@@ -24,7 +24,6 @@ import nl.codingwithlinda.echojournal.feature_create.presentation.state.Playback
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingState
 
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
@@ -96,7 +95,7 @@ class CreateEchoViewModel(
             try {
                 println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri)}")
 
-                val amplitudes = audioEchoPlayer.amplitudes(Uri.parse(echoDto.amplitudesUri))
+                val amplitudes = audioEchoPlayer.amplitudes(echoDto.amplitudesUri)
                 this@CreateEchoViewModel.amplitudes = amplitudes
 
                 _uiState.update {
@@ -125,13 +124,14 @@ class CreateEchoViewModel(
             println("CreateEchoViewModel delaying visualise by $delayMillis millis")
 
             (1 .. amplitudes.size).onEachIndexed { index, fl ->
-                if (playbackState.value == PlaybackState.PLAYING)
-                _uiState.update {
-                    it.copy(
-                        amplitudesPlayed = it.amplitudesPlayed + index
-                    )
+                if (playbackState.value == PlaybackState.PLAYING) {
+                    _uiState.update {
+                        it.copy(
+                            amplitudesPlayed = it.amplitudesPlayed + index
+                        )
+                    }
+                    delay(delayMillis)
                 }
-                delay(delayMillis)
             }
 
             _uiState.update {
