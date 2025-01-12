@@ -2,18 +2,9 @@ package nl.codingwithlinda.echojournal.core.data
 
 import android.content.Context
 import android.media.AudioManager
-import android.media.MediaCodec
-import android.media.MediaDataSource
-import android.media.MediaExtractor
-import android.media.MediaFormat
 import android.media.MediaPlayer
-import android.media.audiofx.Visualizer
-import android.media.audiofx.Visualizer.MEASUREMENT_MODE_PEAK_RMS
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,15 +16,8 @@ import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.SoundCapturer
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
-import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
-import java.io.BufferedOutputStream
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.FileReader
-import java.io.FileWriter
-import java.io.OutputStream
-import java.nio.ByteBuffer
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -89,9 +73,10 @@ class AndroidEchoPlayer(
 
     private var playingTimeLeft = player?.duration ?: 0
 
-    override fun play(uri: Uri) {
+    override fun play(id: String) {
         releaseMediaPlayer()
 
+        val uri = File(context.filesDir, id).toUri()
         player = MediaPlayer.create(context, uri)
 
         playingTimeLeft = player?.duration ?: 0

@@ -2,11 +2,13 @@ package nl.codingwithlinda.echojournal.core.data
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import nl.codingwithlinda.echojournal.core.domain.model.Echo
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
 import java.io.File
+import java.io.FileOutputStream
 import java.util.UUID
 
 class EchoFactory(
@@ -30,7 +32,7 @@ class EchoFactory(
         mood: Mood
     ): Echo{
         val id = UUID.randomUUID().toString()
-        val uri = File(context.filesDir, id).path
+        val uri = "$id.mp3"
         return Echo(
             id = id,
             title = title,
@@ -44,11 +46,17 @@ class EchoFactory(
         )
     }
 
-    fun persistEcho(path: String){
-        val uri = Uri.parse(path)
-        context.contentResolver.openOutputStream(uri)?.use {
+    fun persistEcho(source: String, target: String) {
+        val sourceUri = File(context.filesDir, source).toUri()
+        println("EchoFactory has sourceUri: $sourceUri")
 
+        val file = File(context.filesDir, target)
+
+        val output = FileOutputStream(file)
+        context.contentResolver.openInputStream(sourceUri)?.use { input ->
+            output.use { out ->
+                input.copyTo(out)
+            }
         }
-
     }
 }

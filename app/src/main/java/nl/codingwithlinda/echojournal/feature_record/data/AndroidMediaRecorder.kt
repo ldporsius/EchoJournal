@@ -22,7 +22,7 @@ class AndroidMediaRecorder(
 
     ): AudioRecorder{
 
-    private val FILE_NAME_AUDIO: String = "audio.mp4"
+    private val FILE_NAME_AUDIO: String = "echoJournal.mp4"
     private val FILE_NAME_AMPLITUDES = "audio_waves.txt"
 
     private val pathAmplitudes: String = File(context.filesDir, FILE_NAME_AMPLITUDES).path
@@ -36,7 +36,7 @@ class AndroidMediaRecorder(
     override val listener: Flow<AudioRecorderData> = flow {
         emit(AudioRecorderData(
             duration = endRecordingTime - startRecordingTime,
-            uri = pathAudio,
+            uri = FILE_NAME_AUDIO,
             amplitudesUri = pathAmplitudes
         )
         )
@@ -102,7 +102,7 @@ class AndroidMediaRecorder(
 
     override fun start(path:String) {
         println("started recording")
-        val internalStoragePath = File(context.filesDir, path).path
+        val internalStoragePath = File(context.filesDir, FILE_NAME_AUDIO).path
         startRecording(internalStoragePath)
     }
 

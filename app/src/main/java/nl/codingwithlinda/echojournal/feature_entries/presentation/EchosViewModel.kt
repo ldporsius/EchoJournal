@@ -76,7 +76,6 @@ class EchosViewModel(
 
     private val _echoes = echoAccess.readAll()
 
-
     private val _playingEchoId = MutableSharedFlow<String>(replay = 10)
     private val _playbackState = echoPlayer.playbackState
 
@@ -102,21 +101,6 @@ class EchosViewModel(
 
 
     init {
-       /* viewModelScope.launch {
-            _echoes.first().forEachIndexed {index, echo ->
-                if (echo.id.startsWith("FAKE")) {
-                    //val sound = AndroidMediaRecorder.FILE_NAME_AUDIO
-
-                    val amplitudesPath = AndroidMediaRecorder.FILE_NAME_AMPLITUDES
-
-                    val update = echo.copy(
-                        amplitudes = echoPlayer.amplitudes(amplitudesPath),
-                        duration = 1000L
-                    )
-                    echoAccess.update(update)
-                }
-            }
-        }*/
 
         _playingEchoId.onEach { id ->
             val echo = _echoes.first().find {
@@ -131,7 +115,7 @@ class EchosViewModel(
                         waves = emptyList()
                     )
                 }
-                val uri = Uri.parse(echo1.uri)
+                val uri = echo1.uri
 
                 println("EchoViewModel is going to play uri: $uri")
                 echoPlayer.play(uri)
@@ -225,17 +209,6 @@ class EchosViewModel(
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private fun playback(uri: String, isPaused: Boolean){
-        viewModelScope.launch {
-
-            if (isPaused){
-                echoPlayer.resume()
-            } else {
-                echoPlayer.play(Uri.parse(uri))
             }
         }
     }

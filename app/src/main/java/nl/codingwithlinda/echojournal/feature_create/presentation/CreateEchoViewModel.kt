@@ -122,7 +122,7 @@ class CreateEchoViewModel(
         when (action) {
             CreateEchoAction.PlayEcho -> {
 
-               audioEchoPlayer.play(Uri.parse(echoDto.uri))
+               audioEchoPlayer.play(echoDto.uri)
                 viewModelScope.launch {
                     audioEchoPlayer.visualiseAmplitudes(amplitudes, echoDto.duration)
                 }
@@ -227,7 +227,12 @@ class CreateEchoViewModel(
                         mood = userInput.confirmedMood.mood,
                         amplitudes = amplitudes
                     ).also {
-                        echoAccess.create(it)
+                        echoAccess.create(it).also {echo ->
+                            echoFactory.persistEcho(
+                                source = echoDto.uri,
+                                target = echo.uri
+                            )
+                        }
                         onSaved()
 
                     }
