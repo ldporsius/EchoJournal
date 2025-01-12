@@ -73,7 +73,7 @@ class AndroidMediaRecorder(
                 recorder?.maxAmplitude?.let {
                     _waves.value += it
                 }
-                delay(10)
+                delay(30)
             }
         }
     }

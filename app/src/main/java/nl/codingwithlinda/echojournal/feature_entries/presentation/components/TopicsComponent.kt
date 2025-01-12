@@ -19,6 +19,7 @@ import nl.codingwithlinda.echojournal.core.domain.model.Topic
 @Composable
 fun TopicsComponent(
     tags: List<Topic>,
+    moodColor: Color,
     onClick: (Topic) -> Unit,
     modifier: Modifier = Modifier) {
     FlowRow(
@@ -28,7 +29,7 @@ fun TopicsComponent(
         tags.forEach {
             Row (modifier = Modifier
                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(100))
-                .background(color = Color.LightGray)
+                .background(color = moodColor)
                 .padding(horizontal = 8.dp, vertical = 4.dp)
                 .clickable {
                     onClick(it)

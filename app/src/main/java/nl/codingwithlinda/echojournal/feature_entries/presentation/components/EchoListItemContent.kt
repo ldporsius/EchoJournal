@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
@@ -50,6 +51,7 @@ fun EchoListItemContent(
            onClick = {
                onFilterTopic(it)
            },
+           moodColor = Color(uiEcho.mood.color).copy(.05f),
            modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
        )
     }

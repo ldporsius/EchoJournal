@@ -60,7 +60,7 @@ fun EchoPlaybackComponent(
                     val width = size.width
                     val height = size.height
 
-                    val amplWidth = 2.dp.toPx()
+                    val amplWidth = 4.dp.toPx()
 
                     val spaceFactor = 0.5f
 

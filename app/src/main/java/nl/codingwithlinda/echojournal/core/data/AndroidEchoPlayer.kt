@@ -51,7 +51,7 @@ class AndroidEchoPlayer(
     }
 
     private fun amplitudesFromFile(uri: Uri): List<Float> {
-        val BAR_NUM = 100
+        val BAR_NUM = 50
 
         val fileReader = FileReader(uri.path)
         fileReader.use { reader ->
@@ -61,11 +61,14 @@ class AndroidEchoPlayer(
                 }
             }
 
-            val chunkSize = ceil(1.0 * amplitudes.size / BAR_NUM).roundToInt().coerceAtLeast(1)
+            val chunkSize = ceil(amplitudes.size.toFloat() / BAR_NUM).roundToInt().coerceAtLeast(1)
 
             val maxAmplitude = amplitudes.maxOrNull() ?: 1f
+
             return amplitudes.chunked(chunkSize) {
                 it.max() / maxAmplitude
+            }.map {
+                it.coerceAtLeast(0.075f)
             }
         }
     }
