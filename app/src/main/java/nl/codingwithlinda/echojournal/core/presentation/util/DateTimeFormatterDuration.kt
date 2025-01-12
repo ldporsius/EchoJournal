@@ -2,8 +2,6 @@ package nl.codingwithlinda.echojournal.core.presentation.util
 
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 object DateTimeFormatterDuration{
 
@@ -22,11 +20,7 @@ object DateTimeFormatterDuration{
     }
 
     fun formatDurationProgress(progress: Float, duration: Long): String{
-        //val percentage = progress.toFloat() / duration.toFloat()
-
         val timePassed = (progress * duration)
-
-        println("DateTimeFormatterDuration: $timePassed")
 
         val progressText = timePassed.roundToInt().milliseconds.toComponents{
             minutes, seconds, nanoseconds ->
