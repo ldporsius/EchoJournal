@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
-import nl.codingwithlinda.echojournal.core.domain.SoundCapturer
 import nl.codingwithlinda.echojournal.core.domain.util.ECHO_JOURNAL_DIR
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import java.io.File
@@ -26,7 +25,6 @@ import kotlin.math.roundToInt
 class AndroidEchoPlayer(
     private val context: Context,
     private val dispatcherProvider: DispatcherProvider,
-    private val soundCapturer: SoundCapturer
 ): EchoPlayer{
 
     private val _amplitudesPlayed = MutableStateFlow(emptyList<Int>())
@@ -101,7 +99,7 @@ class AndroidEchoPlayer(
     override fun pause() {
         _playbackState.update { PlaybackState.PAUSED }
         player?.pause()
-        soundCapturer.stop()
+
     }
     override fun resume() {
         _playbackState.update {  PlaybackState.PLAYING }
@@ -114,7 +112,7 @@ class AndroidEchoPlayer(
     override fun stop() {
         _playbackState.update { PlaybackState.STOPPED }
         player?.stop()
-        soundCapturer.stop()
+
     }
 
 
