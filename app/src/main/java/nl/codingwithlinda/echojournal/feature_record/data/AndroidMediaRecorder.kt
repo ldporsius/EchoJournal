@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
+import nl.codingwithlinda.echojournal.core.domain.util.ECHO_JOURNAL_DIR
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
 import java.io.File
@@ -26,7 +27,7 @@ class AndroidMediaRecorder(
     private val FILE_NAME_AMPLITUDES = "audio_waves.txt"
 
     private val pathAmplitudes: String = File(context.filesDir, FILE_NAME_AMPLITUDES).path
-    private var pathAudio: String = File(context.filesDir,FILE_NAME_AUDIO).path
+    private var pathAudio: File = File(context.filesDir, ECHO_JOURNAL_DIR )
 
     private var startRecordingTime: Long = 0L
     private var endRecordingTime: Long = 0L
@@ -48,7 +49,7 @@ class AndroidMediaRecorder(
 
     private fun startRecording(pathAudio: String) {
         println("AndroidMediaRecorder started recording on path: $pathAudio")
-        this.pathAudio = pathAudio
+
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -102,7 +103,11 @@ class AndroidMediaRecorder(
 
     override fun start(path:String) {
         println("started recording")
-        val internalStoragePath = File(context.filesDir, FILE_NAME_AUDIO).path
+
+        if(!pathAudio.exists()){
+            pathAudio.mkdirs()
+        }
+        val internalStoragePath = File(pathAudio, FILE_NAME_AUDIO).path
         startRecording(internalStoragePath)
     }
 

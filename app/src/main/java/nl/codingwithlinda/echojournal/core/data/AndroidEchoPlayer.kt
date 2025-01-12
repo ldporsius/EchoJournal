@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.SoundCapturer
+import nl.codingwithlinda.echojournal.core.domain.util.ECHO_JOURNAL_DIR
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import java.io.File
 import java.io.FileReader
@@ -76,7 +77,8 @@ class AndroidEchoPlayer(
     override fun play(id: String) {
         releaseMediaPlayer()
 
-        val uri = File(context.filesDir, id).toUri()
+        val dir = File(context.filesDir, ECHO_JOURNAL_DIR)
+        val uri = File(dir, id).toUri()
         player = MediaPlayer.create(context, uri)
 
         playingTimeLeft = player?.duration ?: 0

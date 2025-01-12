@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import nl.codingwithlinda.echojournal.core.domain.model.Echo
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.echojournal.core.domain.util.ECHO_JOURNAL_DIR
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
 import java.io.File
 import java.io.FileOutputStream
@@ -47,10 +48,11 @@ class EchoFactory(
     }
 
     fun persistEcho(source: String, target: String) {
-        val sourceUri = File(context.filesDir, source).toUri()
+        val sourceDir = File(context.filesDir, ECHO_JOURNAL_DIR)
+        val sourceUri = File(sourceDir, source).toUri()
         println("EchoFactory has sourceUri: $sourceUri")
 
-        val file = File(context.filesDir, target)
+        val file = File(sourceDir, target)
 
         val output = FileOutputStream(file)
         context.contentResolver.openInputStream(sourceUri)?.use { input ->
