@@ -17,10 +17,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import nl.codingwithlinda.echojournal.feature_entries.domain.usecase.FilterOnMoodAndTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
@@ -40,7 +42,8 @@ import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 class EchosViewModel(
     private val echoAccess: EchoAccess,
     private val topicsAccess: TopicsAccess,
-    private val echoPlayer: EchoPlayer
+    private val echoPlayer: EchoPlayer,
+    private val dateTimeFormatter: DateTimeFormatterDuration
 ): ViewModel() {
 
     private val filterOnMoodAndTopic = FilterOnMoodAndTopic()
@@ -87,7 +90,9 @@ class EchosViewModel(
                 it.id to  ReplayUiState(
                     playbackState = PlaybackState.STOPPED,
                     mood = it.mood,
-                    waves = emptyList()
+                    waves = emptyList(),
+                    duration = it.duration,
+                    amplitudesSize = it.amplitudes.size,
                 )
             }
 
@@ -112,7 +117,10 @@ class EchosViewModel(
                     id to ReplayUiState(
                         playbackState = PlaybackState.PLAYING,
                         mood = echo.mood,
-                        waves = emptyList()
+                        waves = emptyList(),
+                        duration = echo.duration,
+                        amplitudesSize = echo.amplitudes.size,
+
                     )
                 }
                 val uri = echo1.uri
@@ -129,7 +137,7 @@ class EchosViewModel(
                 it?.copy(
                     second = it.second.copy(
                         playbackState = playbackState,
-                        waves = waves
+                        waves = waves,
                     )
                 )
             }

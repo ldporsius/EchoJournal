@@ -52,9 +52,7 @@ object GroupByTimestamp {
             header = headerUI,
             entries = listEntry.value.mapIndexed { index, echo ->
                 echo.toUi(
-                    dateTimeFormatter = formatter,
-                    durationFormatter = DateTimeFormatterDuration,
-                    locale = Locale.getDefault()
+                   timeStamp = formatter.formatDateTime(echo.timeStamp, Locale.getDefault())
                 )
             }
         )

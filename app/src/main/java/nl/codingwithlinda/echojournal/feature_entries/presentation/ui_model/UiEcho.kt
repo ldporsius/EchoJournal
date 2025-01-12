@@ -11,7 +11,6 @@ data class UiEcho(
     val timeStamp: String,
     val description: String,
     val amplitudes: List<Float>,
-    val duration: String,
     val topics: List<Topic>,
 ){
     fun playbackState( state : PlaybackState): PlaybackState {

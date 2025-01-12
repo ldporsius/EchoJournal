@@ -80,7 +80,7 @@ fun EchoListComponent(
                                                 onAction = onReplayAction
                                             )
                                         },
-                                        duration = uiEcho.duration,
+                                        duration = replayUiState1.playbackProgress(),
                                         amplitudes = uiEcho.amplitudes,
                                         amplitudeColor = {
                                            replayUiState1.amplitudeColor(it)

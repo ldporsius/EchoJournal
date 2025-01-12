@@ -3,13 +3,16 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.state
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.util.toColor
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 
 data class ReplayUiState(
     val playbackState: PlaybackState = PlaybackState.STOPPED,
     val mood: Mood,
-    val waves: List<Int> = emptyList()
+    val waves: List<Int> = emptyList(),
+    val duration: Long = 1L,
+    val amplitudesSize: Int = 1
 ){
     fun amplitudeColor(index: Int): Color {
         return if (index in waves) {
@@ -23,4 +26,5 @@ data class ReplayUiState(
        return Color(mood.toColor()).copy(.50f).compositeOver(Color.Gray).copy(.10f)
     }
 
+    fun playbackProgress(): String = DateTimeFormatterDuration.formatDurationProgress(waves.size.toFloat() / amplitudesSize.toFloat(), duration)
 }
