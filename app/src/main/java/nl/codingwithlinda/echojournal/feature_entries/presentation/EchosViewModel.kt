@@ -1,32 +1,24 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
-import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
-import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
+import nl.codingwithlinda.echojournal.core.data.data_source.EchoAccess
+import nl.codingwithlinda.echojournal.core.data.data_source.TopicsAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import nl.codingwithlinda.echojournal.feature_entries.domain.usecase.FilterOnMoodAndTopic
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound
-import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.testSound2
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.EchoesUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
@@ -37,7 +29,6 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMo
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
-import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 
 class EchosViewModel(
     private val echoAccess: EchoAccess,

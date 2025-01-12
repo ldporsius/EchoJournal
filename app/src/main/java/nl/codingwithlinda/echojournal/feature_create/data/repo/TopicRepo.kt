@@ -2,7 +2,7 @@ package nl.codingwithlinda.echojournal.feature_create.data.repo
 
 import kotlinx.coroutines.flow.Flow
 import nl.codingwithlinda.echojournal.core.data.TopicFactory
-import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
+import nl.codingwithlinda.echojournal.core.data.data_source.TopicsAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 
 class TopicRepo(

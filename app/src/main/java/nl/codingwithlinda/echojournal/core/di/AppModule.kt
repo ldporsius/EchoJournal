@@ -2,8 +2,8 @@ package nl.codingwithlinda.echojournal.core.di
 
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
-import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
-import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
+import nl.codingwithlinda.echojournal.core.data.data_source.EchoAccess
+import nl.codingwithlinda.echojournal.core.data.data_source.TopicsAccess
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 
 interface AppModule {

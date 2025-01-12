@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
-import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
+import nl.codingwithlinda.echojournal.core.data.data_source.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods

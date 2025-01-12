@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.core.domain.data_source.repo
+package nl.codingwithlinda.echojournal.core.data.data_source
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.core.domain.data_source.repo
+package nl.codingwithlinda.echojournal.core.data.data_source
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,7 +8,6 @@ import nl.codingwithlinda.echojournal.core.domain.model.Echo
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
 
 class EchoAccess: DataSourceAccess<Echo, String> {
-
 
     private val echoes = MutableStateFlow<List<Echo>>(emptyList())
     override suspend fun create(item: Echo): Echo {
