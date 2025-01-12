@@ -3,9 +3,11 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +27,6 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEc
 @Composable
 fun EchoListComponent(
     entries: List<UiEchoGroup>,
-    selectedMoods: @Composable () -> Unit,
     moodsUiState: MoodsUiState,
     topicsUiState: TopicsUiState,
     replayUiState: (uiEcho: UiEcho) -> ReplayUiState,
@@ -36,18 +37,21 @@ fun EchoListComponent(
 
         FilterEchoComponent(
             modifier = Modifier.padding(start = 16.dp),
-            selectedMoods = selectedMoods,
             moodsUiState = moodsUiState ,
             topicsUiState = topicsUiState,
             onAction = onFilterAction
         )
+
         LazyColumn(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 72.dp)
         ) {
 
             items(entries) { uiEchoGroup ->
                 Text(uiEchoGroup.header.asString().uppercase(),
-                    modifier = Modifier.padding(bottom = 16.dp))
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
                 val uiEchos = uiEchoGroup.entries
                 for (uiEcho in uiEchos) {
                     EchoListItem(

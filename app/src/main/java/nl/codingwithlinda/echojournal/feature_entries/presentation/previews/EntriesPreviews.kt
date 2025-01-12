@@ -21,14 +21,17 @@ import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
+import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.core.presentation.util.toColor
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItemContent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EmptyListComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosTopBar
+import nl.codingwithlinda.echojournal.feature_entries.presentation.components.FilterEchoComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
@@ -36,18 +39,32 @@ import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable
-private fun EntriesTopBarPreview() {
+private fun EntriesFilterBarPreview() {
 
     EchoJournalTheme {
-        EchosTopBar(
-            modifier = Modifier.fillMaxWidth()
+        FilterEchoComponent (
+            modifier = Modifier.fillMaxWidth(),
+
+            moodsUiState = MoodsUiState(
+                moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },
+                selectedMoods = listOf(Mood.SAD.toUi())
+            ),
+            topicsUiState = TopicsUiState(
+                topics = fakeTopics,
+                selectedTopics = listOf(fakeTopics[0]),
+                selectedTopicsUiText = UiText.DynamicString(
+                    fakeTopics[0].name + ", " + fakeTopics[1].name
+                ),
+                shouldShowClearSelection = true
+            ),
+            onAction = {}
+
         )
     }
 }
 @Preview(showBackground = true)
 @Composable
 private fun EmptyListPreview() {
-
     EchoJournalTheme {
        EmptyListComponent()
     }

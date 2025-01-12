@@ -230,9 +230,9 @@ val exited80 = Color(0xFFDB6C0B)
 val lightButtonColor = Color(0xFF578CFF)
 val darkButtonColor = Color(0xFF1F70F5)
 val buttonGradient = Brush.linearGradient(
-    colors = listOf(lightButtonColor, darkButtonColor),
-    start = Offset(0f, 0f),
-    end = Offset(0f, 500f)
+    colors = listOf(lightButtonColor.copy(.95f), lightButtonColor, darkButtonColor),
+    start = Offset(0f, 25f),
+    end = Offset(0f, 150f)
 )
 
 val buttonDisabledGradient = Brush.linearGradient(

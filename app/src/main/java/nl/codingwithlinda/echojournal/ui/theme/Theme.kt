@@ -265,7 +265,7 @@ fun EchoJournalTheme(
       }
       
       darkTheme -> darkScheme
-      else -> lightScheme
+      else -> highContrastLightColorScheme
   }
 
   MaterialTheme(
