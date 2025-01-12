@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EchoListItem(
     modifier: Modifier = Modifier,
+    shouldShowVerticalDivider: Boolean,
     icon: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -41,11 +43,14 @@ fun EchoListItem(
            contentAlignment = Alignment.TopCenter
         ) {
 
-            VerticalDivider(
-                modifier = Modifier
-                   ,
-                thickness = 1.dp
-            )
+            if (shouldShowVerticalDivider) {
+                VerticalDivider(
+                    modifier = Modifier.offset(
+                        y = (16).dp
+                    ),
+                    thickness = 1.dp
+                )
+            }
             icon()
         }
         Column(

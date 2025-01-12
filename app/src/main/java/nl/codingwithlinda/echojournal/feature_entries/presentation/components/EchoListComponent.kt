@@ -52,6 +52,7 @@ fun EchoListComponent(
                 for (uiEcho in uiEchos) {
                     EchoListItem(
                         modifier = Modifier,
+                        shouldShowVerticalDivider = uiEchos.last() != uiEcho,
                         icon = {
                             Image(
                                 painter = painterResource(id = uiEcho.mood.icon),

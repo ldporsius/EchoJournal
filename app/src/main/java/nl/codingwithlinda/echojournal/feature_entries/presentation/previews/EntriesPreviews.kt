@@ -118,6 +118,7 @@ private fun EchoListItemPreview() {
        EchoListItem(
             modifier = Modifier
                 .background(color = Color.LightGray),
+           shouldShowVerticalDivider = true,
            icon = {
                Image(painter = painterResource(id = R.drawable.mood_sad),
                    contentDescription = null,
