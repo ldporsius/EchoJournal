@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.AddTopicComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.CreateCancelSaveButtons
@@ -44,7 +45,7 @@ fun CreateEchoScreen(
     modifier: Modifier = Modifier,
     uiState: CreateEchoUiState,
     topicsUiState: TopicsUiState,
-    selectedTopics: List<String>,
+    selectedTopics: List<Topic>,
     onAction: (CreateEchoAction) -> Unit,
     onCancel: () -> Unit
 ) {

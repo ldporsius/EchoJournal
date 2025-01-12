@@ -1,25 +1,25 @@
 package nl.codingwithlinda.echojournal.feature_create.data.repo
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.echojournal.core.data.TopicFactory
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.TopicsAccess
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 
 class TopicRepo(
     private val topicsAccess: TopicsAccess,
     private val topicFactory: TopicFactory
 ) {
 
-    suspend fun create(name: String) {
-        topicsAccess.create(topicFactory.createTopic(name))
+    suspend fun create(name: String): Topic {
+       return topicsAccess.create(topicFactory.createTopic(name))
     }
 
     suspend fun delete(id: String) {
         topicsAccess.delete(id)
     }
 
-    fun readAll(): Flow<List<String>>{
-        return topicsAccess.readAll().map { it.map { it.name } }
+    fun readAll(): Flow<List<Topic>>{
+        return topicsAccess.readAll()
     }
 
 }

@@ -134,9 +134,10 @@ private fun EchoListItemPreview() {
                   ,
                   uiEcho = fakeEcho(mood = Mood.SAD, timestamp = System.currentTimeMillis()).toUi(
                       dateTimeFormatter = DateTimeFormatterMedium(),
-                      durationFormatter = DateTimeFormatterDuration(),
-                      locale = Locale.getDefault()
-                  ),
+                      durationFormatter = nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
+                          ,
+                          locale = Locale.getDefault()
+                      ),
                   replayComponent =  {},
                   onFilterTopic = {}
               )
@@ -156,16 +157,17 @@ private fun EchoListItemContentPreview() {
                 .wrapContentHeight(),
             uiEcho = fakeEcho(mood = Mood.SAD, timestamp = System.currentTimeMillis()).toUi(
                 dateTimeFormatter = DateTimeFormatterMedium(),
-                durationFormatter = DateTimeFormatterDuration(),
-                locale = Locale.getDefault()
-            ),
+                durationFormatter = nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
+                    ,
+                    locale = Locale.getDefault()
+                ),
             replayComponent =  {
                 EchoPlaybackComponent(
                     modifier = Modifier,
                     playbackIcon = {
 
                     },
-                    duration = DateTimeFormatterDuration().formatDateTimeMillis(1000),
+                    duration = DateTimeFormatterDuration.formatDateTimeMillis(1000),
                     amplitudes = fakeAmplitudes(),
                     amplitudeColor = {
                         Color.Red

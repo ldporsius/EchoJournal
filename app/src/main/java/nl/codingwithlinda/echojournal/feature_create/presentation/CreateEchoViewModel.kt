@@ -1,6 +1,5 @@
 package nl.codingwithlinda.echojournal.feature_create.presentation
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +16,7 @@ import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.data_source.repo.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
@@ -28,7 +28,8 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToCo
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
     private val audioEchoPlayer: EchoPlayer,
-    val topicRepo: TopicRepo,
+    private val dateTimeFormatter: DateTimeFormatterDuration,
+    private val topicRepo: TopicRepo,
     private val echoFactory: EchoFactory,
     private val echoAccess: EchoAccess,
     private val onSaved: () -> Unit
@@ -41,13 +42,13 @@ class CreateEchoViewModel(
 
         else {
             topics.filter {
-                it.contains(search, ignoreCase = true)
+                it.name.contains(search, ignoreCase = true)
             }
         }
     }
     private val topicsVisible = MutableStateFlow(false)
 
-    private val _selectedTopics = MutableStateFlow<Set<String>>(emptySet())
+    private val _selectedTopics = MutableStateFlow<Set<Topic>>(emptySet())
 
     val topicsUiState = combine(_filteredTopics, _topicsSearchText, topicsVisible) { topics, search , visible ->
         TopicsUiState(
@@ -73,7 +74,7 @@ class CreateEchoViewModel(
 
 
     private val _uiState = MutableStateFlow(CreateEchoUiState(
-        duration = echoDto.duration.toString(),
+        duration = dateTimeFormatter.formatDurationProgress(0f, echoDto.duration),
         amplitudes = emptyList()
     ))
     val uiState = combine(
@@ -90,34 +91,42 @@ class CreateEchoViewModel(
     private var amplitudes = emptyList<Float>()
     init {
         viewModelScope.launch {
-            try {
-               // println("uri in create echo viewmodel: ${Uri.parse(echoDto.uri.substringAfterLast('/'))}")
-
-                val amplitudesPath = echoDto.amplitudesUri.substringAfterLast('/')
-                val amplitudes = audioEchoPlayer.amplitudes(amplitudesPath)
-                this@CreateEchoViewModel.amplitudes = amplitudes
-
-                _uiState.update {
-                    it.copy(
-                        amplitudes = amplitudes
-                    )
-                }
-
-            }catch (e: Exception){
-                e.printStackTrace()
-            }
+           fetchAmplitudesFromTempFile()
         }
 
-        audioEchoPlayer.waves.onEach { waves ->
+        observeAmplitudesPlayback()
+    }
+
+    private suspend fun fetchAmplitudesFromTempFile(){
+        try {
+            val amplitudesPath = echoDto.amplitudesUri.substringAfterLast('/')
+            val amplitudes = audioEchoPlayer.amplitudes(amplitudesPath)
+            this@CreateEchoViewModel.amplitudes = amplitudes
+
             _uiState.update {
                 it.copy(
-                    amplitudesPlayed = waves
+                    amplitudes = amplitudes
+                )
+            }
+
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    private fun observeAmplitudesPlayback(){
+        audioEchoPlayer.waves.onEach { waves ->
+            if (amplitudes.isEmpty()) return@onEach
+            val progress = waves.size.toFloat() / amplitudes.size.toFloat()
+
+            _uiState.update {
+                it.copy(
+                    amplitudesPlayed = waves,
+                    duration = dateTimeFormatter.formatDurationProgress(progress , echoDto.duration)
                 )
             }
         }.launchIn(viewModelScope)
     }
-
-
     fun onAction(action: CreateEchoAction) {
         when (action) {
             CreateEchoAction.PlayEcho -> {
@@ -127,11 +136,11 @@ class CreateEchoViewModel(
                     audioEchoPlayer.visualiseAmplitudes(amplitudes, echoDto.duration)
                 }
             }
+
             CreateEchoAction.PauseEcho -> {
-
                 audioEchoPlayer.pause()
-
             }
+
             is CreateEchoAction.TitleChanged -> {
                 _uiState.update {
                     it.copy(
@@ -168,9 +177,9 @@ class CreateEchoViewModel(
             }
             is CreateEchoAction.CreateTopic -> {
                 viewModelScope.launch {
-                    topicRepo.create(action.topic).also {
+                    topicRepo.create(action.text).also {topic ->
                         _selectedTopics.update {
-                            it.plus(action.topic)
+                            it.plus(topic)
                         }
                         _topicsSearchText.update {
                             ""
@@ -217,7 +226,7 @@ class CreateEchoViewModel(
                     val userInput = uiState.value
                     userInput.confirmedMood ?: return@launch
 
-                    val topics = topicsUiState.value.topics.map { Topic(it) }
+                    val topics = _selectedTopics.value.toList()
 
                     echoFactory.createEcho(
                         echoDto = echoDto,

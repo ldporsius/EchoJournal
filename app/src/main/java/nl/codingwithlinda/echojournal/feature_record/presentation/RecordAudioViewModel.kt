@@ -57,7 +57,7 @@ class RecordAudioViewModel(
                     RecordingState.RECORDING
                 }
 
-                var duration = 0L
+               /* var duration = 0L
                 viewModelScope.launch {
                     while (
                         recordingState.value == RecordingState.RECORDING
@@ -72,7 +72,7 @@ class RecordAudioViewModel(
                         }
                         delay(DateTimeFormatterDuration.updateFrequency)
                     }
-                }
+                }*/
             }
 
             RecordAudioAction.CancelRecording -> {

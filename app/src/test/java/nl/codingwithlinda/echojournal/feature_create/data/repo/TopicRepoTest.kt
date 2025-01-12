@@ -36,9 +36,9 @@ class TopicRepoTest{
 
     @Test
     fun `filter topic`(): Unit = runTest(dispatcherProvider.dispatcher) {
-        repo.create("Apple")
+        val topic = repo.create("Apple")
 
-        assertTrue(repo.readAll().first().contains("Apple"))
+        assertTrue(repo.readAll().first().contains(topic))
         repo.create("Banana")
 
         repo.readAll().first().onEach {

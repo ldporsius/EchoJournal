@@ -26,13 +26,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ExistingTopicsComponent(
     modifier: Modifier = Modifier,
-    selectedTopics: List<String>,
+    selectedTopics: List<Topic>,
     onAction: (CreateEchoAction) -> Unit
 ) {
 

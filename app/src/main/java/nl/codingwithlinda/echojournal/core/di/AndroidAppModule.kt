@@ -3,7 +3,6 @@ package nl.codingwithlinda.echojournal.core.di
 import android.app.Application
 import nl.codingwithlinda.echojournal.core.data.AndroidEchoPlayer
 import nl.codingwithlinda.echojournal.core.data.AudioExtractorAMR
-import nl.codingwithlinda.echojournal.core.data.AudioSampleExtractor
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.domain.SoundCapturer

@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.data.TopicFactory
 import nl.codingwithlinda.echojournal.core.di.AppModule
+import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +38,7 @@ fun CreateRoot(
             CreateEchoViewModel(
                 echoDto = echoDto,
                 audioEchoPlayer = appModule.echoPlayer,
+                dateTimeFormatter = DateTimeFormatterDuration,
                 echoFactory = appModule.echoFactory,
                 echoAccess = appModule.echoAccess,
                 topicRepo = TopicRepo(

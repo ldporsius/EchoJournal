@@ -40,13 +40,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 
 @Composable
 fun AddTopicComponent(
     modifier: Modifier = Modifier,
     topic: String,
-    topics: List<String>,
+    topics: List<Topic>,
     shouldShowCreate: Boolean,
     onAction: (CreateEchoAction) -> Unit,
 ) {
@@ -124,7 +125,7 @@ fun AddTopicComponent(
                     ) {
                     topics.forEach { topic ->
                         DropdownMenuItem(
-                            text = { Text(topic) },
+                            text = { Text(topic.name) },
                             leadingIcon = {
                                 Text("#")
                             },

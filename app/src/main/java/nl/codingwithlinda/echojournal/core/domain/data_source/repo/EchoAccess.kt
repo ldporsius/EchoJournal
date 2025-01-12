@@ -9,7 +9,7 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entr
 
 class EchoAccess: DataSourceAccess<Echo, String> {
 
-    private val fakes = entries
+
     private val echoes = MutableStateFlow<List<Echo>>(emptyList())
     override suspend fun create(item: Echo): Echo {
         echoes.update {

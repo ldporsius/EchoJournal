@@ -53,7 +53,7 @@ object GroupByTimestamp {
             entries = listEntry.value.mapIndexed { index, echo ->
                 echo.toUi(
                     dateTimeFormatter = formatter,
-                    durationFormatter = DateTimeFormatterDuration(),
+                    durationFormatter = DateTimeFormatterDuration,
                     locale = Locale.getDefault()
                 )
             }
