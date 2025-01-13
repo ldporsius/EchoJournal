@@ -8,6 +8,7 @@ import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 
 interface AppModule {
 
+    val dispatcherProvider: DispatcherProvider
     val audioRecorder: AudioRecorder
     val echoPlayer: EchoPlayer
     val topicsAccess: TopicsAccess

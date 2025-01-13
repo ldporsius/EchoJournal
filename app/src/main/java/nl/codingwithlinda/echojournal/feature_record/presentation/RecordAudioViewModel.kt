@@ -2,9 +2,11 @@ package nl.codingwithlinda.echojournal.feature_record.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
@@ -14,13 +16,16 @@ import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
+import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingState
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.finite.CounterState
 import java.util.Locale
 
 class RecordAudioViewModel(
+    val dispatcherProvider: DispatcherProvider,
     val recorder: AudioRecorder,
     val dateTimeFormatter: DateTimeFormatterDuration,
     val echoFactory: EchoFactory,
@@ -34,11 +39,25 @@ class RecordAudioViewModel(
 
     val uiState = _uiState.combine(recordingState){ uiState, recording ->
         uiState.copy(
-           recordingState = recording
+            recordingState = recording
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), _uiState.value)
 
+    private val counterState = CounterState()
 
+    init {
+        viewModelScope.launch {
+            counterState.counter.collectLatest {
+                val durationText = dateTimeFormatter.formatDateTimeMillis(it.toLong())
+
+                _uiState.update {
+                    it.copy(
+                        duration = durationText ,
+                    )
+                }
+            }
+        }
+    }
 
     fun onAction(action: RecordAudioAction) {
         when (action) {
@@ -50,7 +69,7 @@ class RecordAudioViewModel(
                 }
             }
             RecordAudioAction.ToggleVisibility -> {
-               toggleRecordingState()
+                toggleRecordingState()
             }
             is RecordAudioAction.StartRecording -> {
 
@@ -59,6 +78,8 @@ class RecordAudioViewModel(
                 recordingState.update {
                     RecordingState.RECORDING
                 }
+
+                simulateWeAreCounting()
             }
 
             RecordAudioAction.CancelRecording -> {
@@ -66,6 +87,7 @@ class RecordAudioViewModel(
                 recordingState.update {
                     RecordingState.STOPPED
                 }
+                simulateWeAreCounting()
             }
 
             RecordAudioAction.PauseRecording -> {
@@ -73,12 +95,16 @@ class RecordAudioViewModel(
                 recordingState.update {
                     RecordingState.PAUSED
                 }
+               simulateWeAreCounting()
+
             }
             RecordAudioAction.SaveRecording -> {
                 recorder.stop()
                 recordingState.update {
                     RecordingState.STOPPED
                 }
+
+                simulateWeAreCounting()
 
                 viewModelScope.launch {
                     recorder.listener.firstOrNull()?.let {
@@ -116,23 +142,11 @@ class RecordAudioViewModel(
         println("RECORDING STATE = ${recordingState.value}")
     }
 
+
     private fun simulateWeAreCounting(){
-        /* var duration = 0L
-               viewModelScope.launch {
-                   while (
-                       recordingState.value == RecordingState.RECORDING
-                   ){
-                       duration += DateTimeFormatterDuration.updateFrequency
-                       val durationText = dateTimeFormatter.formatDateTimeMillis(duration)
 
-                       _uiState.update {
-                           it.copy(
-                               duration = durationText ,
-                           )
-                       }
-                       delay(DateTimeFormatterDuration.updateFrequency)
-                   }
-               }*/
-
+        CoroutineScope(dispatcherProvider.default).launch{
+           counterState.startCounting(recordingState.value)
+        }
     }
 }

@@ -8,6 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.requiredWidthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,6 +29,7 @@ import nl.codingwithlinda.echojournal.feature_record.presentation.components.sha
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.openAppSettings
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
+import nl.codingwithlinda.echojournal.ui.theme.labelFontFamily
 
 @Composable
 fun RecordAudioComponent(
@@ -77,6 +81,9 @@ fun RecordAudioComponent(
                 style = MaterialTheme.typography.titleLarge)
 
             Text(text = uiState.duration,
+                modifier = Modifier,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                fontFamily = labelFontFamily,
                 style = MaterialTheme.typography.labelSmall)
 
             if(uiState.isRecording) {

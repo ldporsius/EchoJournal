@@ -13,7 +13,7 @@ class AndroidAppModule(
     private val context:Application
 ): AppModule {
 
-    private val dispatcherProvider = AndroidDispatcherProvider()
+    override val dispatcherProvider = AndroidDispatcherProvider()
 
     override val audioRecorder: AudioRecorder
         get() = AndroidMediaRecorder(
