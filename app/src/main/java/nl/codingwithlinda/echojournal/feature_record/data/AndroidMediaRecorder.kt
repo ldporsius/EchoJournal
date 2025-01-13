@@ -20,7 +20,6 @@ import java.io.IOException
 class AndroidMediaRecorder(
     private val context: Application,
     private val dispatcherProvider: DispatcherProvider,
-
     ): AudioRecorder{
 
     private val FILE_NAME_AUDIO: String = "echoJournal.mp4"
@@ -69,13 +68,31 @@ class AndroidMediaRecorder(
         isRecording = true
 
         CoroutineScope(dispatcherProvider.default).launch {
-            while (isRecording) {
-                recorder?.maxAmplitude?.let {
-                    _waves.value += it
-                }
-                delay(30)
+          recordAmplitudes()
+        }
+    }
+
+    private suspend fun recordAmplitudes(){
+        val recordAmplitudeIntervalMillis = 30L
+        while (isRecording) {
+            recorder?.maxAmplitude?.let {
+                _waves.value += it
+            }
+            delay(recordAmplitudeIntervalMillis)
+        }
+    }
+
+    private fun writeAmplitudesToFile(){
+        val output = _waves.value.toList()
+
+        val fileWriter = FileWriter(pathAmplitudes)
+
+        CoroutineScope(dispatcherProvider.io).launch{
+            fileWriter.use {
+                it.write(output.joinToString(","))
             }
         }
+        _waves.value = emptyList()
     }
 
     private fun stopRecording() {
@@ -89,16 +106,7 @@ class AndroidMediaRecorder(
 
         recorder = null
 
-        val output = _waves.value.toList()
-
-        val fileWriter = FileWriter(pathAmplitudes)
-
-        CoroutineScope(dispatcherProvider.io).launch{
-            fileWriter.use {
-                it.write(output.joinToString(","))
-            }
-        }
-        _waves.value = emptyList()
+        writeAmplitudesToFile()
     }
 
     override fun start(path:String) {
