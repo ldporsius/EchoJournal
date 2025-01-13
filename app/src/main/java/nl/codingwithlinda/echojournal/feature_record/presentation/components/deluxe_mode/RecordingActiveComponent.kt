@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_record.presentation.components
+package nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -29,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.CancelRecordingButton
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.ui.theme.primary50
 
@@ -51,19 +51,12 @@ fun RecordingActiveComponent(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
 
     ) {
-        IconButton(
-            onClick = { onAction(RecordAudioAction.CancelRecording) },
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer
-            ),
-                modifier = Modifier.size(48.dp)
-        ) {
-            Icon(imageVector = Icons.Default.Close,
-                contentDescription = "Cancel",
-                modifier = Modifier.size(48.dp).padding(8.dp)
-            )
-        }
-
+       CancelRecordingButton(
+           modifier = Modifier.size(48.dp),
+           onAction = {
+               onAction(RecordAudioAction.CancelRecording)
+           }
+       )
         Box(modifier = Modifier
             .size(72.dp)
             .drawBehind {
@@ -95,6 +88,7 @@ fun RecordingActiveComponent(
                 )
             }
         }
+
         IconButton(
             onClick = {
                 onAction(RecordAudioAction.PauseRecording)

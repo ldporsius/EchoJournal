@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_record.presentation.components
+package nl.codingwithlinda.echojournal.feature_record.presentation.components.shared
 
 import android.app.Activity
 import android.content.Intent

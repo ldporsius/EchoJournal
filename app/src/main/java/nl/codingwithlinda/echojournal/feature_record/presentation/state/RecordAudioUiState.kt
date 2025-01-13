@@ -2,6 +2,7 @@ package nl.codingwithlinda.echojournal.feature_record.presentation.state
 
 data class RecordAudioUiState(
     val showPermissionDeclinedDialog: Boolean = false,
+    val recordingMode: RecordingMode,
     val recordingState: RecordingState = RecordingState.STOPPED,
     val duration: String = ""
 ){
@@ -10,5 +11,6 @@ data class RecordAudioUiState(
 
     val title: String = if (isRecording) "Recording your memories ..." else "Recording paused"
 
-    val shouldShowRecordAudioComponent: Boolean = recordingState != RecordingState.STOPPED
+    val shouldShowRecordDeluxeComponent: Boolean = recordingMode == RecordingMode.DELUXE && recordingState != RecordingState.STOPPED
+    val shouldShowRecordQuickComponent: Boolean = recordingMode == RecordingMode.QUICK && recordingState != RecordingState.STOPPED
 }

@@ -16,6 +16,7 @@ import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingState
 import java.util.Locale
 
@@ -27,7 +28,9 @@ class RecordAudioViewModel(
 ): ViewModel() {
 
     private val recordingState = MutableStateFlow(RecordingState.STOPPED)
-    private val _uiState = MutableStateFlow(RecordAudioUiState())
+    private val _uiState = MutableStateFlow(RecordAudioUiState(
+        recordingMode = RecordingMode.QUICK
+    ))
 
     val uiState = _uiState.combine(recordingState){ uiState, recording ->
         uiState.copy(
@@ -36,18 +39,18 @@ class RecordAudioViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), _uiState.value)
 
 
+
     fun onAction(action: RecordAudioAction) {
         when (action) {
-            RecordAudioAction.ToggleVisibility -> {
-                recordingState.update {
-                    when (it) {
-                        RecordingState.RECORDING -> RecordingState.PAUSED
-                        RecordingState.PAUSED -> RecordingState.RECORDING
-                        RecordingState.STOPPED -> RecordingState.RECORDING
-                    }
+            is RecordAudioAction.ChangeRecordingMode -> {
+                _uiState.update {
+                    it.copy(
+                        recordingMode = action.mode
+                    )
                 }
-
-                println("RECORDING STATE = ${recordingState.value}")
+            }
+            RecordAudioAction.ToggleVisibility -> {
+               toggleRecordingState()
             }
             is RecordAudioAction.StartRecording -> {
 
@@ -56,23 +59,6 @@ class RecordAudioViewModel(
                 recordingState.update {
                     RecordingState.RECORDING
                 }
-
-               /* var duration = 0L
-                viewModelScope.launch {
-                    while (
-                        recordingState.value == RecordingState.RECORDING
-                    ){
-                        duration += DateTimeFormatterDuration.updateFrequency
-                        val durationText = dateTimeFormatter.formatDateTimeMillis(duration)
-
-                        _uiState.update {
-                            it.copy(
-                                duration = durationText ,
-                            )
-                        }
-                        delay(DateTimeFormatterDuration.updateFrequency)
-                    }
-                }*/
             }
 
             RecordAudioAction.CancelRecording -> {
@@ -116,5 +102,37 @@ class RecordAudioViewModel(
                 }
             }
         }
+    }
+
+    private fun toggleRecordingState(){
+        recordingState.update {
+            when (it) {
+                RecordingState.RECORDING -> RecordingState.PAUSED
+                RecordingState.PAUSED -> RecordingState.RECORDING
+                RecordingState.STOPPED -> RecordingState.RECORDING
+            }
+        }
+
+        println("RECORDING STATE = ${recordingState.value}")
+    }
+
+    private fun simulateWeAreCounting(){
+        /* var duration = 0L
+               viewModelScope.launch {
+                   while (
+                       recordingState.value == RecordingState.RECORDING
+                   ){
+                       duration += DateTimeFormatterDuration.updateFrequency
+                       val durationText = dateTimeFormatter.formatDateTimeMillis(duration)
+
+                       _uiState.update {
+                           it.copy(
+                               duration = durationText ,
+                           )
+                       }
+                       delay(DateTimeFormatterDuration.updateFrequency)
+                   }
+               }*/
+
     }
 }

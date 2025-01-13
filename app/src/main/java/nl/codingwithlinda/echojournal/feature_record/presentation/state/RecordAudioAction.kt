@@ -4,6 +4,7 @@ sealed interface RecordAudioAction {
     data object OpenDialog : RecordAudioAction
     data object CloseDialog : RecordAudioAction
     data object ToggleVisibility : RecordAudioAction
+    data class ChangeRecordingMode(val mode: RecordingMode) : RecordAudioAction
     data object StartRecording : RecordAudioAction
     data object PauseRecording : RecordAudioAction
     data object CancelRecording : RecordAudioAction

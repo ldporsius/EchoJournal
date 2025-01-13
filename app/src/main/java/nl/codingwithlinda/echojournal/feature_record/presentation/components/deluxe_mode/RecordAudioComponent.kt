@@ -1,5 +1,6 @@
-package nl.codingwithlinda.echojournal.feature_record.presentation.components
+package nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,6 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import nl.codingwithlinda.echojournal.MainActivity
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.PermissionDeclinedDialog
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.openAppSettings
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 
@@ -80,7 +83,8 @@ fun RecordAudioComponent(
                 RecordingActiveComponent(
                     modifier = recorderModifier,
                     onAction = onAction
-                )}
+                )
+            }
             if (uiState.isPaused) {
                 RecordingPausedComponent(
                     modifier = recorderModifier,
@@ -99,7 +103,7 @@ fun RecordAudioComponent(
                     context.openAppSettings()
                 }
                 else{
-                    launcher.launch(android.Manifest.permission.RECORD_AUDIO)
+                    launcher.launch(Manifest.permission.RECORD_AUDIO)
                 }
             },
             onDismiss = {
