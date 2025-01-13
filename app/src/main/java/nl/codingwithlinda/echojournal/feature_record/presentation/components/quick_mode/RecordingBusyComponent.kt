@@ -18,13 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.ui.theme.primary50
 
 @Composable
 fun RecordingBusyComponent(
     modifier: Modifier = Modifier,
-    onAction: (RecordAudioAction) -> Unit,
 ) {
 
     val infiniteTransition = rememberInfiniteTransition(label = "")

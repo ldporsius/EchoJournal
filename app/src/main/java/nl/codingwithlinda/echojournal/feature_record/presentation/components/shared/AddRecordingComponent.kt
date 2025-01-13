@@ -12,12 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.ui.theme.buttonGradient
 
 @Composable
 fun AddRecordingComponent(
-    onRecordAudioAction: (RecordAudioAction) -> Unit,
     modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
@@ -26,27 +24,6 @@ fun AddRecordingComponent(
                 brush = buttonGradient,
                 shape = CircleShape
             )
-
-           /* .pointerInput(true) {
-                this.detectTapGestures(
-                    onLongPress = {
-                        onRecordAudioAction(
-                            RecordAudioAction.ChangeRecordingMode(
-                                RecordingMode.QUICK
-                            )
-                        )
-                        onRecordAudioAction(RecordAudioAction.StartRecording)
-                    },
-                    onTap = {
-                        onRecordAudioAction(
-                            RecordAudioAction.ChangeRecordingMode(
-                                RecordingMode.DELUXE
-                            )
-                        )
-                        onRecordAudioAction(RecordAudioAction.StartRecording)
-                    }
-                )
-            }*/
         ,
         contentAlignment = Alignment.Center,
     ) {
