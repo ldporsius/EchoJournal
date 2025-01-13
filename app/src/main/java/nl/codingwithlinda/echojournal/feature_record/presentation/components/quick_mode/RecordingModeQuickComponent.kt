@@ -65,7 +65,6 @@ fun RecordingModeQuickComponent(
     val dragRange =
         (cancelButtonPosition.x .. cancelButtonPosition.x + 250f)
 
-    //val halfDraggableSize =  with(LocalDensity.current) { 72.dp.toPx() / 2 }
     val isInsideDragRange = dragPosition < dragRange.endInclusive
 
     val cancelButtonSize = animateFloatAsState(
@@ -76,18 +75,16 @@ fun RecordingModeQuickComponent(
     fun cancelOrSave(){
         val isInsideDragRange1 = dragPosition < dragRange.endInclusive
 
+//        println("drag offset $dragOffset")
+//        println("drag position $dragPosition")
+//        println("drag range $dragRange")
+//        println("isInsideDragRange $isInsideDragRange1")
 
-        println("drag offset $dragOffset")
-        println("drag position $dragPosition")
-        println("drag range $dragRange")
-        println("isInsideDragRange $isInsideDragRange1")
         if (isInsideDragRange1) {
             onAction(RecordAudioAction.CancelRecording)
         }
         if (!isInsideDragRange1) {
-            println("SaveRecording")
             onAction(RecordAudioAction.SaveRecording)
-
         }
         isRecording = false
         dragOffset = 0f

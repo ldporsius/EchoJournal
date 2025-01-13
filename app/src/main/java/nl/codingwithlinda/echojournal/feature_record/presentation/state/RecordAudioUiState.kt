@@ -12,5 +12,5 @@ data class RecordAudioUiState(
     val title: String = if (isRecording) "Recording your memories ..." else "Recording paused"
 
     val shouldShowRecordDeluxeComponent: Boolean = recordingMode == RecordingMode.DELUXE && recordingState != RecordingState.STOPPED
-    val shouldShowRecordQuickComponent: Boolean = recordingMode == RecordingMode.QUICK && recordingState != RecordingState.STOPPED
+
 }
