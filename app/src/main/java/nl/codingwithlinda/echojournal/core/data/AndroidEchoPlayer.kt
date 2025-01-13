@@ -138,6 +138,8 @@ class AndroidEchoPlayer(
 
     override suspend fun visualiseAmplitudes(amplitudes: List<Float>, duration: Long){
 
+        if (amplitudes.isEmpty()) return
+
         _amplitudesPlayed.update {
             emptyList()
         }
