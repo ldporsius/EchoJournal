@@ -30,7 +30,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.AddRecordingComponent
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.AskPermissionComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.CancelRecordingButton
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.PermissionDeclinedDialog
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import kotlin.math.roundToInt
 
@@ -40,6 +42,9 @@ fun RecordingModeQuickComponent(
     onAction: (RecordAudioAction) -> Unit,
     modifier: Modifier = Modifier) {
 
+    var hasRecordAudioPermission by remember {
+        mutableStateOf(true)
+    }
     var isRecording by remember {
         mutableStateOf(false)
     }
@@ -83,6 +88,19 @@ fun RecordingModeQuickComponent(
         dragPosition = 0f
 
     }
+    AskPermissionComponent(
+        hasPermission = {
+            hasRecordAudioPermission = it
+        }
+    )
+    if (!hasRecordAudioPermission) {
+        PermissionDeclinedDialog(
+            isPermanentlyDeclined = false,
+            onConfirm = { },
+            onDismiss = { }
+        )
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -94,93 +112,93 @@ fun RecordingModeQuickComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        AnimatedVisibility(isRecording) {
-            CancelRecordingButton(
+        if(hasRecordAudioPermission) {
+
+            AnimatedVisibility(isRecording) {
+                CancelRecordingButton(
+                    modifier = Modifier
+                        .size(
+                            48.dp * cancelButtonSize.value
+                        ),
+                    onAction = {}
+                )
+            }
+
+            Spacer(modifier = Modifier.width(72.dp))
+
+            Box(
                 modifier = Modifier
-
-                    .size(
-                       48.dp * cancelButtonSize.value
-                    )
-
-                   ,
-                onAction = {}
-            )
-        }
-
-        Spacer(modifier = Modifier.width(72.dp))
-
-        Box(
-            modifier = Modifier
-                .size(72.dp)
-        ) {
-
-            if (isRecording) {
-                RecordingBusyComponent(
-                    modifier = Modifier
-                        .size(72.dp)
-                )
-            }
-
-            if (!isRecording){
-                AddRecordingComponent(
-                    modifier = Modifier
-                        .size(72.dp)
-                )
-            }
-
-            Box(modifier = Modifier
-                .size(72.dp)
-                .offset {
-                    IntOffset(
-                        x = dragOffset.roundToInt(),
-                        y = 0
-                    )
-                }
-                .pointerInput(isRecording){
-                    routePointerChangesTo (
-                        onDown = {
-                            println("RecordingBusyComponent: onDown")
-
-                        },
-                        onMove = {
-                            //println("RecordingBusyComponent: onMove $it")
-                            dragOffset += it.position.x
-
-                        },
-                        onUp = {
-                            println("RecordingBusyComponent: onUp ${it.position.x}")
-
-                            if (isRecording) {
-                                cancelOrSave()
-                            }
-                        }
-                    )
-
-                }
-                .pointerInput(isRecording){
-                    this.detectTapGestures(
-                        onLongPress = {
-                            println("RecordingBusyComponent: onLongPress")
-                            isRecording = true
-                            onAction(RecordAudioAction.StartRecording)
-                        },
-                        onTap = {
-                            println("RecordingBusyComponent: onTap")
-                            if (!isRecording){
-                                onTap()
-                            }
-                        }
-                    )
-                }
-                .onGloballyPositioned {
-                    val lTS = it.localToScreen(Offset.Zero)
-                    dragPosition = lTS.x
-
-                }
+                    .size(72.dp)
             ) {
-                Spacer(
-                    Modifier.fillMaxSize()
-                )
+
+                if (isRecording) {
+                    RecordingBusyComponent(
+                        modifier = Modifier
+                            .size(72.dp)
+                    )
+                }
+
+                if (!isRecording) {
+                    AddRecordingComponent(
+                        modifier = Modifier
+                            .size(72.dp)
+                    )
+                }
+
+                Box(modifier = Modifier
+                    .size(72.dp)
+                    .offset {
+                        IntOffset(
+                            x = dragOffset.roundToInt(),
+                            y = 0
+                        )
+                    }
+                    .pointerInput(isRecording) {
+                        routePointerChangesTo(
+                            onDown = {
+                                println("RecordingBusyComponent: onDown")
+
+                            },
+                            onMove = {
+                                //println("RecordingBusyComponent: onMove $it")
+                                dragOffset += it.position.x
+
+                            },
+                            onUp = {
+                                println("RecordingBusyComponent: onUp ${it.position.x}")
+
+                                if (isRecording) {
+                                    cancelOrSave()
+                                }
+                            }
+                        )
+
+                    }
+                    .pointerInput(isRecording) {
+                        this.detectTapGestures(
+                            onLongPress = {
+                                println("RecordingBusyComponent: onLongPress")
+                                isRecording = true
+                                onAction(RecordAudioAction.StartRecording)
+                            },
+                            onTap = {
+                                println("RecordingBusyComponent: onTap")
+                                if (!isRecording) {
+                                    onTap()
+                                }
+                            }
+                        )
+                    }
+                    .onGloballyPositioned {
+                        val lTS = it.localToScreen(Offset.Zero)
+                        dragPosition = lTS.x
+
+                    }
+                ) {
+                    Spacer(
+                        Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }
