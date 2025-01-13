@@ -13,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun EchosTopBar(modifier: Modifier = Modifier) {
+fun EchosTopBar(modifier: Modifier = Modifier,
+                navToSettings: ()->Unit
+) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -23,7 +25,9 @@ fun EchosTopBar(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+            navToSettings()
+        }) {
             Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
         }
     }

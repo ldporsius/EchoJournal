@@ -15,7 +15,8 @@ import nl.codingwithlinda.echojournal.feature_record.presentation.RecordAudioVie
 @Composable
 fun EchosRoot(
    appModule: AppModule,
-   navToCreateEcho: (EchoDto) -> Unit
+   navToCreateEcho: (EchoDto) -> Unit,
+   navToSettings: () -> Unit
 ) {
 
    val echoesFactory: ViewModelProvider.Factory = viewModelFactory {
@@ -63,6 +64,7 @@ fun EchosRoot(
       onFilterAction = echosViewModel::onFilterAction,
       onReplayAction = echosViewModel::onReplayAction,
       recordAudioUiState = recordAudioViewModel.uiState.collectAsStateWithLifecycle().value,
-      onRecordAudioAction = recordAudioViewModel::onAction
+      onRecordAudioAction = recordAudioViewModel::onAction,
+      navToSettings = navToSettings
    )
 }

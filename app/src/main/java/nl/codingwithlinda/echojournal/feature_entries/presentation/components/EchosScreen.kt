@@ -38,6 +38,7 @@ fun EchosScreen(
     onReplayAction: (ReplayEchoAction) -> Unit,
     recordAudioUiState: RecordAudioUiState,
     onRecordAudioAction: (RecordAudioAction) -> Unit,
+    navToSettings: () -> Unit
 ) {
 
     Scaffold(
@@ -45,7 +46,8 @@ fun EchosScreen(
         topBar = { EchosTopBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            navToSettings = navToSettings
         ) },
     ) { padding ->
         Box(modifier =  Modifier

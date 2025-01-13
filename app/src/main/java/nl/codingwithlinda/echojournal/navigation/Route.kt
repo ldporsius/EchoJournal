@@ -12,3 +12,6 @@ data object EchosRoute : Route
 data class CreateEchoRoute(
     val echoDto: EchoDto
 ) : Route
+
+@Serializable
+data object SettingsRoute: Route

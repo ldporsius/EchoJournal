@@ -10,6 +10,7 @@ import nl.codingwithlinda.echojournal.core.di.AppModule
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.feature_create.presentation.CreateRoot
 import nl.codingwithlinda.echojournal.feature_entries.presentation.EchosRoot
+import nl.codingwithlinda.echojournal.feature_settings.presentation.SettingsRoot
 import kotlin.reflect.typeOf
 
 @Composable
@@ -26,6 +27,9 @@ fun MainNav(
           navController.navigate(CreateEchoRoute(
             echoDto = it
           ))
+        },
+        navToSettings = {
+          navController.navigate(SettingsRoute)
         }
       )
     }
@@ -40,6 +44,14 @@ fun MainNav(
         appModule = appModule,
         echoDto = arguments.echoDto,
         navigateBack = {
+          navController.navigateUp()
+        }
+      )
+    }
+
+    composable<SettingsRoute>(){
+      SettingsRoot(
+        navBack = {
           navController.navigateUp()
         }
       )
