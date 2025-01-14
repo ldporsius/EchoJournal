@@ -53,7 +53,7 @@ class AndroidMediaRecorder(
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(pathAudio)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
             setAudioSamplingRate(samplingRate)
 
             try {
