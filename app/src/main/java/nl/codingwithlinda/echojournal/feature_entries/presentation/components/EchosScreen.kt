@@ -98,20 +98,14 @@ fun EchosScreen(
 
             if (recordAudioUiState.shouldShowRecordDeluxeComponent) {
 
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        onRecordAudioAction(RecordAudioAction.ToggleVisibility)
-                        onRecordAudioAction(RecordAudioAction.ChangeRecordingMode(RecordingMode.QUICK))
-                                       },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+
                     RecordAudioComponent(
                         modifier = Modifier,
                         uiState = recordAudioUiState,
                         onAction = onRecordAudioAction
                     )
                 }
-            }
+
         }
     }
 

@@ -88,7 +88,7 @@ fun RecordingPausedComponent(
                 onAction(RecordAudioAction.SaveRecording)
             },
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer
             ),
             modifier = Modifier.size(48.dp)
         ) {

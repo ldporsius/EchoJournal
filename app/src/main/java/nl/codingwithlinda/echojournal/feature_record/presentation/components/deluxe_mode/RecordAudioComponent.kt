@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,8 +31,10 @@ import nl.codingwithlinda.echojournal.feature_record.presentation.components.sha
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.openAppSettings
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.ui.theme.labelFontFamily
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordAudioComponent(
     modifier: Modifier = Modifier,
@@ -67,36 +71,50 @@ fun RecordAudioComponent(
         }
     }
 
-    Surface(
-        modifier = modifier,
-        tonalElevation = 5.dp,
-        shadowElevation = 5.dp,
-        color = MaterialTheme.colorScheme.surfaceBright
+    ModalBottomSheet(
+        onDismissRequest = {
+            onAction(RecordAudioAction.ToggleVisibility)
+            onAction(RecordAudioAction.ChangeRecordingMode(RecordingMode.QUICK))
+        },
+        modifier = Modifier.fillMaxWidth(),
+        containerColor = MaterialTheme.colorScheme.background,
+        tonalElevation = 8.dp
     ) {
-        Column(
-           modifier =  Modifier.fillMaxWidth(),
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+        Surface(
+            modifier = modifier,
+            tonalElevation = 5.dp,
+            shadowElevation = 5.dp,
+            color = MaterialTheme.colorScheme.background
         ) {
-            Text(text = uiState.title,
-                style = MaterialTheme.typography.titleLarge)
-
-            Text(text = uiState.duration,
-                modifier = Modifier,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                fontFamily = labelFontFamily,
-                style = MaterialTheme.typography.labelSmall)
-
-            if(uiState.isRecording) {
-                RecordingActiveComponent(
-                    modifier = recorderModifier,
-                    onAction = onAction
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = uiState.title,
+                    style = MaterialTheme.typography.titleLarge
                 )
-            }
-            if (uiState.isPaused) {
-                RecordingPausedComponent(
-                    modifier = recorderModifier,
-                    onAction = onAction,
+
+                Text(
+                    text = uiState.duration,
+                    modifier = Modifier,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    fontFamily = labelFontFamily,
+                    style = MaterialTheme.typography.labelSmall
                 )
+
+                if (uiState.isRecording) {
+                    RecordingActiveComponent(
+                        modifier = recorderModifier,
+                        onAction = onAction
+                    )
+                }
+                if (uiState.isPaused) {
+                    RecordingPausedComponent(
+                        modifier = recorderModifier,
+                        onAction = onAction,
+                    )
+                }
             }
         }
     }
