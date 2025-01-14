@@ -73,6 +73,7 @@ class AndroidEchoPlayer(
         }
     }
 
+
     private var playingTimeLeft = player?.duration ?: 0
 
     override fun play(id: String) {

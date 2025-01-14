@@ -8,11 +8,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.util.ECHO_JOURNAL_DIR
+import nl.codingwithlinda.echojournal.feature_record.data.finite_state.RecorderStateStopped
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
+import nl.codingwithlinda.echojournal.feature_record.domain.finite_state.RecorderState
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -20,7 +23,12 @@ import java.io.IOException
 class AndroidMediaRecorder(
     private val context: Application,
     private val dispatcherProvider: DispatcherProvider,
-    ): AudioRecorder{
+): AudioRecorder{
+
+    private var _recorderState: RecorderState = RecorderStateStopped(this)
+    private val _recorderStateFlow = MutableStateFlow(_recorderState)
+    override val recorderState: Flow<RecorderState>
+        get() = _recorderStateFlow
 
     private val FILE_NAME_AUDIO: String = "echoJournal.mp4"
     private val FILE_NAME_AMPLITUDES = "audio_waves.txt"
@@ -42,17 +50,41 @@ class AndroidMediaRecorder(
         )
     }
 
+    override fun changeState(state: RecorderState): RecorderState {
+        _recorderState = state
+        _recorderStateFlow.update { state }
+        return state
+    }
+
+    ///////// user interaction ///////////////////////////////////
+    override fun onCancelAction() {
+        _recorderState.cancel()
+    }
+
+    override fun onMainAction() {
+        _recorderState.main()
+    }
+
+    override fun onSecondaryAction() {
+        _recorderState.secondary()
+    }
+    ///////////////////////////////////////////////////////////////
+
     private var recorder: MediaRecorder? = null
 
     private var isRecording: Boolean = false
 
-    private fun startRecording(pathAudio: String) {
+    private fun startRecording() {
         println("AndroidMediaRecorder started recording on path: $pathAudio")
+        if(!pathAudio.exists()){
+            pathAudio.mkdirs()
+        }
+        val internalStoragePath = File(pathAudio, FILE_NAME_AUDIO).path
 
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setOutputFile(pathAudio)
+            setOutputFile(internalStoragePath)
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
             setAudioSamplingRate(samplingRate)
 
@@ -65,10 +97,12 @@ class AndroidMediaRecorder(
             startRecordingTime = System.currentTimeMillis();
         }
 
+        println("started recording")
+
         isRecording = true
 
         CoroutineScope(dispatcherProvider.default).launch {
-          recordAmplitudes()
+            recordAmplitudes()
         }
     }
 
@@ -95,7 +129,23 @@ class AndroidMediaRecorder(
         _waves.value = emptyList()
     }
 
+    private fun cancelRecording(){
+        isRecording = false
+        try {
+            recorder?.run {
+                stop()
+                release()
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+
+        recorder = null
+    }
+
     private fun stopRecording() {
+        println("stopped recording")
+
         isRecording = false
         endRecordingTime = System.currentTimeMillis();
 
@@ -113,26 +163,42 @@ class AndroidMediaRecorder(
         writeAmplitudesToFile()
     }
 
-    override fun start(path:String) {
-        println("started recording")
-
-        if(!pathAudio.exists()){
-            pathAudio.mkdirs()
-        }
-        val internalStoragePath = File(pathAudio, FILE_NAME_AUDIO).path
-        startRecording(internalStoragePath)
-    }
-
-    override fun pause() {
+    private fun pauseRecording(){
         println("paused recording")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             recorder?.pause()
         }
-        stopRecording()
+        else {
+            recorder?.stop()
+        }
+    }
+
+    private fun resumeRecording(){
+        println("resume recording")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            recorder?.resume()
+        else
+            recorder?.start()
+    }
+
+    override fun start() {
+       startRecording()
+    }
+
+    override fun pause() {
+       pauseRecording()
+    }
+
+    override fun resume() {
+      resumeRecording()
     }
 
     override fun stop() {
-        println("stopped recording")
         stopRecording()
+    }
+
+    override fun cancel() {
+        cancelRecording()
     }
 }

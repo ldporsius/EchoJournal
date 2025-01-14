@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_record.presentation.components.shared
+package nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission
 
 import android.content.pm.PackageManager
 import android.os.Build

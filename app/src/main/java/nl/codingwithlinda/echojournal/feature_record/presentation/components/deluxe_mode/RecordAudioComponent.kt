@@ -8,9 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.requiredWidthIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -27,8 +24,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import nl.codingwithlinda.echojournal.MainActivity
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.PermissionDeclinedDialog
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.openAppSettings
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission.PermissionDeclinedDialog
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission.openAppSettings
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
@@ -73,7 +70,7 @@ fun RecordAudioComponent(
 
     ModalBottomSheet(
         onDismissRequest = {
-            onAction(RecordAudioAction.ToggleVisibility)
+            //onAction(RecordAudioAction.ToggleVisibility)
             onAction(RecordAudioAction.ChangeRecordingMode(RecordingMode.QUICK))
         },
         modifier = Modifier.fillMaxWidth(),

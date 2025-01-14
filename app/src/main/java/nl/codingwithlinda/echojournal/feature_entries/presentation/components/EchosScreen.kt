@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,15 +19,9 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayE
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode.RecordAudioComponent
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.quick_mode.RecordingModeQuickComponent
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.ui.theme.backgroundGradient
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EchosScreen(
     echoesUiState: EchoesUiState,
@@ -38,8 +30,7 @@ fun EchosScreen(
     replayUiState: (uiEcho: UiEcho) -> ReplayUiState,
     onFilterAction: (FilterEchoAction) -> Unit,
     onReplayAction: (ReplayEchoAction) -> Unit,
-    recordAudioUiState: RecordAudioUiState,
-    onRecordAudioAction: (RecordAudioAction) -> Unit,
+    recordingComponent: @Composable () -> Unit,
     navToSettings: () -> Unit
 ) {
 
@@ -80,37 +71,9 @@ fun EchosScreen(
                 }
             }
 
-            Box(modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-
-            ) {
-
-                RecordingModeQuickComponent(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                    ,
-                    onAction = onRecordAudioAction,
-                    onTap = {
-                        onRecordAudioAction(RecordAudioAction.ChangeRecordingMode(RecordingMode.DELUXE))
-                        onRecordAudioAction(RecordAudioAction.StartRecording)
-                    }
-                )
+            Box(modifier = Modifier.align(Alignment.BottomEnd)) {
+                recordingComponent()
             }
-
-            if (recordAudioUiState.shouldShowRecordDeluxeComponent) {
-
-
-                    RecordAudioComponent(
-                        modifier = Modifier,
-                        uiState = recordAudioUiState,
-                        onAction = onRecordAudioAction
-                    )
-                }
-
         }
     }
-
 }

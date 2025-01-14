@@ -30,16 +30,15 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.AddRecordingComponent
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.AskPermissionComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.CancelRecordingButton
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.PermissionDeclinedDialog
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission.AskPermissionComponent
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission.PermissionDeclinedDialog
 import kotlin.math.roundToInt
 
 @Composable
 fun RecordingModeQuickComponent(
     onTap: () -> Unit,
-    onAction: (RecordAudioAction) -> Unit,
+    onAction: (RecordQuickAction) -> Unit,
     modifier: Modifier = Modifier) {
 
     var hasRecordAudioPermission by remember {
@@ -73,10 +72,10 @@ fun RecordingModeQuickComponent(
         val isInsideDragRange1 = dragPosition < dragRange.endInclusive
 
         if (isInsideDragRange1) {
-            onAction(RecordAudioAction.CancelRecording)
+            onAction(RecordQuickAction.CancelRecording)
         }
         if (!isInsideDragRange1) {
-            onAction(RecordAudioAction.SaveRecording)
+            onAction(RecordQuickAction.SaveRecording)
         }
         isRecording = false
         dragOffset = 0f
@@ -174,7 +173,7 @@ fun RecordingModeQuickComponent(
                             onLongPress = {
                                 println("RecordingBusyComponent: onLongPress")
                                 isRecording = true
-                                onAction(RecordAudioAction.StartRecording)
+                                onAction(RecordQuickAction.StartRecording)
                             },
                             onTap = {
                                 println("RecordingBusyComponent: onTap")

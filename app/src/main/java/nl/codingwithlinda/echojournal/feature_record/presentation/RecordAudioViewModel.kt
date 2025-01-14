@@ -3,7 +3,6 @@ package nl.codingwithlinda.echojournal.feature_record.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
@@ -20,9 +19,8 @@ import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingState
+import nl.codingwithlinda.echojournal.feature_record.domain.RecordingState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.finite.CounterState
-import java.util.Locale
 
 class RecordAudioViewModel(
     val dispatcherProvider: DispatcherProvider,
@@ -32,14 +30,15 @@ class RecordAudioViewModel(
     val navToCreateEcho: (EchoDto) -> Unit
 ): ViewModel() {
 
-    private val recordingState = MutableStateFlow(RecordingState.STOPPED)
+    //private val recordingState = MutableStateFlow(RecordingState.STOPPED)
     private val _uiState = MutableStateFlow(RecordAudioUiState(
         recordingMode = RecordingMode.QUICK
     ))
 
-    val uiState = _uiState.combine(recordingState){ uiState, recording ->
+    val uiState = _uiState.combine(recorder.recorderState){ uiState, recording ->
+        println("UI State has recording state: ${recording.recordingEnum.name}")
         uiState.copy(
-            recordingState = recording
+            recordingState = recording.recordingEnum
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), _uiState.value)
 
@@ -68,41 +67,28 @@ class RecordAudioViewModel(
                     )
                 }
             }
-            RecordAudioAction.ToggleVisibility -> {
-                toggleRecordingState()
-            }
+
             is RecordAudioAction.StartRecording -> {
 
-                recorder.start(System.currentTimeMillis().toString())
-
-                recordingState.update {
-                    RecordingState.RECORDING
-                }
+                recorder.onMainAction()
 
                 simulateWeAreCounting()
             }
 
             RecordAudioAction.CancelRecording -> {
-                recorder.stop()
-                recordingState.update {
-                    RecordingState.STOPPED
-                }
+                recorder.onCancelAction()
+
                 simulateWeAreCounting()
             }
 
             RecordAudioAction.PauseRecording -> {
-                recorder.pause()
-                recordingState.update {
-                    RecordingState.PAUSED
-                }
+                recorder.onSecondaryAction()
+
                simulateWeAreCounting()
 
             }
             RecordAudioAction.SaveRecording -> {
                 recorder.stop()
-                recordingState.update {
-                    RecordingState.STOPPED
-                }
 
                 simulateWeAreCounting()
 
@@ -113,6 +99,7 @@ class RecordAudioViewModel(
                 }
             }
 
+            ///////////////////////////////////////////////////
             RecordAudioAction.CloseDialog -> {
                 _uiState.update {
                     it.copy(
@@ -130,23 +117,10 @@ class RecordAudioViewModel(
         }
     }
 
-    private fun toggleRecordingState(){
-        recordingState.update {
-            when (it) {
-                RecordingState.RECORDING -> RecordingState.PAUSED
-                RecordingState.PAUSED -> RecordingState.RECORDING
-                RecordingState.STOPPED -> RecordingState.RECORDING
-            }
-        }
-
-        println("RECORDING STATE = ${recordingState.value}")
-    }
-
-
     private fun simulateWeAreCounting(){
 
         CoroutineScope(dispatcherProvider.default).launch{
-           counterState.startCounting(recordingState.value)
+           //counterState.startCounting(recordingState.value)
         }
     }
 }

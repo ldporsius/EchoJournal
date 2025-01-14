@@ -1,5 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_record.presentation.state
 
+import nl.codingwithlinda.echojournal.feature_record.domain.RecordingState
+
 data class RecordAudioUiState(
     val showPermissionDeclinedDialog: Boolean = false,
     val recordingMode: RecordingMode,
