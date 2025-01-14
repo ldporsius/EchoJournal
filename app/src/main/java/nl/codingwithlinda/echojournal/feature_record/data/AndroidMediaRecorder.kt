@@ -99,9 +99,13 @@ class AndroidMediaRecorder(
         isRecording = false
         endRecordingTime = System.currentTimeMillis();
 
-        recorder?.apply {
-            stop()
-            release()
+        try {
+            recorder?.run {
+                stop()
+                release()
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
         }
 
         recorder = null

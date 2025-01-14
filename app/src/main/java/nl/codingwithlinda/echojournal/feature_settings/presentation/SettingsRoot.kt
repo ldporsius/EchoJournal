@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,8 +38,10 @@ fun SettingsRoot(
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-
-        }
+        SettingsScreen(
+            modifier = Modifier.padding(paddingValues),
+            moods = blankMoods.values.toList(),
+            topic = "todo"
+        )
     }
 }

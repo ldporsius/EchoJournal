@@ -21,7 +21,8 @@ fun CancelRecordingButton(
     IconButton(
         onClick = onAction,
         colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
         ),
         modifier = modifier
     ) {
