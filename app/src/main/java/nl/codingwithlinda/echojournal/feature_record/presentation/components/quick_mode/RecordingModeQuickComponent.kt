@@ -72,11 +72,6 @@ fun RecordingModeQuickComponent(
     fun cancelOrSave(){
         val isInsideDragRange1 = dragPosition < dragRange.endInclusive
 
-//        println("drag offset $dragOffset")
-//        println("drag position $dragPosition")
-//        println("drag range $dragRange")
-//        println("isInsideDragRange $isInsideDragRange1")
-
         if (isInsideDragRange1) {
             onAction(RecordAudioAction.CancelRecording)
         }
@@ -96,8 +91,8 @@ fun RecordingModeQuickComponent(
     if (!hasRecordAudioPermission) {
         PermissionDeclinedDialog(
             isPermanentlyDeclined = false,
-            onConfirm = { },
-            onDismiss = { }
+            onConfirm = { /*todo*/},
+            onDismiss = {/*todo*/ }
         )
     }
 
@@ -145,6 +140,7 @@ fun RecordingModeQuickComponent(
                     )
                 }
 
+                //overlay to enable dragging while button stays in place
                 Box(modifier = Modifier
                     .size(72.dp)
                     .offset {
@@ -160,7 +156,6 @@ fun RecordingModeQuickComponent(
 
                             },
                             onMove = {
-                                //println("RecordingBusyComponent: onMove $it")
                                 dragOffset += it.position.x
 
                             },

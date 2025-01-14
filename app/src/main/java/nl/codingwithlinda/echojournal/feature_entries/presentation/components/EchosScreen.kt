@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import nl.codingwithlinda.echojournal.feature_record.presentation.components.qui
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
+import nl.codingwithlinda.echojournal.ui.theme.backgroundGradient
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,9 +51,11 @@ fun EchosScreen(
                 .padding(16.dp),
             navToSettings = navToSettings
         ) },
+
     ) { padding ->
         Box(modifier =  Modifier
             .fillMaxSize()
+            .background(brush = backgroundGradient)
             .padding(padding))
         {
             Column(

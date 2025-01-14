@@ -199,13 +199,13 @@ val darkButtonColor = Color(0xFF1F70F5)
 val backgroundGradient = Brush.linearGradient(
     colors = listOf(secondary90.copy(.4f), secondary95.copy(.4f)),
     start = Offset(0f, 25f),
-    end = Offset(0f, 150f)
+    end = Offset(0f, 500f)
 )
 
 val backgroundGradientSaturated = Brush.linearGradient(
     colors = listOf(secondary90, secondary95),
     start = Offset(0f, 25f),
-    end = Offset(0f, 150f)
+    end = Offset(0f, 500f)
 )
 
 val buttonGradient = Brush.linearGradient(

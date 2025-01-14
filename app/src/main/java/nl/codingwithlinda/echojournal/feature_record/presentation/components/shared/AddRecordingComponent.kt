@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.ui.theme.buttonGradient
@@ -17,13 +18,16 @@ import nl.codingwithlinda.echojournal.ui.theme.buttonGradient
 @Composable
 fun AddRecordingComponent(
     modifier: Modifier = Modifier) {
+
     Box(
         modifier = modifier
             .size(64.dp)
+            .shadow(8.dp, shape = CircleShape)
             .background(
                 brush = buttonGradient,
                 shape = CircleShape
             )
+
         ,
         contentAlignment = Alignment.Center,
     ) {
