@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
+import nl.codingwithlinda.echojournal.ui.theme.buttonGradient
 import nl.codingwithlinda.echojournal.ui.theme.primary50
 
 @Composable
@@ -58,7 +59,7 @@ fun RecordingPausedComponent(
         Box(modifier = Modifier
             .size(72.dp)
             .background(
-                color = primary50,
+                brush = buttonGradient,
                 shape = CircleShape
             )
             ,
@@ -67,19 +68,13 @@ fun RecordingPausedComponent(
             IconButton(
                 onClick = {
                     onAction(RecordAudioAction.StartRecording)
-
-                  /*  if (hasRecordAudioPermission) {
-                        onAction(RecordAudioAction.StartRecording)
-                    }else{
-                        onAction(RecordAudioAction.OpenDialog)
-                    }*/
                 }
             ){
                 Icon(
                     painter = painterResource(R.drawable.microphone),
                     contentDescription = "Start recording",
                     modifier = Modifier.size(72.dp),
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }

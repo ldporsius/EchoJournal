@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.CancelRecordingButton
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
+import nl.codingwithlinda.echojournal.ui.theme.buttonGradient
 import nl.codingwithlinda.echojournal.ui.theme.primary50
 
 @Composable
@@ -69,7 +70,7 @@ fun RecordingActiveComponent(
                     radius = 48.dp.toPx() * scale1.value
                 )
             }.background(
-                color = primary50,
+                brush = buttonGradient,
                 shape = CircleShape
             )
             ,
@@ -84,7 +85,7 @@ fun RecordingActiveComponent(
                     imageVector = Icons.Default.Check,
                     contentDescription = "Confirm",
                     modifier = Modifier.size(72.dp),
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
