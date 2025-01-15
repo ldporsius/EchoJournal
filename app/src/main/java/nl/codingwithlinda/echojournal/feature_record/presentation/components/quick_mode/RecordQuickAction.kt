@@ -2,6 +2,6 @@ package nl.codingwithlinda.echojournal.feature_record.presentation.components.qu
 
 sealed interface RecordQuickAction {
     data object CancelRecording : RecordQuickAction
-    data object SaveRecording : RecordQuickAction
-    data object StartRecording : RecordQuickAction
+    data object MainButtonReleased : RecordQuickAction
+    data object MainButtonLongPress : RecordQuickAction
 }

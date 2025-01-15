@@ -44,7 +44,7 @@ fun RecordingModeQuickComponent(
     var hasRecordAudioPermission by remember {
         mutableStateOf(true)
     }
-    var isRecording by remember {
+    var inLongPressMode by remember {
         mutableStateOf(false)
     }
     var dragOffset by remember {
@@ -69,15 +69,17 @@ fun RecordingModeQuickComponent(
     )
 
     fun cancelOrSave(){
+        if (!inLongPressMode) return
+
         val isInsideDragRange1 = dragPosition < dragRange.endInclusive
 
         if (isInsideDragRange1) {
             onAction(RecordQuickAction.CancelRecording)
         }
         if (!isInsideDragRange1) {
-            onAction(RecordQuickAction.SaveRecording)
+            onAction(RecordQuickAction.MainButtonReleased)
         }
-        isRecording = false
+        inLongPressMode = false
         dragOffset = 0f
         dragPosition = 0f
 
@@ -108,7 +110,7 @@ fun RecordingModeQuickComponent(
 
         if(hasRecordAudioPermission) {
 
-            AnimatedVisibility(isRecording) {
+            AnimatedVisibility(inLongPressMode) {
                 CancelRecordingButton(
                     modifier = Modifier
                         .size(
@@ -125,14 +127,14 @@ fun RecordingModeQuickComponent(
                     .size(72.dp)
             ) {
 
-                if (isRecording) {
+                if (inLongPressMode) {
                     RecordingBusyComponent(
                         modifier = Modifier
                             .size(72.dp)
                     )
                 }
 
-                if (!isRecording) {
+                if (!inLongPressMode) {
                     AddRecordingComponent(
                         modifier = Modifier
                             .size(72.dp)
@@ -148,7 +150,7 @@ fun RecordingModeQuickComponent(
                             y = 0
                         )
                     }
-                    .pointerInput(isRecording) {
+                    .pointerInput(inLongPressMode) {
                         routePointerChangesTo(
                             onDown = {
                                 println("RecordingBusyComponent: onDown")
@@ -160,26 +162,21 @@ fun RecordingModeQuickComponent(
                             },
                             onUp = {
                                 println("RecordingBusyComponent: onUp ${it.position.x}")
-
-                                if (isRecording) {
-                                    cancelOrSave()
-                                }
+                                cancelOrSave()
                             }
                         )
 
                     }
-                    .pointerInput(isRecording) {
+                    .pointerInput(inLongPressMode) {
                         this.detectTapGestures(
                             onLongPress = {
                                 println("RecordingBusyComponent: onLongPress")
-                                isRecording = true
-                                onAction(RecordQuickAction.StartRecording)
+                                inLongPressMode = true
+                                onAction(RecordQuickAction.MainButtonLongPress)
                             },
                             onTap = {
                                 println("RecordingBusyComponent: onTap")
-                                if (!isRecording) {
-                                    onTap()
-                                }
+                                onTap()
                             }
                         )
                     }

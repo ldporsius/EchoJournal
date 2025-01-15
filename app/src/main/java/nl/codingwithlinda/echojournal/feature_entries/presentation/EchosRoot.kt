@@ -49,7 +49,11 @@ fun EchosRoot(
    val quickRecordFactory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
          RecordQuickViewModel(
-            audioRecorder = appModule.audioRecorder
+            audioRecorder = appModule.audioRecorder,
+            echoFactory = appModule.echoFactory,
+            onRecordingFinished = {
+               navToCreateEcho(it)
+            }
          )
       }
    }
