@@ -8,6 +8,7 @@ import nl.codingwithlinda.echojournal.feature_record.domain.finite_state.Recorde
 interface AudioRecorder {
 
     val listener: Flow<EchoResult<AudioRecorderData, RecordingFailedError>>
+    val countDuration: Flow<Long>
     fun onCancelAction()
     fun onMainAction()
     fun onSecondaryAction()

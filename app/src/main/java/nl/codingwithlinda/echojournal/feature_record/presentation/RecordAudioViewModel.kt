@@ -3,13 +3,10 @@ package nl.codingwithlinda.echojournal.feature_record.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -21,14 +18,11 @@ import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.util.EchoResult
-import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
-import nl.codingwithlinda.echojournal.feature_record.domain.RecordingState
 import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.finite.CounterState
-import nl.codingwithlinda.echojournal.feature_record.util.toUiText
+import nl.codingwithlinda.echojournal.feature_record.presentation.state.finite.Counter
 
 class RecordAudioViewModel(
     val dispatcherProvider: DispatcherProvider,
@@ -51,12 +45,12 @@ class RecordAudioViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), _uiState.value)
 
-    private val counterState = CounterState()
+
     private val recordingResult = recorder.listener
 
     init {
-        viewModelScope.launch {
-            counterState.counter.collectLatest {
+      viewModelScope.launch {
+           recorder.countDuration.collectLatest {
                 val durationText = dateTimeFormatter.formatDateTimeMillis(it.toLong())
 
                 _uiState.update {
@@ -120,14 +114,6 @@ class RecordAudioViewModel(
                     )
                 }
             }
-
-        }
-    }
-
-    private fun simulateWeAreCounting(){
-
-        CoroutineScope(dispatcherProvider.default).launch{
-           //counterState.startCounting(recordingState.value)
         }
     }
 }
