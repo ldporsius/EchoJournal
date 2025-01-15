@@ -6,5 +6,4 @@ enum class Mood(val sortOrder: Int) {
     NEUTRAL(2),
     PEACEFUL(3),
     EXITED(4) ,
-
 }

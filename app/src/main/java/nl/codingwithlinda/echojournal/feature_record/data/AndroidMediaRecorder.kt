@@ -47,7 +47,7 @@ class AndroidMediaRecorder(
         _recorderStateFlow.update { state }
         return state
     }
-    ////
+    //end state//
 
     override val countDuration: MutableStateFlow<Long> = MutableStateFlow(0L)
 
@@ -73,8 +73,6 @@ class AndroidMediaRecorder(
     private val pathAmplitudes: String = File(context.filesDir, FILE_NAME_AMPLITUDES).path
     private var pathAudio: File = File(context.filesDir, ECHO_JOURNAL_DIR )
 
-    //private var startRecordingTime: Long = 0L
-    //private var endRecordingTime: Long = 0L
     private val _waves = MutableStateFlow<List<Int>>(emptyList())
     private val samplingRate = 8_000
 

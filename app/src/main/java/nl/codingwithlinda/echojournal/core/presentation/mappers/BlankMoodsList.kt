@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.core.presentation.util
+package nl.codingwithlinda.echojournal.core.presentation.mappers
 
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood

@@ -19,23 +19,20 @@ import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
+import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
+import nl.codingwithlinda.echojournal.core.presentation.mappers.toUi
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
-import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
-import nl.codingwithlinda.echojournal.core.presentation.util.toColor
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchoListItemContent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EmptyListComponent
-import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosTopBar
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.FilterEchoComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodComponent
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.SelectMoodItem
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi
-import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 import nl.codingwithlinda.echojournal.ui.theme.EchoJournalTheme
-import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable
@@ -46,7 +43,7 @@ private fun EntriesFilterBarPreview() {
             modifier = Modifier.fillMaxWidth(),
 
             moodsUiState = MoodsUiState(
-                moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },
+                moods = coloredMoods.entries.sortedBy { it.key }.map { it.value },
                 selectedMoods = listOf(Mood.SAD.toUi())
             ),
             topicsUiState = TopicsUiState(
@@ -119,7 +116,7 @@ private fun SelectMoodPreview() {
         SelectMoodComponent(
             modifier = Modifier.background(color = Color.White),
             moodsUiState = MoodsUiState(
-                moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },
+                moods = coloredMoods.entries.sortedBy { it.key }.map { it.value },
                 selectedMoods = emptyList()
             ),
             onMoodSelected = {}

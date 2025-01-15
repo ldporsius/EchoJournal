@@ -17,13 +17,13 @@ import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.data.data_source.EchoAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
-import nl.codingwithlinda.echojournal.core.presentation.util.blankMoods
+import nl.codingwithlinda.echojournal.core.presentation.mappers.blankMoods
+import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
-import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
@@ -63,7 +63,7 @@ class CreateEchoViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _selectedMood = MutableStateFlow<UiMood?>(null)
-    private val coloredMoods = moodToColorMap
+
     private val _moods = _selectedMood.map {selectedMood ->
         if (selectedMood == null) {
             blankMoods

@@ -16,6 +16,7 @@ import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.core.data.data_source.EchoAccess
 import nl.codingwithlinda.echojournal.core.data.data_source.TopicsAccess
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 import nl.codingwithlinda.echojournal.feature_entries.domain.usecase.FilterOnMoodAndTopic
@@ -28,7 +29,6 @@ import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsU
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.GroupByTimestamp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.util.limitTopics
-import nl.codingwithlinda.echojournal.feature_entries.presentation.util.moodToColorMap
 
 class EchosViewModel(
     private val echoAccess: EchoAccess,
@@ -58,7 +58,7 @@ class EchosViewModel(
     private val _selectedMoods = MutableStateFlow<List<UiMood>>(emptyList())
     private val _moodsUiState = MutableStateFlow(
         MoodsUiState(
-            moods = moodToColorMap.entries.sortedBy { it.key }.map { it.value },
+            moods = coloredMoods.entries.sortedBy { it.key }.map { it.value },
             selectedMoods = emptyList()
         )
     )
