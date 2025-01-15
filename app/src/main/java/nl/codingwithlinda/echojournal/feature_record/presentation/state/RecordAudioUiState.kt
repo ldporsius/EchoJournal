@@ -6,7 +6,7 @@ data class RecordAudioUiState(
     val showPermissionDeclinedDialog: Boolean = false,
     val recordingMode: RecordingMode,
     val recordingState: RecordingState = RecordingState.STOPPED,
-    val duration: String = ""
+    val duration: String = "",
 ){
     val isRecording: Boolean = recordingState == RecordingState.RECORDING
     val isPaused: Boolean = recordingState == RecordingState.PAUSED

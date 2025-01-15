@@ -43,9 +43,7 @@ fun RecordingActiveComponent(
         1f,     1.5f,
         infiniteRepeatable(tween(600), RepeatMode. Reverse), label = ""
     )
-    LaunchedEffect(true) {
-        onAction(RecordAudioAction.StartRecording)
-    }
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(72.dp, androidx.compose.ui.Alignment.CenterHorizontally),
@@ -55,7 +53,7 @@ fun RecordingActiveComponent(
        CancelRecordingButton(
            modifier = Modifier.size(48.dp),
            onAction = {
-               onAction(RecordAudioAction.CancelRecording)
+               onAction(RecordAudioAction.onCancelClicked)
            }
        )
         Box(modifier = Modifier
@@ -78,7 +76,7 @@ fun RecordingActiveComponent(
         ){
             IconButton(
                onClick = {
-                   onAction(RecordAudioAction.SaveRecording)
+                   onAction(RecordAudioAction.onMainClicked)
                }
             ){
                 Icon(
@@ -92,7 +90,7 @@ fun RecordingActiveComponent(
 
         IconButton(
             onClick = {
-                onAction(RecordAudioAction.PauseRecording)
+                onAction(RecordAudioAction.onSecondaryClicked)
             },
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer

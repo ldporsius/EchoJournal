@@ -6,12 +6,15 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
+import nl.codingwithlinda.echojournal.core.domain.util.EchoResult
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
+import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
 
 class RecordQuickViewModel(
     private val audioRecorder: AudioRecorder,
     private val echoFactory: EchoFactory,
-    private val onRecordingFinished: (echoDto: EchoDto) -> Unit
+    private val onRecordingFinished: (echoDto: EchoDto) -> Unit,
+    private val onRecordingFailed: (error: RecordingFailedError) -> Unit
 ): ViewModel() {
 
     fun handleAction(action: RecordQuickAction){
@@ -31,9 +34,16 @@ class RecordQuickViewModel(
                 println("QuikcAction: MainButtonReleased")
                 audioRecorder.stop()
                 viewModelScope.launch {
-                    audioRecorder.listener.firstOrNull()?.let {
-                        echoFactory.createEchoDto(it).also {echoDto ->
-                            onRecordingFinished(echoDto)
+                    audioRecorder.listener.firstOrNull()?.let { res ->
+                        when(res){
+                            is EchoResult.Error -> {
+                               onRecordingFailed(res.error)
+                            }
+                            is EchoResult.Success -> {
+                                echoFactory.createEchoDto(res.data).also {echoDto ->
+                                    onRecordingFinished(echoDto)
+                                }
+                            }
                         }
                     }
                 }

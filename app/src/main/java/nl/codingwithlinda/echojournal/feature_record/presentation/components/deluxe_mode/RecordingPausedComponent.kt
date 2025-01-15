@@ -41,7 +41,7 @@ fun RecordingPausedComponent(
     ) {
         IconButton(
             onClick = {
-                onAction(RecordAudioAction.CancelRecording) },
+                onAction(RecordAudioAction.onCancelClicked) },
 
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = MaterialTheme.colorScheme.errorContainer
@@ -67,7 +67,7 @@ fun RecordingPausedComponent(
         ){
             IconButton(
                 onClick = {
-                    onAction(RecordAudioAction.StartRecording)
+                    onAction(RecordAudioAction.onMainClicked)
                 }
             ){
                 Icon(
@@ -80,7 +80,7 @@ fun RecordingPausedComponent(
         }
         IconButton(
             onClick = {
-                onAction(RecordAudioAction.SaveRecording)
+                onAction(RecordAudioAction.onSecondaryClicked)
             },
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer

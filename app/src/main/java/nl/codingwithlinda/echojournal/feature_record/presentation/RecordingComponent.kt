@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode.RecordAudioComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.quick_mode.RecordQuickAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.quick_mode.RecordingModeQuickComponent
@@ -19,7 +20,7 @@ fun RecordingComponent(
     modifier: Modifier = Modifier,
     recordAudioUiState: RecordAudioUiState,
     onQuickAction: (RecordQuickAction) -> Unit,
-    onRecordAudioAction: (RecordAudioAction) -> Unit
+    onRecordAudioAction: (RecordAudioAction) -> Unit,
 ) {
     Box(
         modifier = modifier

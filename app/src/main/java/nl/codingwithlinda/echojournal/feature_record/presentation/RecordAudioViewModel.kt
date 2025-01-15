@@ -3,11 +3,15 @@ package nl.codingwithlinda.echojournal.feature_record.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,26 +20,31 @@ import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDu
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
+import nl.codingwithlinda.echojournal.core.domain.util.EchoResult
+import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.feature_record.domain.RecordingState
+import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.finite.CounterState
+import nl.codingwithlinda.echojournal.feature_record.util.toUiText
 
 class RecordAudioViewModel(
     val dispatcherProvider: DispatcherProvider,
     val recorder: AudioRecorder,
     val dateTimeFormatter: DateTimeFormatterDuration,
     val echoFactory: EchoFactory,
-    val navToCreateEcho: (EchoDto) -> Unit
+    val navToCreateEcho: (EchoDto) -> Unit,
+    val onRecordingFailed: (error: RecordingFailedError) -> Unit
 ): ViewModel() {
 
-    //private val recordingState = MutableStateFlow(RecordingState.STOPPED)
+
     private val _uiState = MutableStateFlow(RecordAudioUiState(
         recordingMode = RecordingMode.QUICK
     ))
 
-    val uiState = _uiState.combine(recorder.recorderState){ uiState, recording ->
+    val uiState = combine(_uiState, recorder.recorderState){ uiState, recording, ->
         println("UI State has recording state: ${recording.recordingEnum.name}")
         uiState.copy(
             recordingState = recording.recordingEnum
@@ -43,6 +52,7 @@ class RecordAudioViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), _uiState.value)
 
     private val counterState = CounterState()
+    private val recordingResult = recorder.listener
 
     init {
         viewModelScope.launch {
@@ -56,6 +66,18 @@ class RecordAudioViewModel(
                 }
             }
         }
+
+        recordingResult.onEach {res ->
+            when(res){
+                is EchoResult.Error -> {
+                   onRecordingFailed(res.error)
+                }
+                is EchoResult.Success -> {
+                    val echo = echoFactory.createEchoDto(res.data)
+                    navToCreateEcho(echo)
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun onAction(action: RecordAudioAction) {
@@ -69,37 +91,21 @@ class RecordAudioViewModel(
             }
 
             is RecordAudioAction.StartRecording -> {
-
                 recorder.onMainAction()
-
-                simulateWeAreCounting()
             }
 
-            RecordAudioAction.CancelRecording -> {
+            RecordAudioAction.onCancelClicked -> {
                 recorder.onCancelAction()
-
-                simulateWeAreCounting()
             }
-
-            RecordAudioAction.PauseRecording -> {
+            RecordAudioAction.onMainClicked -> {
+                recorder.onMainAction()
+            }
+            RecordAudioAction.onSecondaryClicked -> {
                 recorder.onSecondaryAction()
-
-               simulateWeAreCounting()
-
-            }
-            RecordAudioAction.SaveRecording -> {
-                recorder.stop()
-
-                simulateWeAreCounting()
-
-                viewModelScope.launch {
-                    recorder.listener.firstOrNull()?.let {
-                        navToCreateEcho(echoFactory.createEchoDto(it))
-                    }
-                }
             }
 
-            ///////////////////////////////////////////////////
+
+            //permissions/////////////////////////////////////////////////
             RecordAudioAction.CloseDialog -> {
                 _uiState.update {
                     it.copy(
@@ -114,6 +120,7 @@ class RecordAudioViewModel(
                     )
                 }
             }
+
         }
     }
 

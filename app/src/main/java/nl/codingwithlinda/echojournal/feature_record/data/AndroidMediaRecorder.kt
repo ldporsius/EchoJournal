@@ -5,16 +5,22 @@ import android.media.MediaRecorder
 import android.os.Build
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.util.ECHO_JOURNAL_DIR
+import nl.codingwithlinda.echojournal.core.domain.util.EchoResult
+import nl.codingwithlinda.echojournal.feature_record.data.finite_state.RecorderStatePaused
+import nl.codingwithlinda.echojournal.feature_record.data.finite_state.RecorderStateRecording
 import nl.codingwithlinda.echojournal.feature_record.data.finite_state.RecorderStateStopped
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
+import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
 import nl.codingwithlinda.echojournal.feature_record.domain.finite_state.RecorderState
 import java.io.File
 import java.io.FileWriter
@@ -24,6 +30,10 @@ class AndroidMediaRecorder(
     private val context: Application,
     private val dispatcherProvider: DispatcherProvider,
 ): AudioRecorder{
+
+    val recordingState = RecorderStateRecording(this)
+    val pausedState = RecorderStatePaused(this)
+    val stoppedState = RecorderStateStopped(this)
 
     private var _recorderState: RecorderState = RecorderStateStopped(this)
     private val _recorderStateFlow = MutableStateFlow(_recorderState)
@@ -41,15 +51,25 @@ class AndroidMediaRecorder(
     private val _waves = MutableStateFlow<List<Int>>(emptyList())
     private val samplingRate = 8_000
 
-    override val listener: Flow<AudioRecorderData> = flow {
-        emit(AudioRecorderData(
-            duration = endRecordingTime - startRecordingTime,
-            uri = FILE_NAME_AUDIO,
-            amplitudesUri = pathAmplitudes
-        )
-        )
-    }
+    override val listener: MutableSharedFlow<EchoResult<AudioRecorderData, RecordingFailedError>> = MutableSharedFlow(10)
 
+    private fun emitOnSuccess(){
+       val res = EchoResult.Success<AudioRecorderData,RecordingFailedError>(
+           data = AudioRecorderData(
+               duration = endRecordingTime - startRecordingTime,
+               uri = FILE_NAME_AUDIO,
+               amplitudesUri = pathAmplitudes
+           )
+       )
+        listener.tryEmit(res)
+
+    }
+    private fun emitOnError(){
+        val res = EchoResult.Error<AudioRecorderData, RecordingFailedError>(
+            error = RecordingFailedError
+        )
+        listener.tryEmit(res)
+    }
     override fun changeState(state: RecorderState): RecorderState {
         _recorderState = state
         _recorderStateFlow.update { state }
@@ -81,7 +101,12 @@ class AndroidMediaRecorder(
         }
         val internalStoragePath = File(pathAudio, FILE_NAME_AUDIO).path
 
-        recorder = MediaRecorder().apply {
+        recorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            MediaRecorder(context)
+        }else
+            MediaRecorder()
+
+        recorder?.apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(internalStoragePath)
@@ -90,10 +115,13 @@ class AndroidMediaRecorder(
 
             try {
                 prepare()
+                start()
             } catch (e: IOException) {
                 e.printStackTrace()
+                emitOnError()
+                return
             }
-            start()
+
             startRecordingTime = System.currentTimeMillis();
         }
 
@@ -102,13 +130,15 @@ class AndroidMediaRecorder(
         isRecording = true
 
         CoroutineScope(dispatcherProvider.default).launch {
-            recordAmplitudes()
+            recordAmplitudes(){
+                isRecording
+            }
         }
     }
 
-    private suspend fun recordAmplitudes(){
+    private suspend fun recordAmplitudes( loopWhile: () -> Boolean){
         val recordAmplitudeIntervalMillis = 30L
-        while (isRecording) {
+        while (loopWhile()) {
             recorder?.maxAmplitude?.let {
                 _waves.value += it
             }
@@ -116,17 +146,24 @@ class AndroidMediaRecorder(
         }
     }
 
-    private fun writeAmplitudesToFile(){
-        val output = _waves.value.toList()
+    private suspend fun writeAmplitudesToFile(){
+        withContext(dispatcherProvider.io) {
+            val output = _waves.value.toList()
 
-        val fileWriter = FileWriter(pathAmplitudes)
+            try {
+                val fileWriter = FileWriter(pathAmplitudes)
 
-        CoroutineScope(dispatcherProvider.io).launch{
-            fileWriter.use {
-                it.write(output.joinToString(","))
+                fileWriter.use {
+                    it.write(output.joinToString(","))
+                }
+            }catch (e: Exception){
+                this.ensureActive()
+                e.printStackTrace()
+                emitOnError()
             }
+
+            _waves.value = emptyList()
         }
-        _waves.value = emptyList()
     }
 
     private fun cancelRecording(){
@@ -138,14 +175,13 @@ class AndroidMediaRecorder(
             }
         }catch (e: Exception){
             e.printStackTrace()
+        }finally {
+            recorder = null
         }
-
-        recorder = null
     }
 
     private fun stopRecording() {
         println("stopped recording")
-
         isRecording = false
         endRecordingTime = System.currentTimeMillis();
 
@@ -156,21 +192,34 @@ class AndroidMediaRecorder(
             }
         }catch (e: Exception){
             e.printStackTrace()
+        }finally {
+            recorder = null
         }
 
-        recorder = null
-
-        writeAmplitudesToFile()
+      CoroutineScope(dispatcherProvider.io).launch {
+          writeAmplitudesToFile()
+          println("wrote amplitudes to file")
+          emitOnSuccess()
+          println("emitted success")
+      }
     }
 
     private fun pauseRecording(){
-        println("paused recording")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            recorder?.pause()
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                println("SDK >= 24")
+                recorder?.pause()
+                println("paused recording")
+            }
+            else {
+                println("SDK < 24")
+                stopRecording()
+            }
+        }catch (e: Exception){
+            emitOnError()
         }
-        else {
-            recorder?.stop()
-        }
+
     }
 
     private fun resumeRecording(){

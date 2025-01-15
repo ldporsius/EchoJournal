@@ -1,11 +1,12 @@
 package nl.codingwithlinda.echojournal.feature_record.data.finite_state
 
+import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.RecordingState
 import nl.codingwithlinda.echojournal.feature_record.domain.finite_state.RecorderState
 
 class RecorderStateRecording(
-    private val audioRecorder: AudioRecorder
+    private val audioRecorder: AndroidMediaRecorder
 ): RecorderState {
 
     override val recordingEnum: RecordingState
@@ -13,16 +14,18 @@ class RecorderStateRecording(
 
     override fun cancel() {
         audioRecorder.cancel()
+        audioRecorder.changeState(audioRecorder.stoppedState)
     }
 
     override fun main() {
-        audioRecorder.pause()
-        audioRecorder.changeState(RecorderStatePaused(audioRecorder))
+        audioRecorder.stop()
+        audioRecorder.changeState(audioRecorder.stoppedState)
     }
 
     override fun secondary() {
-        audioRecorder.stop()
-        audioRecorder.changeState(RecorderStateStopped(audioRecorder))
+        println("RecorderStateRecording.secondary()")
+        audioRecorder.pause()
+        audioRecorder.changeState(audioRecorder.pausedState)
     }
 
 }
