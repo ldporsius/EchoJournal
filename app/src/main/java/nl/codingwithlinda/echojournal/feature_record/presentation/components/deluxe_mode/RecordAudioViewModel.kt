@@ -1,8 +1,7 @@
-package nl.codingwithlinda.echojournal.feature_record.presentation
+package nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
@@ -22,7 +21,6 @@ import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAu
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.finite.Counter
 
 class RecordAudioViewModel(
     val dispatcherProvider: DispatcherProvider,

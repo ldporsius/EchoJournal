@@ -146,6 +146,7 @@ class AndroidMediaRecorder(
 
         CoroutineScope(dispatcherProvider.default).launch {
             launch {
+                counter.resetCounter()
                 counter.startCounting()
             }
             launch {

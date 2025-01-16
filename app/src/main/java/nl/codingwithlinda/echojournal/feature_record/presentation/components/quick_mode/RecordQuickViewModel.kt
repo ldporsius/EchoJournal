@@ -27,12 +27,12 @@ class RecordQuickViewModel(
 
             RecordQuickAction.MainButtonLongPress -> {
                 println("QuikcAction: MainButtonLongPress")
-                audioRecorder.start()
+                audioRecorder.onMainAction()
 
             }
             RecordQuickAction.MainButtonReleased -> {
                 println("QuikcAction: MainButtonReleased")
-                audioRecorder.stop()
+                audioRecorder.onMainAction()
                 viewModelScope.launch {
                     audioRecorder.listener.firstOrNull()?.let { res ->
                         when(res){

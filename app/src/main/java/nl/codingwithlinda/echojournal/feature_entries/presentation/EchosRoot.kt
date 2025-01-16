@@ -2,7 +2,6 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,15 +13,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.di.AppModule
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
-import nl.codingwithlinda.echojournal.feature_record.presentation.RecordAudioViewModel
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode.RecordAudioViewModel
 import nl.codingwithlinda.echojournal.feature_record.presentation.RecordingComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.quick_mode.RecordQuickViewModel
 import nl.codingwithlinda.echojournal.feature_record.util.toUiText
