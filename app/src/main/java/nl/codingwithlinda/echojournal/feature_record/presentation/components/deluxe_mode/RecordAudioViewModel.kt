@@ -17,14 +17,14 @@ import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.di.DispatcherProvider
 import nl.codingwithlinda.echojournal.core.domain.util.EchoResult
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.RecordAudioAction
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission.PermissionAction
 
 class RecordAudioViewModel(
-    val dispatcherProvider: DispatcherProvider,
     val recorder: AudioRecorder,
+    private val recorderInteraction: RecorderInteraction,
     val dateTimeFormatter: DateTimeFormatterDuration,
     val echoFactory: EchoFactory,
     val navToCreateEcho: (EchoDto) -> Unit,
@@ -32,9 +32,10 @@ class RecordAudioViewModel(
 ): ViewModel() {
 
 
-    private val _uiState = MutableStateFlow(RecordAudioUiState(
-        recordingMode = RecordingMode.QUICK
-    ))
+    private val _uiState = MutableStateFlow(
+        RecordAudioUiState(
+    )
+    )
 
     val uiState = combine(_uiState, recorder.recorderState){ uiState, recording, ->
         println("UI State has recording state: ${recording.recordingEnum.name}")
@@ -72,46 +73,14 @@ class RecordAudioViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun onAction(action: RecordAudioAction) {
-        when (action) {
-            is RecordAudioAction.ChangeRecordingMode -> {
-                _uiState.update {
-                    it.copy(
-                        recordingMode = action.mode
-                    )
-                }
-            }
-
-            is RecordAudioAction.StartRecording -> {
-                recorder.onMainAction()
-            }
-
-            RecordAudioAction.onCancelClicked -> {
-                recorder.onCancelAction()
-            }
-            RecordAudioAction.onMainClicked -> {
-                recorder.onMainAction()
-            }
-            RecordAudioAction.onSecondaryClicked -> {
-                recorder.onSecondaryAction()
-            }
 
 
-            //permissions/////////////////////////////////////////////////
-            RecordAudioAction.CloseDialog -> {
-                _uiState.update {
-                    it.copy(
-                        showPermissionDeclinedDialog = false
-                    )
-                }
-            }
-            RecordAudioAction.OpenDialog -> {
-                _uiState.update {
-                    it.copy(
-                        showPermissionDeclinedDialog = true
-                    )
-                }
-            }
+    fun onAction(action: RecordDeluxeAction) {
+
+        recorderInteraction.handleDeluxeAction(action).also {
+            recorder.handleAction(it)
         }
     }
+
+
 }

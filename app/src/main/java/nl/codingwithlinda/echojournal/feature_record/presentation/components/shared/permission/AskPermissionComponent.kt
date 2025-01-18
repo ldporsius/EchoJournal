@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -26,6 +27,9 @@ fun AskPermissionComponent(
     var isPermanentlyDeclined by remember {
         mutableStateOf(false)
     }
+    var shouldShowPermanentlyDeclinedDialog by remember {
+        mutableStateOf(false)
+    }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
@@ -33,6 +37,7 @@ fun AskPermissionComponent(
         }
     )
     LaunchedEffect(key1 = true) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             launcher.launch(android.Manifest.permission.RECORD_AUDIO)
             hasRecordAudioPermission =
@@ -44,14 +49,43 @@ fun AskPermissionComponent(
 
             hasPermission(hasRecordAudioPermission)
 
+            shouldShowPermanentlyDeclinedDialog = isPermanentlyDeclined
+
         }
     }
-
-    if (isPermanentlyDeclined) {
-        PermissionDeclinedDialog(
-            isPermanentlyDeclined = isPermanentlyDeclined,
-            onConfirm = {  },
-            onDismiss = {  }
-        )
+    /* if (uiState.showPermissionDeclinedDialog){
+      PermissionDeclinedDialog(
+          isPermanentlyDeclined = isPermanentlyDeclined,
+          onConfirm = {
+              if (isPermanentlyDeclined) {
+                  context as MainActivity
+                  context.openAppSettings()
+              }
+              else{
+                  launcher.launch(Manifest.permission.RECORD_AUDIO)
+              }
+          },
+          onDismiss = {
+              onPermissionAction(PermissionAction.CloseDialog)
+          }
+      )
+  }*/
+    if (shouldShowPermanentlyDeclinedDialog) {
+        if (isPermanentlyDeclined) {
+            PermissionDeclinedDialog(
+                isPermanentlyDeclined = isPermanentlyDeclined,
+                onConfirm = {
+                    if (isPermanentlyDeclined) {
+                        context as MainActivity
+                        context.openAppSettings()
+                    } else {
+                        launcher.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+                },
+                onDismiss = {
+                    shouldShowPermanentlyDeclinedDialog = false
+                }
+            )
+        }
     }
 }

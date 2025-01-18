@@ -14,10 +14,10 @@ class GroupByTimestampTest{
 
         val groupedEntries = GroupByTimestamp.groupByTimestamp(entries, timestamp)
 
-        assertEquals(2, groupedEntries.size)
+        assertEquals(3, groupedEntries.size)
 
         println(groupedEntries)
         assertEquals(1, groupedEntries[0L]?.size)
-        assertEquals(1, groupedEntries[1L]?.size)
+        assertEquals(3, groupedEntries[1L]?.size)
     }
 }

@@ -20,23 +20,21 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.CancelRecordingButton
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.RecordAudioAction
 import nl.codingwithlinda.echojournal.ui.theme.buttonGradient
 import nl.codingwithlinda.echojournal.ui.theme.primary50
 
 @Composable
 fun RecordingActiveComponent(
     modifier: Modifier = Modifier,
-    onAction: (RecordAudioAction) -> Unit,
+    onAction: (RecordDeluxeAction) -> Unit,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val scale1 = infiniteTransition. animateFloat(
@@ -53,7 +51,7 @@ fun RecordingActiveComponent(
        CancelRecordingButton(
            modifier = Modifier.size(48.dp),
            onAction = {
-               onAction(RecordAudioAction.onCancelClicked)
+               onAction(RecordDeluxeAction.CancelRecording)
            }
        )
         Box(modifier = Modifier
@@ -76,12 +74,12 @@ fun RecordingActiveComponent(
         ){
             IconButton(
                onClick = {
-                   onAction(RecordAudioAction.onMainClicked)
+                   onAction(RecordDeluxeAction.SaveRecording)
                }
             ){
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = "Confirm",
+                    contentDescription = "Save",
                     modifier = Modifier.size(72.dp),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
@@ -90,7 +88,7 @@ fun RecordingActiveComponent(
 
         IconButton(
             onClick = {
-                onAction(RecordAudioAction.onSecondaryClicked)
+                onAction(RecordDeluxeAction.PauseRecording)
             },
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer

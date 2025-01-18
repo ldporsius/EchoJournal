@@ -27,6 +27,7 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.AddRecordingComponent
@@ -37,13 +38,17 @@ import kotlin.math.roundToInt
 
 @Composable
 fun RecordingModeQuickComponent(
+    hasRecordAudioPermission: Boolean,
+    requestPermission: () -> Unit,
     onTap: () -> Unit,
     onAction: (RecordQuickAction) -> Unit,
     modifier: Modifier = Modifier) {
 
-    var hasRecordAudioPermission by remember {
-        mutableStateOf(true)
+    if (!hasRecordAudioPermission){
+        requestPermission()
+        return
     }
+
     var inLongPressMode by remember {
         mutableStateOf(false)
     }
@@ -84,18 +89,7 @@ fun RecordingModeQuickComponent(
         dragPosition = 0f
 
     }
-    AskPermissionComponent(
-        hasPermission = {
-            hasRecordAudioPermission = it
-        }
-    )
-    if (!hasRecordAudioPermission) {
-        PermissionDeclinedDialog(
-            isPermanentlyDeclined = false,
-            onConfirm = { /*todo*/},
-            onDismiss = {/*todo*/ }
-        )
-    }
+
 
     Row(
         modifier = modifier
@@ -108,7 +102,6 @@ fun RecordingModeQuickComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        if(hasRecordAudioPermission) {
 
             AnimatedVisibility(inLongPressMode) {
                 CancelRecordingButton(
@@ -143,6 +136,7 @@ fun RecordingModeQuickComponent(
 
                 //overlay to enable dragging while button stays in place
                 Box(modifier = Modifier
+                    .testTag("RECORDER_MAIN_BUTTON")
                     .size(72.dp)
                     .offset {
                         IntOffset(
@@ -192,7 +186,6 @@ fun RecordingModeQuickComponent(
                 }
             }
         }
-    }
 }
 
 suspend fun PointerInputScope.routePointerChangesTo(

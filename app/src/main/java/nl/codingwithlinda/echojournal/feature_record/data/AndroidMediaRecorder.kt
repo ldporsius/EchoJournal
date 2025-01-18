@@ -22,6 +22,7 @@ import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
 import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
 import nl.codingwithlinda.echojournal.feature_record.domain.finite_state.RecorderState
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.RecordAudioAction
 import nl.codingwithlinda.echojournal.feature_record.presentation.state.finite.Counter
 import java.io.File
 import java.io.FileWriter
@@ -97,21 +98,29 @@ class AndroidMediaRecorder(
     }
 
     ///////// user interaction ///////////////////////////////////
-    override fun onCancelAction() {
-        _recorderState.cancel()
-    }
 
-    override fun onMainAction() {
-        _recorderState.main()
-    }
-
-    override fun onSecondaryAction() {
-        _recorderState.secondary()
+    override fun handleAction(action: RecordAudioAction){
+       when(action){
+           RecordAudioAction.onCancelClicked -> {
+               _recorderState.cancel()
+           }
+           RecordAudioAction.onMainClicked -> {
+               _recorderState.main()
+           }
+           RecordAudioAction.onSecondaryClicked -> {
+               _recorderState.secondary()
+           }
+       }
     }
     ///////////////////////////////////////////////////////////////
 
 
     private fun startRecording() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            && context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED){
+            emitOnError()
+            return
+        }
         println("AndroidMediaRecorder started recording on path: $pathAudio")
         if(!pathAudio.exists()){
             pathAudio.mkdirs()

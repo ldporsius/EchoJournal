@@ -23,6 +23,7 @@ class Counter(
     }
 
     private suspend fun simulateWeAreCounting() {
+        result(counter)
         while (recordingState() == RecordingState.RECORDING) {
             counter += 100
 

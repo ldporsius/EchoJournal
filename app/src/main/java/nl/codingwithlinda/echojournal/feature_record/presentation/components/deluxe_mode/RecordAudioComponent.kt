@@ -1,10 +1,5 @@
 package nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,64 +9,33 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
-import nl.codingwithlinda.echojournal.MainActivity
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission.PermissionDeclinedDialog
-import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.permission.openAppSettings
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioAction
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordAudioUiState
-import nl.codingwithlinda.echojournal.feature_record.presentation.state.RecordingMode
 import nl.codingwithlinda.echojournal.ui.theme.labelFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordAudioComponent(
     modifier: Modifier = Modifier,
+    hasRecordAudioPermission: Boolean,
+    requestPermission: () -> Unit,
     uiState: RecordAudioUiState,
-    onAction: (RecordAudioAction) -> Unit,
+    onDismiss: () -> Unit,
+    onAction: (RecordDeluxeAction) -> Unit,
 ) {
+
+    if (!hasRecordAudioPermission){
+        requestPermission()
+        return
+    }
+
     val recorderModifier = Modifier
         .fillMaxWidth()
         .padding(top = 48.dp, bottom = 72.dp)
 
-    val context = LocalContext.current
-    var hasRecordAudioPermission by remember {
-        mutableStateOf(true)
-    }
-    var isPermanentlyDeclined by remember {
-        mutableStateOf(false)
-    }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = {
-            hasRecordAudioPermission = it
-        }
-    )
-
-    LaunchedEffect(key1 = true) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            launcher.launch(android.Manifest.permission.RECORD_AUDIO)
-            hasRecordAudioPermission =
-                context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
-            val rationale = shouldShowRequestPermissionRationale(context as MainActivity, android.Manifest.permission.RECORD_AUDIO)
-            println("rationale $rationale")
-            println("hasRecordAudioPermission $hasRecordAudioPermission")
-            isPermanentlyDeclined =  !rationale
-        }
-    }
-
     ModalBottomSheet(
         onDismissRequest = {
-            //onAction(RecordAudioAction.ToggleVisibility)
-            onAction(RecordAudioAction.ChangeRecordingMode(RecordingMode.QUICK))
+           onDismiss()
         },
         modifier = Modifier.fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -116,21 +80,5 @@ fun RecordAudioComponent(
         }
     }
 
-    if (uiState.showPermissionDeclinedDialog){
-        PermissionDeclinedDialog(
-            isPermanentlyDeclined = isPermanentlyDeclined,
-            onConfirm = {
-                if (isPermanentlyDeclined) {
-                    context as MainActivity
-                    context.openAppSettings()
-                }
-                else{
-                    launcher.launch(Manifest.permission.RECORD_AUDIO)
-                }
-            },
-            onDismiss = {
-                onAction(RecordAudioAction.CloseDialog)
-            }
-        )
-    }
+
 }

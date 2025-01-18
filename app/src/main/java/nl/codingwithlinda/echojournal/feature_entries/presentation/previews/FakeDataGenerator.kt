@@ -49,7 +49,7 @@ fun fakeAmplitudes(): List<Float>{
     }
 }
 
-val timestamp = System.currentTimeMillis()
+val timestamp = 1641030400000
 val yesterday = timestamp - 86400000
 val older = yesterday.milliseconds.minus(1.days).inWholeMilliseconds
 val entries =  listOf(

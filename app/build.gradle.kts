@@ -18,6 +18,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
     buildTypes {
@@ -64,20 +65,33 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.rules)
 
     //desugar
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
-    testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
     testImplementation(libs.turbine)
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.truth)
 
-
+    // Instrumentation tests
+    androidTestImplementation (libs.coroutines.test)
+    androidTestImplementation (libs.androidx.core.testing)
+    androidTestImplementation (libs.truth)
+    androidTestImplementation (libs.androidx.junit.v113)
+    androidTestImplementation (libs.core.ktx)
+    androidTestImplementation (libs.androidx.compose.ui.ui.test.junit4)
+    //androidTestImplementation(platform(libs.androidx.compose.bom)) outcommented because don't understand
+    androidTestImplementation (libs.androidx.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.orchestrator)
+    androidTestImplementation(libs.androidx.test.uiautomator)
+    androidTestImplementation (libs.androidx.runner)
+
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

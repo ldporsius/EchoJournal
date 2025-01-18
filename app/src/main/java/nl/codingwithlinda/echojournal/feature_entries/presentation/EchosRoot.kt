@@ -20,7 +20,9 @@ import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode.RecordAudioViewModel
 import nl.codingwithlinda.echojournal.feature_record.presentation.RecordingComponent
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode.RecorderInteraction
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.quick_mode.RecordQuickViewModel
+import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.SharedRecordingViewModel
 import nl.codingwithlinda.echojournal.feature_record.util.toUiText
 
 @Composable
@@ -32,6 +34,7 @@ fun EchosRoot(
    var error:UiText? by remember {
       mutableStateOf(null)
    }
+   val recorderInteraction = RecorderInteraction()
    val echoesFactory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
          EchosViewModel(
@@ -45,8 +48,8 @@ fun EchosRoot(
    val recordFactory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
          RecordAudioViewModel(
-            dispatcherProvider = appModule.dispatcherProvider,
             recorder = appModule.audioRecorder,
+            recorderInteraction = recorderInteraction,
             dateTimeFormatter = DateTimeFormatterDuration,
             echoFactory = appModule.echoFactory,
             navToCreateEcho = {
@@ -63,6 +66,7 @@ fun EchosRoot(
       initializer {
          RecordQuickViewModel(
             audioRecorder = appModule.audioRecorder,
+            recorderInteraction = recorderInteraction,
             echoFactory = appModule.echoFactory,
             onRecordingFinished = {
                navToCreateEcho(it)
@@ -75,6 +79,17 @@ fun EchosRoot(
    }
    val echosViewModel = viewModel<EchosViewModel>(
       factory = echoesFactory
+   )
+
+   val sharedRecordingFactory = viewModelFactory {
+      initializer {
+         SharedRecordingViewModel(
+            audioRecorder = appModule.audioRecorder
+         )
+      }
+   }
+   val sharedRecordingViewModel = viewModel<SharedRecordingViewModel>(
+      factory = sharedRecordingFactory
    )
    val recordAudioViewModel = viewModel<RecordAudioViewModel>(
       factory = recordFactory
@@ -106,10 +121,11 @@ fun EchosRoot(
       onReplayAction = echosViewModel::onReplayAction,
       recordingComponent = {
          RecordingComponent(
-             modifier = Modifier,
-             recordAudioUiState = recordAudioViewModel.uiState.collectAsStateWithLifecycle().value,
-             onQuickAction = quickActionViewModel::handleAction,
-             onRecordAudioAction = recordAudioViewModel::onAction,
+            modifier = Modifier,
+            recordAudioUiState = recordAudioViewModel.uiState.collectAsStateWithLifecycle().value,
+            onQuickAction = quickActionViewModel::handleAction,
+            onRecordDeluxeAction = recordAudioViewModel::onAction,
+            startRecording = sharedRecordingViewModel::startRecording,
          )
       },
       navToSettings = navToSettings

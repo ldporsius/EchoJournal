@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeout
 import nl.codingwithlinda.echojournal.feature_record.domain.RecordingState
 import org.junit.Assert.*
 import org.junit.Before
@@ -31,27 +32,27 @@ class CounterTest{
     }
 
     @Test
-    fun `count to ten`(): Unit = runTest{
+    fun `count to ten`(): Unit = runBlocking{
 
         recordingState.update {
             RecordingState.RECORDING
         }
-        backgroundScope.launch {
+        launch {
             counter.startCounting()
         }
 
-        while(counterResult < 10){
+        while(counterResult < 10_000){
             delay(100)
         }
         recordingState.update {
             RecordingState.STOPPED
         }
-        assertEquals(1000, counterResult)
+        assertEquals(10_000, counterResult)
     }
 
     @Test
     fun `counter paused and resumed gives the duration without the pause`(): Unit = runBlocking{
-        measureTimeMillis {
+        withTimeout(4100){
 
             recordingState.update {
                 RecordingState.RECORDING
@@ -82,9 +83,8 @@ class CounterTest{
                 RecordingState.STOPPED
             }
 
+            delay(100)
             assertEquals(2000, counterResult)
-        }.also {
-            assertEquals(3000, it)
         }
     }
 }

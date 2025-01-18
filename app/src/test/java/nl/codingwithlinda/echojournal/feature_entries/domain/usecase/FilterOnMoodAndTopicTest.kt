@@ -5,7 +5,7 @@ import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeTopics
 import org.junit.Test
-
+import com.google.common.truth.Truth.*
 
 class FilterOnMoodAndTopicTest{
 
@@ -17,7 +17,7 @@ class FilterOnMoodAndTopicTest{
         )
     }
 
-    private val testTopics = listOf(Topic("Topic 1"), Topic("Topic 2"))
+    private val testTopics = fakeTopics.take(2)
     @Test
     fun `test filter on mood and topic - result contains all moods and topics`(){
         val moods = listOf(Mood.SAD, Mood.NEUTRAL)
@@ -31,7 +31,7 @@ class FilterOnMoodAndTopicTest{
 
         }
 
-        assert(res.size == 5)
+        assertThat(res).containsExactlyElementsIn(echoes)
     }
 
 
@@ -48,7 +48,7 @@ class FilterOnMoodAndTopicTest{
             assert(it.topics.any { topic -> topic in topics })
         }
 
-        assert(res.size == 3)
+       assertThat(res).containsExactlyElementsIn(echoes)
     }
 
     @Test
@@ -69,12 +69,12 @@ class FilterOnMoodAndTopicTest{
 
     @Test
     fun `test filter on mood and topic - result is empty no topics match`(){
-        val moods = listOf(Mood.SAD)
+        val moods = listOf(Mood.PEACEFUL)
         val topics = testTopics
 
         val res = filterOnMoodAndTopic.filter(echoes, moods, topics)
 
-        assert(res.isEmpty())
+        assertThat(res).isEmpty()
 
         res.onEach {
             println(it.topics)
