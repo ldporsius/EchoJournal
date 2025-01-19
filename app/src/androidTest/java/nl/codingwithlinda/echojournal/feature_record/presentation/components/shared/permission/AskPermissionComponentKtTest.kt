@@ -23,5 +23,7 @@ class AskPermissionComponentKtTest{
         )
         composeTestRule.onNodeWithTag("RECORDER_MAIN_BUTTON").performClick()
 
+
+
     }
 }

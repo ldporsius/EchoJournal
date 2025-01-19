@@ -83,7 +83,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation (libs.truth)
     androidTestImplementation (libs.coroutines.test)
-    //implementation(libs.androidx.ui.test.junit4.android)
 
 
     debugImplementation(libs.androidx.ui.tooling)

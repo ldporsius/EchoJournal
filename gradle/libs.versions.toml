@@ -1,12 +1,10 @@
 [versions]
 # Core dependencies
-agp = "8.7.2"  # Latest stable Android Gradle Plugin
-kotlin = "2.0.0"  # Latest stable Kotlin version that works well with Compose
-androidxJunit = "1.1.5"
+agp = "8.7.2"
+kotlin = "2.0.0"
 core = "1.6.0"
 coreKtxVersion = "1.12.0"
 coreSplashscreen = "1.0.1"
-coreTesting = "2.2.0"
 espressoCore = "3.5.1"
 
 # Kotlin extensions
@@ -28,9 +26,6 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 truth = "1.1.3"
 turbine = "1.0.0"
-runner = "1.6.2"
-rules = "1.6.1"
-uiTestJunit4Android = "1.7.6"
 rulesVersion = "1.6.1"
 
 [libraries]
@@ -69,7 +64,6 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
 
 
