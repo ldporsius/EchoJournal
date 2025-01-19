@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -68,7 +68,7 @@ fun CreateRoot(
                             navigateBack()
                         }
                     ) {
-                        Icon(Icons.AutoMirrored.Default.KeyboardArrowLeft, contentDescription = "Back")
+                        Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Back")
                     }
                 }
             )

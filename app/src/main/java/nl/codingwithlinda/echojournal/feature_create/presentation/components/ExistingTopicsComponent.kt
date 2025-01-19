@@ -44,54 +44,54 @@ fun ExistingTopicsComponent(
         ).heightIn(32.dp, 32.dp)
         .padding(horizontal = 8.dp)
 
-        FlowRow(
-            modifier = modifier
-                .fillMaxWidth()
-                ,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            selectedTopics.forEach {
-                Row(
-                    modifier = topicModifier,
-                    verticalAlignment = Alignment.CenterVertically
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth()
+        ,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        selectedTopics.forEach {
+            Row(
+                modifier = topicModifier,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "# $it",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                    modifier = Modifier
+                )
+                IconButton(
+                    onClick = {
+                        onAction(CreateEchoAction.RemoveTopic(it))
+                    },
+                    modifier = Modifier.size(18.dp)
                 ) {
-                    Text(
-                        text = "# $it",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontSize = TextUnit(12f, TextUnitType.Sp),
-                        modifier = Modifier
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null
                     )
-                    IconButton(
-                        onClick = {
-                            onAction(CreateEchoAction.RemoveTopic(it))
-                        },
-                        modifier = Modifier.size(18.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = null
-                        )
-                    }
                 }
             }
+        }
 
 
-            TextButton(
-                onClick = {
-                    onAction(CreateEchoAction.ShowHideTopics(true))
-                },
-                modifier =
-                        Modifier
-                            .heightIn(32.dp, 32.dp)
-                            .background(color = Color.Transparent, shape = CircleShape)
+        TextButton(
+            onClick = {
+                onAction(CreateEchoAction.ShowHideTopics(true))
+            },
+            modifier =
+            Modifier
+                .heightIn(32.dp, 32.dp)
+                .background(color = Color.Transparent, shape = CircleShape)
 
 
-            ) {
-                val txt = "Add topic"
-                Text("# $txt"
-                    , style = MaterialTheme.typography.labelSmall)
-            }
+        ) {
+            val txt = "Add topic"
+            Text("# $txt"
+                , style = MaterialTheme.typography.labelSmall)
+        }
 
     }
 }

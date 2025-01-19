@@ -1,15 +1,14 @@
 package nl.codingwithlinda.echojournal.feature_record.data
 
+import android.Manifest
 import android.app.Application
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
+import nl.codingwithlinda.echojournal.MainActivity
 import nl.codingwithlinda.echojournal.core.di.AndroidAppModule
 import org.junit.Rule
 import org.junit.Test
-import android.Manifest
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import nl.codingwithlinda.echojournal.MainActivity
 
 class AndroidMediaRecorderTest{
 

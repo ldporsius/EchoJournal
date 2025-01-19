@@ -47,6 +47,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -70,26 +71,19 @@ dependencies {
     //desugar
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
-    testImplementation(libs.junit.junit)
+    testImplementation(libs.junit)
     testImplementation(libs.turbine)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.truth)
 
     // Instrumentation tests
-    androidTestImplementation (libs.coroutines.test)
-    androidTestImplementation (libs.androidx.core.testing)
-    androidTestImplementation (libs.truth)
-    androidTestImplementation (libs.androidx.junit.v113)
-    androidTestImplementation (libs.core.ktx)
-    androidTestImplementation (libs.androidx.compose.ui.ui.test.junit4)
-    //androidTestImplementation(platform(libs.androidx.compose.bom)) outcommented because don't understand
-    androidTestImplementation (libs.androidx.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.orchestrator)
-    androidTestImplementation(libs.androidx.test.uiautomator)
-    androidTestImplementation (libs.androidx.runner)
+    androidTestImplementation (libs.truth)
+    androidTestImplementation (libs.coroutines.test)
+    //implementation(libs.androidx.ui.test.junit4.android)
 
 
     debugImplementation(libs.androidx.ui.tooling)

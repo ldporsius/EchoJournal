@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.di.AppModule
-import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.feature_create.presentation.CreateRoot
 import nl.codingwithlinda.echojournal.feature_entries.presentation.EchosRoot
 import nl.codingwithlinda.echojournal.feature_settings.presentation.SettingsRoot
