@@ -28,14 +28,14 @@ fun RecordingComponent(
     startRecording: () -> Unit,
 ) {
     var hasRecordAudioPermission by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
     var recordingMode by remember {
         mutableStateOf(RecordingMode.QUICK)
     }
 
     var shouldAskPermission by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
 
     if (shouldAskPermission){

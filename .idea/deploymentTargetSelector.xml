@@ -22,6 +22,9 @@
       <SelectionState runConfigName="AskPermissionComponentKtTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="testAskPermissionComponent()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
