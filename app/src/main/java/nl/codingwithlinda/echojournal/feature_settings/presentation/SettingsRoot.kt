@@ -42,7 +42,11 @@ fun SettingsRoot(
         SettingsScreen(
             modifier = Modifier.padding(paddingValues),
             moods = viewModel.moods.collectAsStateWithLifecycle().value.values.toList(),
-            topic = viewModel.selectedTopic.collectAsStateWithLifecycle().value,
+            topics = viewModel.filteredTopics.collectAsStateWithLifecycle().value,
+            topicInput = viewModel.topicInput.collectAsStateWithLifecycle().value,
+            selectedTopics = viewModel.selectedTopics.collectAsStateWithLifecycle().value,
+            shouldShowTopicList = viewModel.shouldShowTopicList.collectAsStateWithLifecycle().value,
+            shouldShowCreateTopic = viewModel.shouldShowCreateTopic.collectAsStateWithLifecycle().value,
             onAction = viewModel::handleAction,
             onTopicAction = viewModel::handleTopicAction
         )

@@ -15,7 +15,11 @@ private fun SettingsScreenPreview() {
         SettingsScreen(
             modifier = Modifier,
             moods = coloredMoods.values.toList(),
-            topic = fakeTopics.first(),
+            topics = fakeTopics,
+            topicInput = "todo",
+            selectedTopics = fakeTopics.take(1),
+            shouldShowTopicList = false,
+            shouldShowCreateTopic = true,
             onAction = {},
             onTopicAction = {}
         )

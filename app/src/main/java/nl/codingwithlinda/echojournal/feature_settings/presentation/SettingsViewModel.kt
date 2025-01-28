@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.echojournal.core.domain.model.Mood
@@ -13,13 +14,13 @@ import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.mappers.blankMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.toUi
-import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction
+import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
+import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeTopics
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_settings.presentation.state.SettingsAction
 
 class SettingsViewModel: ViewModel() {
 
-    private val _coloredMoods = coloredMoods
 
     private val _moods = MutableStateFlow<Map<Mood, UiMood>>(blankMoods)
     private val _selectedMood = MutableStateFlow<Mood?>(null)
@@ -31,9 +32,23 @@ class SettingsViewModel: ViewModel() {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _moods.value)
 
 
+    private val _topics = MutableStateFlow<List<Topic>>(fakeTopics)
+    private val _selectedTopics = MutableStateFlow<List<Topic>>(emptyList())
+    val selectedTopics = _selectedTopics.asStateFlow()
     private val _selectedTopic = MutableStateFlow<Topic?>(null)
     val selectedTopic = _selectedTopic.asStateFlow()
+    private val _topicInput = MutableStateFlow("")
+    val topicInput = _topicInput.asStateFlow()
 
+    val shouldShowCreateTopic = _topicInput.combine(_topics){input, topics ->
+        input.uppercase() !in topics.map { it.name.uppercase() } && input.isNotBlank()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    val filteredTopics = _topicInput.combine(_topics){input, topics ->
+        topics.filter { it.name.uppercase().contains(input.uppercase()) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _topics.value)
+
+    val shouldShowTopicList = MutableStateFlow<Boolean>(false)
     fun handleAction(action: SettingsAction){
         when(action){
             is SettingsAction.SelectMoodAction -> {
@@ -51,19 +66,38 @@ class SettingsViewModel: ViewModel() {
     fun handleTopicAction(action: TopicAction){
         when(action){
             is TopicAction.CreateTopic -> {
-
+                val newTopic = Topic(name = action.text)
+                _topics.update {
+                    it.plus(
+                        newTopic
+                    )
+                }
+                _selectedTopics.update {
+                    it.plus(newTopic)
+                }
             }
             is TopicAction.RemoveTopic -> {
-
+                _selectedTopics.update {
+                    it.minus(action.topic)
+                }
             }
             is TopicAction.SelectTopic -> {
-
+                _selectedTopic.update {
+                    action.topic
+                }
+                _selectedTopics.update {
+                    it.plus(action.topic)
+                }
             }
             is TopicAction.ShowHideTopics -> {
-
+                shouldShowTopicList.update {
+                    !it
+                }
             }
             is TopicAction.TopicChanged -> {
-
+                _topicInput.update {
+                    action.topicText
+                }
             }
         }
     }

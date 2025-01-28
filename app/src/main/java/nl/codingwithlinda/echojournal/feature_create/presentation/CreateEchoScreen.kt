@@ -27,18 +27,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
-import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction
-import nl.codingwithlinda.echojournal.feature_create.presentation.components.AddTopicComponent
+import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicComponentTextButton
+import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
+import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.CreateCancelSaveButtons
-import nl.codingwithlinda.echojournal.feature_create.presentation.components.ExistingTopicsComponent
+import nl.codingwithlinda.echojournal.core.presentation.topics.ExistingTopicsComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.SelectMoodBottomSheetContent
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
-import nl.codingwithlinda.echojournal.feature_entries.presentation.components.PlaybackIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,11 +53,13 @@ fun CreateEchoScreen(
     onTopicAction: (TopicAction) -> Unit,
     onCancel: () -> Unit
 ) {
+    val nestedScrollConnection = rememberNestedScrollInteropConnection()
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
+            .nestedScroll(nestedScrollConnection)
         ,
     ) {
         Row(
@@ -115,6 +119,7 @@ fun CreateEchoScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         //selected topics
+
         AnimatedContent(topicsUiState.isExpanded, label = "") { expanded ->
             when(expanded){
                 true -> {
@@ -128,6 +133,11 @@ fun CreateEchoScreen(
                 false -> {
                     ExistingTopicsComponent(
                         selectedTopics = selectedTopics,
+                        addTopicComponent = { AddTopicComponentTextButton(
+                            onTopicAction = {
+                                onTopicAction(it)
+                            }
+                        ) },
                         onAction = onTopicAction
                     )
                 }

@@ -19,7 +19,7 @@ import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.mappers.blankMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
-import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction
+import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
@@ -250,7 +250,7 @@ class CreateEchoViewModel(
                 }
             }
             is TopicAction.TopicChanged -> {
-                _topicsSearchText.update { action.topic }
+                _topicsSearchText.update { action.topicText }
             }
         }
     }

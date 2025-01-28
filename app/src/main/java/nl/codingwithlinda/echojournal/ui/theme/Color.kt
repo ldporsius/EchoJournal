@@ -187,6 +187,8 @@ val error20 = Color(0xFF680014)
 val error95 = Color(0xFFffedec)
 val error100 = Color(0xFFffffff)
 
+val gray6 = Color(0xFFf2f2f7)
+
 val stressed80 = Color(0xFFDE3A3A)
 val sad80 = Color(0xFF3A8EDE)
 val neutal80 = Color(0xFF41B278)

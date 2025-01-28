@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.feature_create.presentation.components
+package nl.codingwithlinda.echojournal.core.presentation.topics
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -8,36 +8,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
-import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction
-import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction.*
-import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
+import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
+import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction.CreateTopic
+import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction.SelectTopic
+import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction.ShowHideTopics
 
 @Composable
 fun AddTopicComponent(
@@ -63,40 +49,7 @@ fun AddTopicComponent(
                 ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = topic,
-                onValueChange = {
-                    onAction(TopicChanged(it))
-                },
-                placeholder = {
-                    Text(
-                        "Search for topic",
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                },
-                leadingIcon = {
-                    Text("#")
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            onAction(ShowHideTopics(false))
-                        }
-                    ) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close topics")
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = androidx.compose.ui.text.input.ImeAction.Done
-                ),
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.Transparent,
-                    unfocusedTextColor = MaterialTheme.colorScheme.secondaryContainer,
-                )
-            )
+
 
             Box(
                 modifier = Modifier
@@ -114,6 +67,7 @@ fun AddTopicComponent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
+
 
                     ) {
                     topics.forEach { topic ->

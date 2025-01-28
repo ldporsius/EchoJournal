@@ -20,8 +20,8 @@ val defaultDescription =
             "Natura artis magistra est."
 
 private const val text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-val fakeTopics = List(5){
-    EchoTopic(text.substring(0, 5 + it))
+val fakeTopics = List(10){
+    EchoTopic(text.substring(0, 1 + it))
 }
 fun fakeEcho(mood: Mood, timestamp: Long): Echo {
     return Echo(
