@@ -80,9 +80,8 @@ fun RecordingComponent(
             onAction = onRecordDeluxeAction,
             onDismiss = {
                 recordingMode = RecordingMode.QUICK
-            },
-
-            )
+            }
+        )
     }
 
 

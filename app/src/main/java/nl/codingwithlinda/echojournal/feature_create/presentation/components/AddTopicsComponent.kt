@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction
+import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction.*
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 
 @Composable
@@ -43,14 +45,14 @@ fun AddTopicComponent(
     topic: String,
     topics: List<Topic>,
     shouldShowCreate: Boolean,
-    onAction: (CreateEchoAction) -> Unit,
+    onAction: (TopicAction) -> Unit,
 ) {
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                onAction(CreateEchoAction.ShowHideTopics(true))
+                onAction(ShowHideTopics(true))
             }
 
     ) {
@@ -58,14 +60,14 @@ fun AddTopicComponent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .zIndex(1f),
+                ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = topic,
                 onValueChange = {
-                    onAction(CreateEchoAction.TopicChanged(it))
+                    onAction(TopicChanged(it))
                 },
                 placeholder = {
                     Text(
@@ -79,7 +81,7 @@ fun AddTopicComponent(
                 trailingIcon = {
                     IconButton(
                         onClick = {
-                            onAction(CreateEchoAction.ShowHideTopics(false))
+                            onAction(ShowHideTopics(false))
                         }
                     ) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Close topics")
@@ -121,8 +123,8 @@ fun AddTopicComponent(
                                 Text("#")
                             },
                             onClick = {
-                                onAction(CreateEchoAction.SelectTopic(topic))
-                                onAction(CreateEchoAction.ShowHideTopics(false))
+                                onAction(SelectTopic(topic))
+                                onAction(ShowHideTopics(false))
                             }
                         )
                     }
@@ -136,8 +138,8 @@ fun AddTopicComponent(
                                 )
                             },
                             onClick = {
-                                onAction(CreateEchoAction.ShowHideTopics(false))
-                                onAction(CreateEchoAction.CreateTopic(topic))
+                                onAction(ShowHideTopics(false))
+                                onAction(CreateTopic(topic))
                             }
                         )
                     }

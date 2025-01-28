@@ -4,10 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,14 +25,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.core.domain.model.Topic
-import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
+import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ExistingTopicsComponent(
     modifier: Modifier = Modifier,
     selectedTopics: List<Topic>,
-    onAction: (CreateEchoAction) -> Unit
+    onAction: (TopicAction) -> Unit
 ) {
 
     val topicModifier = Modifier
@@ -64,7 +62,7 @@ fun ExistingTopicsComponent(
                 )
                 IconButton(
                     onClick = {
-                        onAction(CreateEchoAction.RemoveTopic(it))
+                        onAction(TopicAction.RemoveTopic(it))
                     },
                     modifier = Modifier.size(18.dp)
                 ) {
@@ -79,7 +77,7 @@ fun ExistingTopicsComponent(
 
         TextButton(
             onClick = {
-                onAction(CreateEchoAction.ShowHideTopics(true))
+                onAction(TopicAction.ShowHideTopics(true))
             },
             modifier =
             Modifier

@@ -11,6 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.echojournal.core.presentation.mappers.blankMoods
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -19,6 +21,7 @@ fun SettingsRoot(
     navBack: () -> Unit
 ) {
 
+    val viewModel = viewModel<SettingsViewModel>()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -38,8 +41,10 @@ fun SettingsRoot(
     ) { paddingValues ->
         SettingsScreen(
             modifier = Modifier.padding(paddingValues),
-            moods = blankMoods.values.toList(),
-            topic = "todo"
+            moods = viewModel.moods.collectAsStateWithLifecycle().value.values.toList(),
+            topic = viewModel.selectedTopic.collectAsStateWithLifecycle().value,
+            onAction = viewModel::handleAction,
+            onTopicAction = viewModel::handleTopicAction
         )
     }
 }

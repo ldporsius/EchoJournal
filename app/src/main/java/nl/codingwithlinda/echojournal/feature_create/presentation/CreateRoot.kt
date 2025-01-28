@@ -82,6 +82,7 @@ fun CreateRoot(
             topicsUiState = viewModel.topicsUiState.collectAsStateWithLifecycle().value,
             selectedTopics = viewModel.selectedTopics.collectAsStateWithLifecycle().value,
             onAction = viewModel::onAction,
+            onTopicAction = viewModel::handleTopicAction,
             onCancel = navigateBack
         )
     }

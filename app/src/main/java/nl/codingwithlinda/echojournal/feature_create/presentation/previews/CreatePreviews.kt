@@ -40,6 +40,7 @@ private fun CreateScreenPreview() {
             topicsUiState = TopicsUiState(),
             selectedTopics = listOf(),
             onAction = {},
+            onTopicAction = {},
             onCancel = {}
 
         )

@@ -19,6 +19,7 @@ import nl.codingwithlinda.echojournal.core.domain.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.mappers.blankMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
+import nl.codingwithlinda.echojournal.core.presentation.state.TopicAction
 import nl.codingwithlinda.echojournal.feature_create.data.repo.TopicRepo
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
@@ -157,45 +158,6 @@ class CreateEchoViewModel(
                 }
             }
 
-            is CreateEchoAction.TopicChanged -> {
-                _topicsSearchText.update { action.topic }
-            }
-
-            is CreateEchoAction.ShowHideTopics -> {
-                topicsVisible.update {
-                    action.visible
-                }
-            }
-            is CreateEchoAction.SelectTopic -> {
-               _topicsSearchText.update {
-                    ""
-                }
-
-                _selectedTopics.update {
-                    it.plus(action.topic)
-                }
-            }
-            is CreateEchoAction.CreateTopic -> {
-                viewModelScope.launch {
-                    topicRepo.create(action.text).also {topic ->
-                        _selectedTopics.update {
-                            it.plus(topic)
-                        }
-                        _topicsSearchText.update {
-                            ""
-                        }
-                    }
-                }
-            }
-            is CreateEchoAction.RemoveTopic -> {
-               _selectedTopics.update {
-                    it.minus(action.topic)
-                }
-                _topicsSearchText.update {
-                    ""
-                }
-            }
-
             is CreateEchoAction.ShowHideMoods -> {
                 _uiState.update {
                     it.copy(
@@ -247,6 +209,48 @@ class CreateEchoViewModel(
                     }
                 }
 
+            }
+        }
+    }
+
+    fun handleTopicAction(action: TopicAction){
+        when(action){
+            is TopicAction.CreateTopic -> {
+                viewModelScope.launch {
+                    topicRepo.create(action.text).also {topic ->
+                        _selectedTopics.update {
+                            it.plus(topic)
+                        }
+                        _topicsSearchText.update {
+                            ""
+                        }
+                    }
+                }
+            }
+            is TopicAction.RemoveTopic -> {
+                _selectedTopics.update {
+                    it.minus(action.topic)
+                }
+                _topicsSearchText.update {
+                    ""
+                }
+            }
+            is TopicAction.SelectTopic -> {
+                _topicsSearchText.update {
+                    ""
+                }
+
+                _selectedTopics.update {
+                    it.plus(action.topic)
+                }
+            }
+            is TopicAction.ShowHideTopics -> {
+                topicsVisible.update {
+                    action.visible
+                }
+            }
+            is TopicAction.TopicChanged -> {
+                _topicsSearchText.update { action.topic }
             }
         }
     }
