@@ -9,6 +9,9 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,6 +23,7 @@ import nl.codingwithlinda.echojournal.feature_record.data.finite_state.RecorderS
 import nl.codingwithlinda.echojournal.feature_record.data.finite_state.RecorderStateStopped
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorderData
+import nl.codingwithlinda.echojournal.feature_record.domain.RecordingState
 import nl.codingwithlinda.echojournal.feature_record.domain.error.RecordingFailedError
 import nl.codingwithlinda.echojournal.feature_record.domain.finite_state.RecorderState
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.shared.RecordAudioAction
@@ -42,10 +46,13 @@ class AndroidMediaRecorder(
     val stoppedState = RecorderStateStopped(this)
 
     private var _recorderState: RecorderState = RecorderStateStopped(this)
+    private val _recorderStateFlow = MutableStateFlow<RecordingState>(RecordingState.STOPPED)
+    override val recorderState: StateFlow<RecordingState> = _recorderStateFlow.asStateFlow()
 
     override fun changeState(state: RecorderState): RecorderState {
+        println("CHANGING STATE IN ANDROID MEDIARECORDER TO: ${state.recordingEnum}")
         _recorderState = state
-        _recorderStateFlow.update { state }
+        _recorderStateFlow.update { state.recordingEnum }
         return state
     }
     //end state//
@@ -57,16 +64,12 @@ class AndroidMediaRecorder(
             _recorderState.recordingEnum
         },
         result = {res ->
-            println("counter result: $res")
+            //println("counter result: $res")
             countDuration.update {
                 res
             }
         }
     )
-
-    private val _recorderStateFlow = MutableStateFlow(_recorderState)
-    override val recorderState: Flow<RecorderState>
-        get() = _recorderStateFlow
 
     private val FILE_NAME_AUDIO: String = "echoJournal.mp4"
     private val FILE_NAME_AMPLITUDES = "audio_waves.txt"
@@ -100,6 +103,7 @@ class AndroidMediaRecorder(
     ///////// user interaction ///////////////////////////////////
 
     override fun handleAction(action: RecordAudioAction){
+        println("ANDROID MEDIA RECORDER CALLED WITH ACTION: $action")
        when(action){
            RecordAudioAction.onCancelClicked -> {
                _recorderState.cancel()
@@ -152,6 +156,9 @@ class AndroidMediaRecorder(
         println("started recording")
 
         isRecording = true
+        changeState(recordingState)
+
+        println("ANDROID MEDIA RECORDER HAS STATE: ${_recorderState.recordingEnum}")
 
         CoroutineScope(dispatcherProvider.default).launch {
             launch {
@@ -164,6 +171,8 @@ class AndroidMediaRecorder(
                 }
             }
         }
+
+        println("end start recording")
     }
 
 
