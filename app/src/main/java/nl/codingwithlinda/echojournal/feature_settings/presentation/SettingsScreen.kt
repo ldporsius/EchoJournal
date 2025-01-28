@@ -204,18 +204,16 @@ fun SettingsScreen(
 
 
             if (shouldShowTopicList) {
-
-
                 Box(
                     modifier = Modifier
                         .offset {
-                            val y = existingTopicsPosition.y + existingTopicsSize.height
+                            val y = existingTopicsPosition.y + existingTopicsSize.height + 8.dp.toPx()
                             println("Existing topic position: ${existingTopicsPosition}, y: $y")
                             println("Existing topic height: ${existingTopicsSize.height}, y: $y")
                             IntOffset(x = 0, y = y.roundToInt())
                         }
                         .height(300.dp)
-                        .background(color = Color.Transparent)
+                        .background(color = Color.White)
                 ) {
                     AddTopicComponent(
                        modifier = Modifier,

@@ -75,6 +75,7 @@ class SettingsViewModel: ViewModel() {
                 _selectedTopics.update {
                     it.plus(newTopic)
                 }
+                _topicInput.update { "" }
             }
             is TopicAction.RemoveTopic -> {
                 _selectedTopics.update {
