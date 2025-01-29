@@ -37,9 +37,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
@@ -77,7 +81,7 @@ fun CreateEchoScreen(
     onCancel: () -> Unit
 ) {
     var existingTopicsPosition by remember {
-        mutableStateOf(Offset.Zero)
+        mutableStateOf(Rect(Offset.Zero, Size.Zero))
     }
     var existingTopicsSize by remember {
         mutableStateOf(IntSize.Zero)
@@ -156,13 +160,11 @@ fun CreateEchoScreen(
             ExistingTopicsComponent(
                 modifier = Modifier
                     .onGloballyPositioned {
-                        existingTopicsPosition = it.positionInWindow()
+                        existingTopicsPosition =  it.boundsInRoot()
                     }
                     .onSizeChanged {
                         existingTopicsSize = it
                     }
-                    .border(1.dp, Color.Cyan)
-
                 ,
                 selectedTopics = selectedTopics,
                 addTopicComponent = {
@@ -221,15 +223,16 @@ fun CreateEchoScreen(
         }
 
         if (topicsUiState.isExpanded) {
+            val y = existingTopicsPosition.center.y
+            println("Existing topic position: ${existingTopicsPosition}, ExistingTopicHeight: ${existingTopicsSize.height}, y: $y")
+
             Box(
                 modifier = Modifier
-                    .offset {
-                        val y = existingTopicsPosition.y + existingTopicsSize.height
-                        println("Existing topic position: ${existingTopicsPosition}, ExistingTopicHeight: ${existingTopicsSize.height}, y: $y")
-                        IntOffset(x = 0, y = y.roundToInt())
+                    .offset{density
+                        IntOffset(0, (y.roundToInt()))
                     }
                     .height(300.dp)
-                    .background(Color.Magenta)
+                    .background(Color.White)
                 ,
             ) {
                 AddTopicComponent(

@@ -16,7 +16,7 @@ fun EchoEntity.toDomain(
         mood = moodFromInt(mood),
         timeStamp = timestamp,
         uri = soundUri,
-        duration = 0L,
+        duration = duration,
         amplitudes = amplitudes,
         topics = topics
     )
