@@ -1,6 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model
 
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState
 
 data class UiEcho(

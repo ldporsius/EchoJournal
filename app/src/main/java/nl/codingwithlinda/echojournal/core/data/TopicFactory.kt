@@ -1,6 +1,6 @@
 package nl.codingwithlinda.echojournal.core.data
 
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 
 class TopicFactory {
 

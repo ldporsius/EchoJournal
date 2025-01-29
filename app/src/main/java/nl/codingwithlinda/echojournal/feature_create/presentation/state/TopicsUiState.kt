@@ -1,6 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_create.presentation.state
 
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 
 data class TopicsUiState(
     val searchText: String = "",

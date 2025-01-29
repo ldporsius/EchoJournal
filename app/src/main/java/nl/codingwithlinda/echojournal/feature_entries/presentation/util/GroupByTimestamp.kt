@@ -5,7 +5,7 @@ import nl.codingwithlinda.echojournal.core.domain.DateTimeFormatter
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterMedium
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterShort
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
-import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.core.model.Echo
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi

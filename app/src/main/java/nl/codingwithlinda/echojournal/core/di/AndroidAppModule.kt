@@ -3,11 +3,11 @@ package nl.codingwithlinda.echojournal.core.di
 import android.app.Application
 import nl.codingwithlinda.echojournal.core.data.AndroidEchoPlayer
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
-import nl.codingwithlinda.echojournal.core.data.data_source.EchoAccess
-import nl.codingwithlinda.echojournal.core.data.data_source.TopicsAccess
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
 import nl.codingwithlinda.echojournal.feature_record.data.AndroidMediaRecorder
 import nl.codingwithlinda.echojournal.feature_record.domain.AudioRecorder
+import nl.codingwithlinda.persistence.data.repository.EchoRepo
+import nl.codingwithlinda.persistence.data.repository.TopicRepo
 
 class AndroidAppModule(
     private val context:Application
@@ -27,9 +27,9 @@ class AndroidAppModule(
             dispatcherProvider = dispatcherProvider,
         )
 
-    override val topicsAccess: TopicsAccess = TopicsAccess()
+    override val topicsAccess = TopicRepo(context)
 
-    override val echoAccess: EchoAccess = EchoAccess()
+    override val echoAccess = EchoRepo(context)
 
     override val echoFactory: EchoFactory
         get() = EchoFactory(

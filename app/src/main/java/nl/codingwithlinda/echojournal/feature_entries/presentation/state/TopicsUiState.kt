@@ -1,7 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.state
 
 import nl.codingwithlinda.echojournal.R
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 
 data class TopicsUiState(

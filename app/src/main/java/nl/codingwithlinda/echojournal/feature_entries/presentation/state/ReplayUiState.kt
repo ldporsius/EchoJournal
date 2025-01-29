@@ -2,7 +2,7 @@ package nl.codingwithlinda.echojournal.feature_entries.presentation.state
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
-import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.core.model.Mood
 import nl.codingwithlinda.echojournal.core.presentation.mappers.toColor
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.PlaybackState

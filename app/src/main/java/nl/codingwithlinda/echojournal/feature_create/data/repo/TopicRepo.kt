@@ -2,11 +2,11 @@ package nl.codingwithlinda.echojournal.feature_create.data.repo
 
 import kotlinx.coroutines.flow.Flow
 import nl.codingwithlinda.echojournal.core.data.TopicFactory
-import nl.codingwithlinda.echojournal.core.data.data_source.TopicsAccess
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
+import nl.codingwithlinda.persistence.domain.DataSourceAccess
 
 class TopicRepo(
-    private val topicsAccess: TopicsAccess,
+    private val topicsAccess: DataSourceAccess<Topic, String>,
     private val topicFactory: TopicFactory
 ) {
 

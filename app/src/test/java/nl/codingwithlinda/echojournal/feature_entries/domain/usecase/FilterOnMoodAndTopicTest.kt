@@ -1,7 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_entries.domain.usecase
 
-import nl.codingwithlinda.echojournal.core.domain.model.Mood
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Mood
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.entries
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeTopics
 import org.junit.Test

@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "EchoJournal"
 include(":app")
- 
+include(":persistence")
+include(":core")

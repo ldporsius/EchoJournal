@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
 
 @OptIn(ExperimentalLayoutApi::class)

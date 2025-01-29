@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.core.model.Echo
 import nl.codingwithlinda.echojournal.core.data.EchoDto
 import nl.codingwithlinda.echojournal.core.data.EchoFactory
 import nl.codingwithlinda.echojournal.core.domain.EchoPlayer
-import nl.codingwithlinda.echojournal.core.data.data_source.EchoAccess
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.mappers.blankMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
@@ -25,6 +25,7 @@ import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEc
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
+import nl.codingwithlinda.persistence.domain.DataSourceAccess
 
 class CreateEchoViewModel(
     private val echoDto: EchoDto,
@@ -32,7 +33,7 @@ class CreateEchoViewModel(
     private val dateTimeFormatter: DateTimeFormatterDuration,
     private val topicRepo: TopicRepo,
     private val echoFactory: EchoFactory,
-    private val echoAccess: EchoAccess,
+    private val echoAccess: DataSourceAccess<Echo, String>,
     private val onSaved: () -> Unit
 ): ViewModel() {
 

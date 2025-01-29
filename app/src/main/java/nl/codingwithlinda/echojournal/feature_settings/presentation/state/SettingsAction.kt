@@ -1,7 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_settings.presentation.state
 
-import nl.codingwithlinda.echojournal.core.domain.model.Mood
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Mood
+import nl.codingwithlinda.core.model.Topic
 
 sealed interface SettingsAction {
     data class SelectMoodAction(val mood: Mood): SettingsAction

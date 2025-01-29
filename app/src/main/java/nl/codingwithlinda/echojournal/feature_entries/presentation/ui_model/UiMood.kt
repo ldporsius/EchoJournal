@@ -1,7 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model
 
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
-import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.core.model.Mood
 
 data class UiMood(
     val mood: Mood,

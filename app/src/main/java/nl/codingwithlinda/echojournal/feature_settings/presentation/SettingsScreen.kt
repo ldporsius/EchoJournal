@@ -46,7 +46,7 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
 import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicComponent
 import nl.codingwithlinda.echojournal.core.presentation.topics.ExistingTopicsComponent

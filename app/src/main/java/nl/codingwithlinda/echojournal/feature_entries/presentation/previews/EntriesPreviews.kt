@@ -17,7 +17,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.R
-import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.core.model.Mood
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.toUi

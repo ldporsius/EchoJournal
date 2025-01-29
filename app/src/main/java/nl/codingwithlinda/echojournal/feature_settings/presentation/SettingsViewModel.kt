@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.echojournal.core.domain.model.Mood
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Mood
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.mappers.blankMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.coloredMoods
 import nl.codingwithlinda.echojournal.core.presentation.mappers.toUi

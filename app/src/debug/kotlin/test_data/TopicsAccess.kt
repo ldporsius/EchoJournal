@@ -1,14 +1,14 @@
-package nl.codingwithlinda.echojournal.core.data.data_source
+package test_data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.echojournal.core.domain.data_source.DataSourceAccess
 import nl.codingwithlinda.echojournal.core.domain.model.EchoTopic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.previews.fakeTopics
+import nl.codingwithlinda.persistence.domain.DataSourceAccess
 
-class TopicsAccess: DataSourceAccess<EchoTopic, String> {
+class FakeTopicsAccess: DataSourceAccess<EchoTopic, String> {
 
     private val fakes =  fakeTopics
     private val topics = MutableStateFlow<List<EchoTopic>>(fakes)

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.echojournal.core.domain.model.Topic
+import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 
 @Composable
@@ -17,7 +17,7 @@ fun EchoListItemContent(
     modifier: Modifier = Modifier,
     uiEcho: UiEcho,
     onFilterTopic: (Topic) -> Unit,
-   replayComponent: @Composable () -> Unit,
+    replayComponent: @Composable () -> Unit,
 ) {
 
     val title = uiEcho.name

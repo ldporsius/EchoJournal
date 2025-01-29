@@ -1,9 +1,9 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.previews
 
 import android.net.Uri
-import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.core.model.Echo
 import nl.codingwithlinda.echojournal.core.domain.model.EchoTopic
-import nl.codingwithlinda.echojournal.core.domain.model.Mood
+import nl.codingwithlinda.core.model.Mood
 import java.util.UUID
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.days

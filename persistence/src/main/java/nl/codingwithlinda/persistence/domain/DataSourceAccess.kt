@@ -1,4 +1,4 @@
-package nl.codingwithlinda.echojournal.core.domain.data_source
+package nl.codingwithlinda.persistence.domain
 
 import kotlinx.coroutines.flow.Flow
 

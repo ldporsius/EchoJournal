@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.rules)
+    implementation(project(":persistence"))
+    implementation(project(":core"))
 
     //desugar
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")

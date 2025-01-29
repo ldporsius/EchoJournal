@@ -7,7 +7,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.echojournal.core.data.TopicFactory
-import nl.codingwithlinda.echojournal.core.data.data_source.TopicsAccess
+import test_data.TopicsAccess
 import nl.codingwithlinda.echojournal.test_dispatchers.TestDispatcherProvider
 import org.junit.After
 import org.junit.Assert.assertTrue

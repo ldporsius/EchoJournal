@@ -1,6 +1,6 @@
 package nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping
 
-import nl.codingwithlinda.echojournal.core.domain.model.Echo
+import nl.codingwithlinda.core.model.Echo
 import nl.codingwithlinda.echojournal.core.presentation.mappers.toUi
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEcho
 
