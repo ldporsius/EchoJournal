@@ -24,4 +24,7 @@ interface TopicDao {
 
     @Query("SELECT * FROM TopicEntity")
     fun readAll(): Flow<List<TopicEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun createEchoTopicXref(echoTopicXref: EchoTopicXref)
 }

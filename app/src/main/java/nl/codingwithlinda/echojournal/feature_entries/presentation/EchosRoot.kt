@@ -24,6 +24,7 @@ import nl.codingwithlinda.echojournal.core.di.AppModule
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.core.presentation.util.UiText
 import nl.codingwithlinda.echojournal.feature_entries.presentation.components.EchosScreen
+import nl.codingwithlinda.echojournal.feature_entries.presentation.state.ReplayUiState
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode.RecordAudioViewModel
 import nl.codingwithlinda.echojournal.feature_record.presentation.RecordingComponent
 import nl.codingwithlinda.echojournal.feature_record.presentation.components.deluxe_mode.RecorderInteraction
@@ -131,7 +132,7 @@ fun EchosRoot(
       topicsUiState = topicsUiState.value,
       moodsUiState = echosViewModel.moodsUiState.collectAsStateWithLifecycle().value,
       replayUiState = {
-         replayUiState.getValue(it.id)
+         replayUiState.get(it.id) ?: ReplayUiState()
       }
       ,
       onFilterAction = echosViewModel::onFilterAction,

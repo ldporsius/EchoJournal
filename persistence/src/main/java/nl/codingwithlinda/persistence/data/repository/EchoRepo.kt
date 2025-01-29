@@ -28,6 +28,12 @@ class EchoRepo(
         }
        item.topics.forEach {
            topicDao.create(it.toEntity())
+           topicDao.createEchoTopicXref(
+               nl.codingwithlinda.persistence.model.EchoTopicXref(
+                   echoId = item.id,
+                   topicId = it.name
+               )
+           )
        }
         return item
     }

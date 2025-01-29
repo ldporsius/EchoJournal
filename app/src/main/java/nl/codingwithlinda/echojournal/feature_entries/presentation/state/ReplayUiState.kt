@@ -9,7 +9,7 @@ import nl.codingwithlinda.echojournal.feature_create.presentation.state.Playback
 
 data class ReplayUiState(
     val playbackState: PlaybackState = PlaybackState.STOPPED,
-    val mood: Mood,
+    val mood: Mood = Mood.NEUTRAL,
     val waves: List<Int> = emptyList(),
     val duration: Long = 1L,
     val amplitudesSize: Int = 1
