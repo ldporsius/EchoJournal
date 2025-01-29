@@ -25,6 +25,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
@@ -87,6 +89,17 @@ fun FilterEchoComponent(
                         }
                     }
                 },
+                shape = RoundedCornerShape(100),
+                colors = InputChipDefaults.inputChipColors(
+                   selectedContainerColor = Color.White,
+                    selectedLabelColor = MaterialTheme.colorScheme.onBackground,
+                    disabledLabelColor = MaterialTheme.colorScheme.onBackground,
+                ),
+                border = InputChipDefaults.inputChipBorder(
+                    enabled = true,
+                    selected = showSelectMoods,
+                    selectedBorderColor = Color.Blue
+                ),
                 modifier = Modifier.fillMaxHeight()
 
 
