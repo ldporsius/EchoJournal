@@ -61,7 +61,7 @@ class AndroidMediaRecorder(
 
     private val counter = Counter(
         recordingState = {
-            _recorderState.recordingEnum
+            _recorderStateFlow.value
         },
         result = {res ->
             //println("counter result: $res")

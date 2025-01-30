@@ -27,14 +27,11 @@ object GroupByTimestamp {
     }
 
     private fun timeDiffAsLong(timeStamp: Long, currentTime: Long): Int {
-        val timeDifference = currentTime - timeStamp
         val now = ZonedDateTime.now()
         val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeStamp), ZoneId.systemDefault())
         val days = now.dayOfYear - zonedDateTime.dayOfYear
 
-        println("Timestamp: $timeStamp, Current time: $currentTime")
-        println("Time difference: $timeDifference")
-        println("Days: $days")
+
         return days
     }
 

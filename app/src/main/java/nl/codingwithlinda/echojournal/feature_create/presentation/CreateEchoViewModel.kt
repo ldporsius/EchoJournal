@@ -107,7 +107,8 @@ class CreateEchoViewModel(
 
             _uiState.update {
                 it.copy(
-                    amplitudes = amplitudes
+                    amplitudes = amplitudes,
+                    duration = dateTimeFormatter.formatDurationProgress(0f, echoDto.duration)
                 )
             }
 
@@ -200,6 +201,7 @@ class CreateEchoViewModel(
                         amplitudes = amplitudes
                     ).also {
                         echoAccess.create(it).also {echo ->
+                            println("saved echo: $echo")
                             echoFactory.persistEcho(
                                 source = echoDto.uri,
                                 target = echo.uri
