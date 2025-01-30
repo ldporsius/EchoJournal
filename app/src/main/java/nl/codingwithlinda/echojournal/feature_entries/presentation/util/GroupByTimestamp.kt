@@ -9,32 +9,40 @@ import nl.codingwithlinda.core.model.Echo
 import nl.codingwithlinda.echojournal.core.presentation.util.DateTimeFormatterDuration
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiEchoGroup
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.mapping.toUi
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object GroupByTimestamp {
 
-    fun groupByTimestamp(entries: List<Echo>, currentTime: Long = System.currentTimeMillis()): Map<Long, List<Echo>> {
+    fun groupByTimestamp(entries: List<Echo>, currentTime: Long = System.currentTimeMillis()): Map<Int, List<Echo>> {
 
-        val entriesByTimestamp: Map<Long, List<Echo>> = entries.groupBy {
+        val entriesByTimestamp: Map<Int, List<Echo>> = entries.groupBy {
           timeDiffAsLong(it.timeStamp, currentTime)
         }
 
         return entriesByTimestamp
     }
 
-    private fun timeDiffAsLong(timeStamp: Long, currentTime: Long): Long {
+    private fun timeDiffAsLong(timeStamp: Long, currentTime: Long): Int {
         val timeDifference = currentTime - timeStamp
-        val days = TimeUnit.MILLISECONDS.toDays(timeDifference)
+        val now = ZonedDateTime.now()
+        val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeStamp), ZoneId.systemDefault())
+        val days = now.dayOfYear - zonedDateTime.dayOfYear
 
+        println("Timestamp: $timeStamp, Current time: $currentTime")
+        println("Time difference: $timeDifference")
+        println("Days: $days")
         return days
     }
 
-    fun timeDiffAsUiText(timeDiff: Long): UiText {
+    private fun timeDiffAsUiText(timeDiff: Int): UiText {
        return when{
-           timeDiff < 0L -> UiText.StringResource(R.string.future)
-           timeDiff == 0L -> UiText.StringResource(R.string.today)
-           timeDiff == 1L -> UiText.StringResource(R.string.yesterday)
+           timeDiff < 0 -> UiText.StringResource(R.string.future)
+           timeDiff == 0 -> UiText.StringResource(R.string.today)
+           timeDiff == 1 -> UiText.StringResource(R.string.yesterday)
            else -> UiText.StringResource(R.string.older)
         }
     }

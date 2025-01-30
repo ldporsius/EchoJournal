@@ -140,12 +140,12 @@ class EchosViewModel(
 
         val moodNames = moods.map { it.mood }
 
-        val selectedEchoes =  filterOnMoodAndTopic.filter(echoes, moodNames, topics)
+        val selectedEchoes =  filterOnMoodAndTopic.filter(echoes, moodNames, topics).sortedByDescending { it.timeStamp }
         val res = GroupByTimestamp.createGroups(selectedEchoes)
 
         EchoesUiState(
             echoesTotal = echoes.size,
-            selectedEchoes = res,
+            selectedEchoes = res
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), EchoesUiState(0, emptyList()))
 
