@@ -22,7 +22,7 @@ fun AddRecordingComponent(
     Box(
         modifier = modifier
             .size(64.dp)
-            .shadow(8.dp, shape = CircleShape)
+            .shadow(16.dp, shape = CircleShape)
             .background(
                 brush = buttonGradient,
                 shape = CircleShape

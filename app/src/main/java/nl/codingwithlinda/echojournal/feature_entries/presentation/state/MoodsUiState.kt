@@ -41,7 +41,7 @@ data class MoodsUiState(
 
         if (selectedMoods.isEmpty()) {
             Text("All moods",
-                style = typography.labelSmall
+                style = typography.labelLarge
             )
         }
 

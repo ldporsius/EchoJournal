@@ -104,8 +104,8 @@ val backgroundGradientSaturated = Brush.linearGradient(
 
 val buttonGradient = Brush.linearGradient(
     colors = listOf(primary60, primary50),
-    start = Offset(0f, 25f),
-    end = Offset(0f, 150f)
+    start = Offset(0f, 0f),
+    end = Offset(0f, 50f)
 )
 
 val buttonGradientPressed = Brush.linearGradient(

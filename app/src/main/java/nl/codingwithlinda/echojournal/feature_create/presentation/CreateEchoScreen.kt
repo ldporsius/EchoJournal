@@ -2,6 +2,7 @@ package nl.codingwithlinda.echojournal.feature_create.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -39,6 +40,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
@@ -164,33 +166,26 @@ fun CreateEchoScreen(
             //selected topics
             ExistingTopicsComponent(
                 modifier = Modifier
-                    .onGloballyPositioned {
-                        existingTopicsPosition =  it.boundsInRoot()
-                    }
-                    .onSizeChanged {
-                        existingTopicsSize = it
-                    }
+
                 ,
                 selectedTopics = selectedTopics,
                 addTopicComponent = {
-                    if (topicsUiState.isExpanded){
-                        TopicInputComponent(
-                            modifier = Modifier
-                                .height(48.dp)
-                                .background(color = gray6, shape = CircleShape)
-                            ,
-                            topicText = topicsUiState.searchText,
-                            onTopicAction = {
-                                onTopicAction(it)
+                    TopicInputComponent(
+                        modifier = Modifier
+                            .onGloballyPositioned {
+                                existingTopicsPosition =  it.boundsInRoot()
                             }
-                        )
-                    }else {
-                        AddTopicComponentTextButton(
-                            onTopicAction = {
-                                onTopicAction(it)
+                            .onSizeChanged {
+                                existingTopicsSize = it
                             }
-                        )
-                    }
+                            .height(48.dp)
+                            .background(color = gray6, shape = CircleShape)
+                        ,
+                        topicText = topicsUiState.searchText,
+                        onTopicAction = {
+                            onTopicAction(it)
+                        }
+                    )
                 },
                 onAction = onTopicAction
             )

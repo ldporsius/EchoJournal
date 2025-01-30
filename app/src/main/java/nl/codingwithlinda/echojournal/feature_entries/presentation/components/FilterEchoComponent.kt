@@ -108,7 +108,7 @@ fun FilterEchoComponent(
                     selectedBorderWidth = 1.dp,
                     disabledBorderColor = gray6,
                 ),
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier.height(48.dp)
 
 
             )
@@ -122,7 +122,7 @@ fun FilterEchoComponent(
                 label = {
                     Text(
                         topicsUiState.selectedTopicsUiText.asString(),
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelLarge
                     )
                 },
                 trailingIcon = {

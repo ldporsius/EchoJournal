@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -59,7 +60,8 @@ fun SelectMoodComponent(
                 .fillMaxWidth()
                 .height(48.dp)
                 .background(color = bgColor, shape = RoundedCornerShape(16.dp))
-                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
 
             ) {
                 SelectMoodItem(
@@ -68,12 +70,12 @@ fun SelectMoodComponent(
                         Image(
                             painter = painterResource(id = it.icon),
                             contentDescription = null,
-                            modifier = Modifier.requiredSize(40.dp),
+                            modifier = Modifier.requiredSize(24.dp),
                             contentScale = ContentScale.FillHeight
                         )
                     },
                     text = { Text(it.name.asString() ,
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelLarge
                     )
                            },
                     selectedIcon = {
