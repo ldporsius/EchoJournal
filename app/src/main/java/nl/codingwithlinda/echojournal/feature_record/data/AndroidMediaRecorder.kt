@@ -64,7 +64,6 @@ class AndroidMediaRecorder(
             _recorderStateFlow.value
         },
         result = {res ->
-            //println("counter result: $res")
             countDuration.update {
                 res
             }

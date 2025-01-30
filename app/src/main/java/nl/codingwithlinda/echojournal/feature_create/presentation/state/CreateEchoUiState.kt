@@ -3,6 +3,7 @@ package nl.codingwithlinda.echojournal.feature_create.presentation.state
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.ui.theme.amplitudeColorUndefined
 import nl.codingwithlinda.echojournal.ui.theme.playbackBackgroundUndefined
+import nl.codingwithlinda.echojournal.ui.theme.secondary70
 
 data class CreateEchoUiState(
     val title: String = "",
@@ -86,9 +88,9 @@ data class CreateEchoUiState(
 
         if (confirmedMood == null){
             Icon(
-                Icons.Default.AddCircle,
+                Icons.Default.Add,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondaryContainer,
+                tint = secondary70,
                 modifier = Modifier.size(32.dp)
             )
         }

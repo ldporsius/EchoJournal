@@ -251,6 +251,9 @@ class CreateEchoViewModel(
                 topicsVisible.update {
                     action.visible
                 }
+                _topicsSearchText.update {
+                    ""
+                }
             }
             is TopicAction.TopicChanged -> {
                 _topicsSearchText.update { action.topicText }

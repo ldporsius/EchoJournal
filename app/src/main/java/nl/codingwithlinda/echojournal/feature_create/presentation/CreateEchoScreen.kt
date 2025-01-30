@@ -1,8 +1,7 @@
 package nl.codingwithlinda.echojournal.feature_create.presentation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -15,12 +14,14 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -34,32 +35,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.components.EchoPlaybackComponent
 import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicComponentTextButton
 import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
-import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicComponent
+import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicsComponent
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.CreateCancelSaveButtons
 import nl.codingwithlinda.echojournal.core.presentation.topics.ExistingTopicsComponent
 import nl.codingwithlinda.echojournal.core.presentation.topics.TopicInputComponent
@@ -67,6 +58,9 @@ import nl.codingwithlinda.echojournal.feature_create.presentation.components.Sel
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoAction
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.CreateEchoUiState
 import nl.codingwithlinda.echojournal.feature_create.presentation.state.TopicsUiState
+import nl.codingwithlinda.echojournal.ui.theme.gray6
+import nl.codingwithlinda.echojournal.ui.theme.outlineVariant
+import nl.codingwithlinda.echojournal.ui.theme.secondary70
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,7 +82,12 @@ fun CreateEchoScreen(
     }
     val nestedScrollConnection = rememberNestedScrollInteropConnection()
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable {
+                onTopicAction(TopicAction.ShowHideTopics(false))
+            }
+        ,
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
@@ -108,7 +107,13 @@ fun CreateEchoScreen(
                 IconButton(
                     onClick = {
                         onAction(CreateEchoAction.ShowHideMoods(true))
-                    }
+                    },
+                    colors = IconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = MaterialTheme.colorScheme.secondaryContainer,
+                    )
                 ) {
                     uiState.SelectedMoodIcon()
                 }
@@ -120,8 +125,8 @@ fun CreateEchoScreen(
                     placeholder = {
                         Text(
                             "Add Title ...",
-                            style = MaterialTheme.typography.titleLarge
-
+                            style = MaterialTheme.typography.titleLarge,
+                            color = secondary70
                         )
                     },
                     colors = OutlinedTextFieldDefaults.colors(
@@ -170,7 +175,10 @@ fun CreateEchoScreen(
                 addTopicComponent = {
                     if (topicsUiState.isExpanded){
                         TopicInputComponent(
-                            modifier = Modifier,
+                            modifier = Modifier
+                                .height(48.dp)
+                                .background(color = gray6, shape = CircleShape)
+                            ,
                             topicText = topicsUiState.searchText,
                             onTopicAction = {
                                 onTopicAction(it)
@@ -197,16 +205,22 @@ fun CreateEchoScreen(
                 placeholder = {
                     Text(
                         "Add Description",
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = outlineVariant
 
                     )
                 },
+                textStyle = MaterialTheme.typography.bodySmall,
                 leadingIcon = {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = null)
+                    Icon(imageVector = Icons.Default.Edit,
+                        contentDescription = null)
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    unfocusedTextColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unfocusedTextColor = outlineVariant,
+                    unfocusedLeadingIconColor = outlineVariant,
+                    focusedBorderColor = Color.Transparent,
+                    focusedLeadingIconColor = outlineVariant
                 )
             )
 
@@ -223,7 +237,7 @@ fun CreateEchoScreen(
         }
 
         if (topicsUiState.isExpanded) {
-            val y = existingTopicsPosition.center.y
+            val y = existingTopicsPosition.top
             println("Existing topic position: ${existingTopicsPosition}, ExistingTopicHeight: ${existingTopicsSize.height}, y: $y")
 
             Box(
@@ -235,7 +249,7 @@ fun CreateEchoScreen(
                     .background(Color.White)
                 ,
             ) {
-                AddTopicComponent(
+                AddTopicsComponent(
                     Modifier,
                     topic = topicsUiState.searchText,
                     topics = topicsUiState.topics,

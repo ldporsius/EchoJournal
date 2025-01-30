@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +27,7 @@ import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
 import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction.ShowHideTopics
 
 @Composable
-fun AddTopicComponent(
+fun AddTopicsComponent(
     modifier: Modifier = Modifier,
     topic: String,
     topics: List<Topic>,
@@ -37,9 +38,6 @@ fun AddTopicComponent(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clickable {
-                onAction(ShowHideTopics(true))
-            }
 
     ) {
 
@@ -66,8 +64,10 @@ fun AddTopicComponent(
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
-
+                        .verticalScroll(rememberScrollState()),
+                    colors = CardDefaults.elevatedCardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    )
 
                     ) {
                     topics.forEach { topic ->

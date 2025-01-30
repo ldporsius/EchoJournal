@@ -1,5 +1,6 @@
 package nl.codingwithlinda.echojournal.core.presentation.topics
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -27,8 +28,8 @@ fun TopicInputComponent(
         },
         placeholder = {
             Text(
-                "Search for topic",
-                style = MaterialTheme.typography.titleSmall
+                "# Topic",
+                style = MaterialTheme.typography.labelSmall
             )
         },
         leadingIcon = {
@@ -45,6 +46,8 @@ fun TopicInputComponent(
             focusedBorderColor = Color.Transparent,
             unfocusedTextColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
+        shape = CircleShape,
+        textStyle = MaterialTheme.typography.labelSmall,
         modifier = modifier
     )
 }

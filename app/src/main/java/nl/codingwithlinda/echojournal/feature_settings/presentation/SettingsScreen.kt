@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -48,10 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import nl.codingwithlinda.core.model.Topic
 import nl.codingwithlinda.echojournal.core.presentation.topics.state.TopicAction
-import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicComponent
+import nl.codingwithlinda.echojournal.core.presentation.topics.AddTopicsComponent
 import nl.codingwithlinda.echojournal.core.presentation.topics.ExistingTopicsComponent
 import nl.codingwithlinda.echojournal.core.presentation.topics.TopicInputComponent
-import nl.codingwithlinda.echojournal.core.presentation.topics.topicModifier
 import nl.codingwithlinda.echojournal.feature_create.presentation.components.MoodItemVertical
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
 import nl.codingwithlinda.echojournal.feature_settings.presentation.state.SettingsAction
@@ -215,7 +211,7 @@ fun SettingsScreen(
                         .height(300.dp)
                         .background(color = Color.White)
                 ) {
-                    AddTopicComponent(
+                    AddTopicsComponent(
                        modifier = Modifier,
                         topic = topicInput,
                         topics = topics,
