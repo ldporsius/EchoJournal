@@ -83,6 +83,7 @@ private fun SelectMoodItemPreview() {
             text = {
                 Text("Sad")
             },
+            selectedIcon = {},
             onClick = { }
         )
     }
@@ -102,6 +103,13 @@ private fun SelectMoodItemPreview2() {
             },
             text = {
                 Text("Sad")
+            },
+            selectedIcon = {
+                Icon(
+                    imageVector =  ImageVector.vectorResource(id = R.drawable.vector_16),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
             },
             onClick = { }
         )

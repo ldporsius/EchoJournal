@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +32,8 @@ import androidx.compose.ui.zIndex
 import nl.codingwithlinda.echojournal.R
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.ui_model.UiMood
+import nl.codingwithlinda.echojournal.ui.theme.primary20
+import nl.codingwithlinda.echojournal.ui.theme.surfaceTint
 
 @Composable
 fun SelectMoodComponent(
@@ -41,21 +46,24 @@ fun SelectMoodComponent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp)
     ) {
 
-        moods.forEach {
+        moods
+            .sortedByDescending { it.mood.sortOrder }
+            .forEach {
             val isSelected = moodsUiState.isSelected(it)
             val bgColor =
-                if (isSelected) MaterialTheme.colorScheme.surfaceDim else Color.Transparent
+                if (isSelected) surfaceTint.copy(.05f) else Color.Transparent
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
                 .background(color = bgColor, shape = RoundedCornerShape(16.dp))
-                .padding(horizontal = 16.dp, vertical = 4.dp)
+                .padding(horizontal = 8.dp, vertical = 4.dp)
 
             ) {
                 SelectMoodItem(
+                    modifier = Modifier,
                     icon = {
                         Image(
                             painter = painterResource(id = it.icon),
@@ -64,13 +72,25 @@ fun SelectMoodComponent(
                             contentScale = ContentScale.FillHeight
                         )
                     },
-                    text = { Text(it.name.asString()) },
+                    text = { Text(it.name.asString() ,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                           },
+                    selectedIcon = {
+                        if (isSelected) {
+                            Icon(imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = primary20
+                            )
+                        }
+                        else Unit
+                    },
                     onClick = {
                         onMoodSelected(it)
                     }
                 )
-
             }
+            Spacer(modifier = Modifier.height(2.dp))
         }
     }
 }
@@ -80,6 +100,7 @@ fun SelectMoodItem(
     modifier: Modifier = Modifier,
     icon: @Composable () -> Unit,
     text: @Composable () -> Unit,
+    selectedIcon: @Composable () -> Unit,
     onClick: () -> Unit
 ) {
     Row(
@@ -89,5 +110,7 @@ fun SelectMoodItem(
     ) {
         icon()
         text()
+        Spacer(modifier = Modifier.weight(1f))
+        selectedIcon()
     }
 }

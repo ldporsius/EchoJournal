@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.FilterEchoAction
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.MoodsUiState
 import nl.codingwithlinda.echojournal.feature_entries.presentation.state.TopicsUiState
+import nl.codingwithlinda.echojournal.ui.theme.gray6
+import nl.codingwithlinda.echojournal.ui.theme.primary50
 
 @Composable
 fun FilterEchoComponent(
@@ -94,11 +96,17 @@ fun FilterEchoComponent(
                    selectedContainerColor = Color.White,
                     selectedLabelColor = MaterialTheme.colorScheme.onBackground,
                     disabledLabelColor = MaterialTheme.colorScheme.onBackground,
+                    trailingIconColor = MaterialTheme.colorScheme.secondaryContainer,
+                    disabledTrailingIconColor = MaterialTheme.colorScheme.onBackground,
+                    selectedTrailingIconColor = MaterialTheme.colorScheme.secondaryContainer,
                 ),
                 border = InputChipDefaults.inputChipBorder(
                     enabled = true,
                     selected = showSelectMoods,
-                    selectedBorderColor = Color.Blue
+                    selectedBorderColor = primary50,
+                    borderWidth = 1.dp,
+                    selectedBorderWidth = 1.dp,
+                    disabledBorderColor = gray6,
                 ),
                 modifier = Modifier.fillMaxHeight()
 
@@ -130,7 +138,24 @@ fun FilterEchoComponent(
                             Icon(imageVector = Icons.Default.Close, contentDescription = null)
                         }
                     }
-                }
+                },
+                shape = RoundedCornerShape(100),
+                colors = InputChipDefaults.inputChipColors(
+                    selectedContainerColor = Color.White,
+                    selectedLabelColor = MaterialTheme.colorScheme.onBackground,
+                    disabledLabelColor = MaterialTheme.colorScheme.onBackground,
+                    trailingIconColor = MaterialTheme.colorScheme.secondaryContainer,
+                    disabledTrailingIconColor = MaterialTheme.colorScheme.onBackground,
+                    selectedTrailingIconColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+                border = InputChipDefaults.inputChipBorder(
+                    enabled = true,
+                    selected = showSelectMoods,
+                    selectedBorderColor = primary50,
+                    borderWidth = 1.dp,
+                    selectedBorderWidth = 1.dp,
+                    disabledBorderColor = gray6,
+                ),
             )
         }
 
@@ -139,8 +164,8 @@ fun FilterEchoComponent(
             onDismissRequest = {
                 showSelectMoods = false
             },
-            modifier = Modifier.fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.surfaceBright)
+            modifier = Modifier.fillMaxWidth(.9f)
+                .background(color = MaterialTheme.colorScheme.surface)
         ) {
             SelectMoodComponent(
                 modifier = Modifier.fillMaxWidth(),

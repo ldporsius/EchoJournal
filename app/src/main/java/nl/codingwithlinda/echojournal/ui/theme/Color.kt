@@ -157,8 +157,12 @@ val surfaceContainerHighestDarkMediumContrast = Color(0xFF33343A)
 //////////////////////////////////////////////////////////
 
 val surfaceVariant = Color(0xFFE1E2EC)
+val surfaceTint = Color(0xff475D92)
+
+
 
 val primary10 = Color(0xFF001945)
+val primary20 = Color(0xff00419c)
 val primary30 = Color(0xFF004cb4)
 val primary40 = Color(0xFF0057cc)
 val primary50 = Color(0xFF1F70F5)

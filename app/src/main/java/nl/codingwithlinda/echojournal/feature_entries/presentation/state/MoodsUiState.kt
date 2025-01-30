@@ -65,7 +65,7 @@ data class MoodsUiState(
             }.fastJoinToString(", ")
                 .let {
                     Text(it,
-                        style = typography.labelSmall
+                        style = typography.labelMedium
                     )
                 }
 
